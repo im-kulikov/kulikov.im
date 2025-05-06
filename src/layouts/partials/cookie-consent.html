@@ -1,0 +1,31 @@
+<!-- cookie -->
+{{ with site.Params.cookies }}
+  {{ if .enable }}
+    <div id="cookie-box" data-expires="{{ .expire_days }}" class="cookie-box cookie-box-hide">
+      {{ .content | markdownify }}
+      <button
+        id="cookie-button"
+        class="cookie-box-button btn btn-sm btn-outline-primary">
+        {{ .button }}
+      </button>
+    </div>
+
+    <!-- cookie script -->
+    <script type="application/javascript">
+      window.onload = () => {
+        const cookieBox = document.getElementById('cookie-box');
+        const cookieButton = document.getElementById('cookie-button');
+        if (!Cookies.get('cookie-consent')) {
+          cookieBox.classList.remove('cookie-box-hide');
+          cookieButton.onclick = function () {
+            Cookies.set('cookie-consent', true, {
+              expires: Number(cookieBox.dataset.expires),
+            });
+            cookieBox.classList.add('cookie-box-hide');
+          };
+        }
+      };
+    </script>
+
+  {{ end }}
+{{ end }}

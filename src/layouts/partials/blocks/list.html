@@ -1,0 +1,30 @@
+{{- $data := .Inner | transform.Unmarshal }}
+{{ with $data }}
+<section class="{{ .class | default "section-sm" }}">
+    <div class="container">
+        {{ if .title }}
+        <div class="flex items-center gap-4 my-0 mb-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <h2 class="h3 text-center font-light">
+                {{ page.RenderString (printf `{{< svg icon=%q class="w-10 h-10 inline" />}}` .icon) }}
+                {{ .title | markdownify }}
+            </h2>
+            <div class="flex-grow border-t border-gray-300" ></div>
+        </div>
+        {{ end }}
+        {{ with .description }}
+            <p class="mb-8">{{ . }}</p>
+        {{ end }}
+        <div>
+            <ul class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                {{ range .items }}
+                <li class="relative pl-6">
+                    {{ page.RenderString `{{< svg icon="check" class="w-3 h-3 absolute left-0 top-2" />}}` }}
+                    {{ . | markdownify }}
+                </li>
+                {{ end }}
+            </ul>
+        </div>
+    </div>
+</section>
+{{ end }}

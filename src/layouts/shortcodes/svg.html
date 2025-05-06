@@ -1,0 +1,11 @@
+{{/* layouts/shortcodes/svg.html */}}
+{{ $icon := (printf "svg/%s.svg" (.Get "icon")) }}
+{{ $class := .Get "class" }}
+{{ $context:= .Page }}
+{{ $params := .Params }}
+{{ $content := .Inner }}
+{{ with resources.Get $icon }}
+    {{ $raw := .Content }}
+    {{ $modified := replaceRE `<svg([^>]*)>` (printf `<svg class="%s" ${1}>` $class) $raw }}
+    {{ $modified | safeHTML }}
+{{ end }}

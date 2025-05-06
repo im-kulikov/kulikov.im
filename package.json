@@ -1,0 +1,26 @@
+{
+  "name": "html.kulikov.im",
+  "version": "1.0.0",
+  "description": "home page",
+  "main": "index.js",
+  "author": "Evgeniy Kulikov <im@kulikov.im>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "hugo server --disableFastRender --logLevel debug --gc --cleanDestinationDir --bind 0.0.0.0 --baseURL http://192.168.88.10:1313",
+    "prod": "hugo server --disableFastRender --logLevel debug -e production --enableGitInfo --minify --disableLiveReload --gc --cleanDestinationDir --bind 0.0.0.0 --baseURL http://192.168.88.10:1313",
+    "build": "hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic"
+  },
+  "type": "module",
+  "dependencies": {
+    "@hotwired/turbo": "^8.0.13",
+    "@tailwindcss/cli": "^4.1.4",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/language-server": "^0.14.16",
+    "@tailwindcss/typography": "^0.5.16",
+    "prettier": "^3.5.3",
+    "prettier-plugin-go-template": "^0.0.15",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^4.1.4",
+    "yaml": "^2.7.1"
+  }
+}

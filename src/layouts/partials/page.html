@@ -1,0 +1,52 @@
+<!-- page section header -->
+{{ with .Params.section }}
+    <section class="{{ .class }}">
+        <div class="container md-8 text-center">
+            <div class="row justify-center">
+                <div class="lg:col-6 md:col-9 mb-8 text-center">
+                    <!-- page section title -->
+                    {{- if .title }}
+                        <h1 class="mb-4 h2">{{ .title }}</h1>
+                    {{- end }}
+                    <!-- page section description -->
+                    {{- if .description }}
+                        <p class="mb-8">{{ .description | markdownify }}</p>
+                    {{- end}}
+                    <!-- page section image -->
+                </div>
+                {{- if .image }}
+                    <div class="col-12">
+                        {{ partial "components/image" (dict
+                                "src" .image
+                                "alt" .title
+                                "preload" true
+                                "responsive" false
+                                "class" "grayscale mx-auto lg:!max-w-[800px]"
+                                "sizes" (dict "xl" 800) ) }}
+
+                    </div>
+                {{ end }}
+                {{- if .socials }}
+                    <div>
+                        <ul class="social-icons">
+                            {{ range site.Data.social.main }}
+                                <li>
+                                    <a
+                                            target="_blank"
+                                            aria-label="{{ .name }}"
+                                            rel="nofollow noopener"
+                                            href="{{ .link | safeURL }}">
+                                        {{ page.RenderString (printf `{{< svg icon=%q class="w-9 h-9 inline" />}}` .icon) }}
+                                    </a>
+                                </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                {{ end }}
+            </div>
+        </div>
+    </section>
+{{ end }}
+<!-- page content -->
+{{ .Content }}
+<!-- page end -->

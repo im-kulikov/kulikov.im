@@ -1,0 +1,97 @@
+{{ $src := .src }}
+{{ if not $src }}
+    {{ errorf "src is required for picture partial" }}
+{{ end }}
+{{ $alt := .alt | default "" }}
+{{ $class := .class | default "" }}
+{{ $pClass := .pClass | default "" }}
+{{ $size := .size | default false }}
+{{ $sizes := .sizes | default dict }}
+{{ $preload := .preload | default false }}
+{{ $responsive := .responsive | default false }}
+{{ $format := .format | default "webp" }}
+{{ $dprs := slice 1 2 3 }}
+{{ $breakpoints := dict
+        "xl" (dict "media" "(max-width: 1280px)" "size" 1280 "width" 1110)
+        "lg" (dict "media" "(max-width: 991px)" "size" 1024 "width" 700)
+        "md" (dict "media" "(max-width: 767px)" "size" 768 "width" 600)
+        "sm" (dict "media" "(max-width: 575px)" "size" 640 "width" 545)
+        "al" (dict "media" "(max-width: 450px)" "size" 450 "width" 386)
+}}
+{{ if $size }}
+    {{ $img := (resources.Get $src).Resize (printf "%s q75 %s" $size $format) }}
+    <picture class="{{ $pClass }}">
+        <img
+            src="{{ $img.RelPermalink }}"
+            alt="{{ $alt }}"
+            class="{{ $class }} img"
+            sizes="100vw"
+            decoding="auto"
+            fetchpriority="high" />
+    </picture>
+{{ else }}
+    {{ $images := slice }}
+    {{ range $label, $bp := $breakpoints }}
+        {{ $baseSize := index $bp "size" }}
+        {{ $baseWidth := index $sizes $label | default (index $bp "width") }}
+        {{ with resources.Get $src }}
+            {{ $srcset := slice }}
+            {{ $mediaType := "" }}
+            {{ if $responsive }}
+                {{ $tmp := . }}
+                {{ range $dpr := $dprs }}
+                    {{ $w := mul $baseWidth $dpr }}
+                    {{ $img := $tmp.Resize (printf "%dx q75 %s" $w $format) }}
+                    {{ $srcset = $srcset | append (printf "%s %dx" $img.RelPermalink $dpr) }}
+                    {{ $mediaType = $img.MediaType }}
+                {{ end }}
+            {{ else }}
+                {{ $img := .Resize (printf "%dx q75 %s" $baseWidth $format) }}
+                {{ $srcset = $srcset | append $img.RelPermalink }}
+                {{ $mediaType = $img.MediaType.Type }}
+            {{ end }}
+            {{ $images = $images | append (dict
+                    "media" (index $bp "media")
+                    "label" $label
+                    "size" $baseSize
+                    "type" $mediaType
+                    "image" (.Resize (printf "%dx q75 %s" $baseWidth $format))
+                    "srcset" (delimit $srcset ", ")
+                    ) }}
+        {{ end }}
+    {{ end }}
+
+    {{/* fallback <img> */}}
+    {{ $images = sort $images ".size" "asc" }}
+    {{ $fallback := index (last 1 $images) 0 }}
+
+    {{/* preload — берём самое маленькое изображение */}}
+    {{ if $preload }}
+        {{ $srcPreload := slice }}
+        {{ range $images | collections.Reverse }}
+                {{ $srcPreload = $srcPreload | append (
+                    printf `<link fetchpriority="high" rel="preload" as="image" href=%q media=%q imagesizes="100vw" />`
+                            .image.RelPermalink .media
+                ) }}
+        {{ end }}
+        {{- warnf `.Scratch.Set "preload-image" %s` page.Path }}
+        {{ page.Scratch.Add (printf "preload-image-%s" page.Path) (delimit $srcPreload "") }}
+    {{ end }}
+    <picture>
+        {{ range $images | collections.Reverse }}
+            <source
+                    srcset="{{ .srcset }}"
+                    media="{{ .media }}"
+                    type="{{ .type }}">
+        {{ end }}
+        <img
+                src="{{ $fallback.image.RelPermalink }}"
+                alt="{{ $alt }}"
+                class="{{ $class }} img"
+                sizes="100vw"
+                decoding="auto"
+                width="{{ $fallback.image.Width }}"
+                height="{{ $fallback.image.Height }}"
+                fetchpriority="high" />
+    </picture>
+{{ end }}

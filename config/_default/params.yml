@@ -1,0 +1,66 @@
+author: "Evgeniy Kulikov"
+since: 2004
+meta_image: "/img/preview.png"
+favicon: "img/favicon.jpg"
+logo: img/logo-light-mode.png
+logos:
+  dark: img/logo-dark-mode.png
+  light: img/logo-light-mode.png
+
+logos_resize: "320x64 webp"
+# use `px` or `x` with logo_width, example: "100px".
+# Note: logo_width is not work with .svg file
+logo_width: "160px"
+logo_height: "32px"
+# logo text will only show when logo is missing.
+logo_text: "Kulikov.im"
+navbar_fixed: true
+# copyright
+copyright:
+  - "Качественный подход к решению ваших задач"
+  - "&copy; 2004-{{< currentyear >}} Евгений Куликов"
+  - "Российская Федерация, 198206, Санкт-Петербург"
+
+plugins:
+  css:
+#    - link: plugins/font-awesome/v6/brands.css
+#      lazy: true
+#    - link: plugins/font-awesome/v6/solid.css
+#      lazy: true
+#    - link: plugins/font-awesome/v6/icons.css
+#      lazy: true
+  js:
+#    - link: js/search.js
+#      lazy: false
+#    - link: plugins/swiper/swiper-bundle.js
+#      lazy: false
+#    - link: plugins/cookie.js
+#      lazy: false
+#    - link: plugins/glightbox/glightbox.js
+#      lazy: true
+#    - link: js/gallery-slider.js
+#      lazy: true
+#    - link: js/accordion.js
+#      lazy: true
+#    - link: js/tab.js
+#      lazy: true
+#    - link: js/modal.js
+#      lazy: true
+#    - link: plugins/youtube-lite.js
+#      lazy: true
+    - link: js/custom.js
+      lazy: false
+dnb:
+  debug:
+    debuglevel: 8
+    disablenote: false
+    namespace: dnb
+cookies:
+  enable: false
+  expire_days: 2
+  content: "Этот сайт использует файлы cookie. Продолжая пользоваться этим сайтом, вы соглашаетесь на их использование."
+  button: "Согласен"
+
+site-verification:
+  google: "HD2O9rqdsfA0uvw28uW_BecCW4Cqokn2YOgi4P_UMyc"
+  yandex: "790e711e531050be"

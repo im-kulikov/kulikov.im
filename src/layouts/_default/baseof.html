@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html
+    lang="{{ site.LanguageCode | default `en-US` }}"
+    class="system"
+    itemscope
+    itemtype="http://schema.org/WebPage">
+<head>
+    {{- partial "head.html" . }}
+    {{- partial "preload-image.html" . }}
+</head>
+<body class="min-h-screen flex flex-col {{ .Params.common.class | default "default-page" }}">
+<!-- cache partial only in production -->
+{{ if not hugo.IsProduction }}
+{{/*    {{ partialCached "gtm-noscript.html" . }}*/}}
+{{/*{{ else }}*/}}
+    <!-- tailwind size indicator -->
+    {{ partial "components/tw-size-indicator.html" . }}
+{{ end }}
+    <!-- cookie consent -->
+    {{ partialCached "cookie-consent.html" . }}
+    <!-- cookie consent -->
+    {{ partial "header" . }}
+    <main class="flex-1">
+        {{ block "main" . }}{{ end }}
+    </main>
+    {{ partial "footer.html" . }}
+    {{ partialCached "yandex.metrika.html" . }}
+</body>
+</html>

@@ -1,0 +1,4 @@
+#main:
+#  - name: Is it fake?
+#    url: /fake.html
+#    weight: 0

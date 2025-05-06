@@ -1,0 +1,46 @@
+{{/* layouts/partials/footer.html */}}
+<footer class="bg-light dark:bg-darkmode-light border-border dark:border-darkmode-border border-t">
+    <div class="container">
+        <div class="row items-center py-5">
+            <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
+                <!-- navbar brand/logo -->
+                <a
+                        class="navbar-brand inline-block"
+                        href="{{ site.Home.RelPermalink }}">
+                    {{ partial "components/logo" }}
+                </a>
+            </div>
+            <div class="lg:col-9 lg:pl-40 mb-8 text-center lg:mb-0 lg:text-left">
+                <div class="text-text-light dark:text-darkmode-text-light container">
+                    {{- with site.Params.copyright }}
+                        {{ $raw := . }}
+                        {{ $list := (cond (reflect.IsSlice $raw) $raw (slice $raw)) }}
+                        {{ range $list }}
+                            <p class="text-balance">{{ . | markdownify }}</p>
+                        {{ end }}
+                    {{- else }}
+                        <p>{{ T "copyright" | default "❤️ Сделано с любовью" }}</p>
+                    {{- end }}
+                </div>
+            </div>
+            <div class="lg:col-3"></div>
+            <div class="hidden git-info lg:col-9 lg:pl-40 py-5">
+                <div class="container">
+                    {{- with .GitInfo }}
+                        <p class="git-user">{{ .AuthorName }}</p>
+                        <p class="git-date">{{ .CommitDate }}</p>
+                        <p class="git-hash">{{ .Hash }}</p>
+                        <p class="git-subj">{{ .Subject }}</p>
+                    {{- end }}
+                </div>
+            </div>
+            <script defer async type="text/javascript">
+                const params = new URL(document.location.toString()).searchParams;
+                console.log(params);
+                if (params.get('gitinfo')) {
+                    document.querySelector('.git-info').classList.remove('hidden');
+                }
+            </script>
+        </div>
+    </div>
+</footer>

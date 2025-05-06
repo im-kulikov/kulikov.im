@@ -1,0 +1,1 @@
+<main{{ with (cond .class (printf " class=%q" .class) "") }}{{ . | htmlEscape}}{{ end }}>{{ .Inner | markdownify }}</main>

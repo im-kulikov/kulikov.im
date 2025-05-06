@@ -1,0 +1,31 @@
+{{- $data := .Inner | transform.Unmarshal }}
+<section class="{{ $data.class | default "section-sm bg-gradient" }}">
+    <div class="container">
+        <div class="flex items-center gap-4 my-0 mb-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <h2 class="h3 text-center font-light">
+                {{ page.RenderString `{{< svg icon="bookmarks" class="w-10 h-10 inline" />}}` }}
+                {{ $data.title | markdownify }}
+            </h2>
+            <div class="flex-grow border-t border-gray-300" ></div>
+        </div>
+
+        <div class="flex flex-col gap-2 lg:flex-row md:gap-x-6">
+            {{ with $data.image }}
+            {{ partial "components/image" (dict
+                    "src" .
+                    "alt" $data.title
+                    "pClass" "mx-auto block h-full max-h-64 mb-15 lg:max-h-50 lg:mx-0 lg:shrink-0 "
+                    "class" "grayscale  rounded-full border-2 border-black dark:border-white p-1"
+                    "size" "200x200") }}
+
+            {{ end }}
+            <div class="space-y-2 text-center lg:text-left">
+                <div class="space-y-0.5 about-me-description">
+                    <h3 class="h3 mb-6 font-light">{{ $data.sub_title }}</h3>
+                    <div class="text-left">{{ $data.description | markdownify }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

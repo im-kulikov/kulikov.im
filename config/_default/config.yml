@@ -1,0 +1,113 @@
+# folders
+assetDir: src/assets
+contentDir: src/content
+dataDir: src/data
+layoutDir: src/layouts
+publishDir: build/public
+resourceDir: build/resources
+i18nDir: src/i18n
+uglyURLs: true
+#minify: true
+baseURL: "http://www.example.com"
+title: "Персональный сайт Евгения Куликова"
+#theme: [  "github.com/luizdepra/hugo-coder" ]
+enableRobotsTXT: true
+languageСode: "ru"
+defaultContentLanguage: "ru"
+logLevel: debug
+icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
+
+#paginate: 20
+ignoreLogs: ['warning-goldmark-raw-html', 'deprecation.debug']
+############################# server ############################
+server:
+  redirects:
+    - force: false
+      from: /**
+      status: 404
+      to: /404.html
+############################# taxonomies #########################
+taxonomies: []
+############################# Markup #############################
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+############################# caches #############################
+caches:
+  images:
+    dir: ":resourceDir/_gen"
+  assets:
+    dir: ":resourceDir/_gen"
+############################# Build ##############################
+build:
+  buildStats:
+    enable: true
+  cacheBusters:
+    - source: assets/notwatching/hugo_stats\.json
+      target: css
+    - source: (postcss|tailwind)\.config\.js
+      target: css
+############################# Modules ############################
+module:
+  mounts:
+    - source: src/content
+      target: content
+    - source: src/assets
+      target: assets
+    - disableWatch: true
+      source: hugo_stats.json
+      target: assets/notwatching/hugo_stats.json
+############################# Outputs ############################
+outputs:
+  home:
+    - html
+#    - RSS
+    - WebAppManifest
+#    - SearchIndex
+########################### Output Format ##########################
+outputFormats:
+  WebAppManifest:
+    mediaType: application/manifest+json
+    rel: manifest
+    ugly: false
+  SearchIndex:
+    mediaType: application/json
+    baseName: searchindex
+    isPlainText: true
+    notAlternative: true
+############################# Plugins ##############################
+params:
+  plugins:
+    css:
+      - link: plugins/swiper/swiper-bundle.css
+        lazy: false
+#      - link: plugins/glightbox/glightbox.css
+#        lazy: true
+#      - link: plugins/font-awesome/v6/brands.css
+#        lazy: true
+#      - link: plugins/font-awesome/v6/solid.css
+#        lazy: true
+#      - link: plugins/font-awesome/v6/icons.css
+#        lazy: true
+    js:
+#      - link: js/search.js
+#        lazy: false
+#      - link: plugins/swiper/swiper-bundle.js
+#        lazy: false
+#      - link: plugins/cookie.js
+#        lazy: false
+#      - link: plugins/glightbox/glightbox.js
+#        lazy: true
+#      - link: js/gallery-slider.js
+#        lazy: true
+#      - link: js/accordion.js
+#        lazy: true
+#      - link: js/tab.js
+#        lazy: true
+#      - link: js/modal.js
+#        lazy: true
+#      - link: plugins/youtube-lite.js
+#        lazy: true
+#      - link: js/custom.js
+#        lazy: false

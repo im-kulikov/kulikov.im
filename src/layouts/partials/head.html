@@ -1,0 +1,33 @@
+{{- /* layouts/partials/head.html */}}
+<meta charset="utf-8" />
+<!-- responsive meta -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<!-- favicon -->
+{{- partialCached "components/favicon" . }}
+<!-- web manifest -->
+{{- partialCached "components/manifest" . }}
+<!-- opengraph -->
+{{- partial "basic-seo.html" . }}
+<!-- site verifications -->
+{{- partial "site-verifications.html" . }}
+<!-- meta-theme-color -->
+{{- with .Site.Data.theme }}
+    {{- range $k, $v := .body }}
+<meta name="theme-color" media="(prefers-color-scheme: {{ $k }})" content="{{ $v }}" />
+<meta name=color-scheme media="(prefers-color-scheme: {{ $k }})" content="{{ $k }}" />
+    {{- end }}
+{{- end }}
+<!-- preload -->
+{{- range .Site.Pages }}
+    {{- $menuURL := .Permalink }}
+    {{- $pageURL:= page.Permalink | absLangURL }}
+    {{- $active := eq $menuURL $pageURL }}
+    {{- if not $active }}
+    <link rel="prefetch" href="{{ .Permalink }}" />
+    <link rel="prerender" href="{{ .Permalink }}" />
+    {{- end }}
+{{- end }}
+<!-- style (always cache it) -->
+{{- partialCached "styles.html" . }}
+<!-- scripts (always cache it) -->
+{{- partialCached "scripts.html" . }}

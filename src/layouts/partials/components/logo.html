@@ -1,0 +1,16 @@
+<picture>
+    {{ range $k, $v := site.Params.logos }}
+        {{ with resources.Get $v }}
+            {{ with .Resize site.Params.logos_resize }}
+                {{ if eq $k "light" }}
+                    <img
+                            width="{{ site.Params.logo_width }}"
+                            height="{{ site.Params.logo_height }}"
+                            src="{{ .RelPermalink }}"
+                            alt="{{ site.Title }}" />
+                {{ end }}
+                <source srcset="{{ .RelPermalink }}" media="(prefers-color-scheme: {{ $k }})">
+            {{ end }}
+        {{ end }}
+    {{ end }}
+</picture>

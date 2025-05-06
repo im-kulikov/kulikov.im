@@ -1,0 +1,37 @@
+disableCSS: false
+disableHTML: false
+disableJS: false
+disableJSON: false
+disableSVG: false
+disableXML: false
+minifyOutput: true
+tdewolff:
+  css:
+    inline: false
+    keepCSS2: true
+    precision: 0
+  html:
+    keepComments: false
+    keepConditionalComments: false
+    keepDefaultAttrVals: true
+    keepDocumentTags: false
+    keepEndTags: true
+    keepQuotes: false
+    keepSpecialComments: false
+    keepWhitespace: false
+    templateDelims:
+      - ""
+      - ""
+  js:
+    keepVarNames: false
+    precision: 0
+    version: 2022
+  json:
+    keepNumbers: false
+    precision: 0
+  svg:
+    inline: true
+    keepComments: false
+    precision: 0
+  xml:
+    keepWhitespace: false

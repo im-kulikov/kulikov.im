@@ -1,0 +1,94 @@
+<!-- DNS preconnect -->
+<meta http-equiv="x-dns-prefetch-control" content="on" />
+<link rel="preconnect" href="https://use.fontawesome.com" crossorigin />
+<link rel="preconnect" href="//cdnjs.cloudflare.com" />
+{{- /*<link rel="preconnect" href="//www.googletagmanager.com" />*/}}
+{{- /*<link rel="preconnect" href="//www.google-analytics.com" />*/}}
+{{- /*<link rel="dns-prefetch" href="https://use.fontawesome.com" />*/}}
+<link rel="dns-prefetch" href="//ajax.googleapis.com" />
+<link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+{{- /*<link rel="dns-prefetch" href="//www.googletagmanager.com" />*/}}
+{{- /*<link rel="dns-prefetch" href="//www.google-analytics.com" />*/}}
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+{{- /*<link rel="dns-prefetch" href="//connect.facebook.net" />*/}}
+{{- /*<link rel="dns-prefetch" href="//platform.linkedin.com" />*/}}
+<link rel="dns-prefetch" href="//platform.twitter.com" />
+<!-- google fonts -->
+{{- $pf:= site.Data.theme.fonts.font_family.primary }}
+{{- $sf:= site.Data.theme.fonts.font_family.secondary }}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap">
+</noscript>
+{{- /* main styles */}}
+{{- with (templates.Defer (dict "key" "global")) }}
+    {{- $styles := slice }}
+    {{- $stylesLazy := slice }}
+    {{- range site.Params.plugins.css }}
+        {{- if findRE "^http" .link }}
+            <link
+                    crossorigin="anonymous"
+                    media="all"
+                    rel="stylesheet"
+                    href="{{ .link | relURL }}"
+                    {{ .attributes | safeHTMLAttr }} />
+        {{- else }}
+            {{- if not .lazy }}
+                {{- $styles = $styles | append (resources.Get .link) }}
+            {{- else if resources.Get .link }}
+                {{- $stylesLazy = $stylesLazy | append (resources.Get .link) }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- /* link main style */}}
+    {{- with resources.Get "css/main.css" }}
+        {{- $styles = $styles | append . }}
+    {{- end }}
+    {{- with resources.Get "css/custom.css" }}
+        {{- $styles = $styles | append . }}
+    {{- end }}
+    {{- $styles = $styles | resources.Concat "css/style.css" }}
+    {{- if len $stylesLazy }}
+    {{- $stylesLazy = $stylesLazy | resources.Concat "css/style-lazy.css" }}
+    {{- end }}
+    {{- $opts := dict
+            "minify" (not hugo.IsDevelopment)
+            "optimize" true
+            "darkMode" "media"
+            "inlineImports" true
+    }}
+    {{- $styles = $styles | css.TailwindCSS $opts }}
+    {{- if hugo.IsProduction }}
+        {{- $styles = $styles | minify | fingerprint "sha256" }}
+        {{- if $stylesLazy }}
+        {{- $stylesLazy = $stylesLazy | minify | fingerprint "sha256" }}
+        {{- end }}
+    {{- end }}
+    {{- with $styles }}
+<link
+        href="{{ .RelPermalink }}"
+        rel="preload"
+        integrity="{{ .Data.Integrity }}"
+        as="style"
+        crossorigin="anonymous" />
+<link
+        href="{{ .RelPermalink }}"
+        integrity="{{ .Data.Integrity }}"
+        rel="stylesheet"
+        crossorigin="anonymous" />
+    {{- /* link lazy style */}}
+    {{- end }}
+    {{- with $stylesLazy }}
+    <link
+            defer
+            async
+            rel="stylesheet"
+            href="{{ .RelPermalink }}"
+            integrity="{{ .Data.Integrity }}"
+            media="print"
+            onload="this.media='all'; this.onload=null;" />
+    {{- end }}
+{{- end }}

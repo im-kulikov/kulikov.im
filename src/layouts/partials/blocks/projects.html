@@ -1,0 +1,54 @@
+{{- $data := .Inner | transform.Unmarshal }}
+<!-- Testimonials -->
+{{ with $data }}
+    {{ if .enable }}
+        <section class="section-sm bg-gradient">
+            <div class="container">
+                <div class="flex items-center gap-4 my-0 mb-6">
+                    <div class="flex-grow border-t border-gray-300"></div>
+                    <h2 class="h3 text-center font-light">
+                        {{ page.RenderString `{{< svg icon="bookmarks" class="w-10 h-10 inline" />}}` }}
+                        {{ .title | markdownify }}
+                    </h2>
+                    <div class="flex-grow border-t border-gray-300" ></div>
+                </div>
+                <div class="row">
+                    <div class="md:col-10 lg:col-8 xl:col-8 mx-auto mb-12 text-center">
+                        <p>{{ .description | markdownify }}</p>
+                    </div>
+                </div>
+                <div class="grid gap-4 grid-cols-1 xl:grid-cols-3 md:grid-cols-2">
+                    {{ range .projects }}
+                        <div class="bg-light dark:bg-zinc-900 rounded-lg px-7 py-10">
+                            <h3 class="text-xl font-semibold text-text-dark dark:text-white mb-2">
+                                {{ .title }}
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                {{ .type }}
+                            </p>
+
+                            {{ with .role }}
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                    <strong>Роли:</strong> {{ delimit . ", " }}
+                                </p>
+                            {{ end }}
+
+                            <p class="text-dark dark:text-white mb-4">
+                                {{ .description | markdownify }}
+                            </p>
+
+                            {{ with .skills }}
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    {{ range . }}
+                                    <span class="text-xs px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-100">{{ . }}</span>
+                                    {{ end }}
+                                </div>
+                            {{ end }}
+                        </div>
+                    {{ end }}
+                </div>
+            </div>
+        </section>
+    {{ end }}
+{{ end }}
+<!-- /Testimonials -->

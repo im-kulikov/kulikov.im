@@ -1,0 +1,34 @@
+/*!-- custom styles: If you want to add your own styles, please write it in the `./assets/css/custom.css` file. */
+@theme {
+    --font-weight-normal: 300;
+    --font-weight-bold: 600;
+    --font-weight-semibold: 400;
+}
+
+.figure-img.img-fluid {
+    display: inline;
+    @apply mx-auto lg:!max-w-[800px];
+}
+
+.figure.d-block {
+    @apply mt-16;
+}
+
+.about-me-description p:first-child
+{
+    @apply my-0;
+}
+
+.about-me-description p {
+    @apply my-4;
+}
+
+.cookie-box {
+    @apply bg-body fixed left-10 bottom-10 z-999 p-5 w-md dark:bg-darkmode-body drop-shadow-xl rounded-lg;
+}
+.cookie-box-hide {
+    @apply hidden;
+}
+.cookie-box-button {
+    @apply block mt-4;
+}

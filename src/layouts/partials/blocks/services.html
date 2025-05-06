@@ -1,0 +1,38 @@
+{{- $data := .Inner | transform.Unmarshal }}
+{{- $context := .Page }}
+<!-- Testimonials -->
+{{ with $data }}
+{{ if .enabled }}
+<section class="section-sm bg-gradient">
+    <div class="container">
+        <div class="flex items-center gap-4 my-0 mb-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <h2 class="h3 text-center font-light">
+                {{ $context.RenderString `{{< svg icon="tools" class="w-10 h-10 inline" />}}` }}
+                {{ .title | markdownify }}
+            </h2>
+            <div class="flex-grow border-t border-gray-300" ></div>
+        </div>
+        <div class="row">
+            <div class="md:col-10 lg:col-8 xl:col-8 mx-auto mb-12 text-center">
+                <p class="text-justify hyphens-auto">{{ .description | markdownify }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-3  gap-10 justify-start items-center">
+            {{ range .abilities }}
+            <div class="col-span-1 relative h-full px-5 pt-10 pb-2 flex flex-col items-center border-1 border-gray-300 rounded-xl">
+                <span class="text-center absolute -top-6 p-3 border-1 border-gray-300 rounded-full bg-body dark:bg-darkmode-body">
+                    {{ $context.RenderString (printf `{{< svg icon=%q class="w-7 h-7" />}}` .icon) }}
+                </span>
+                <h3 class="my-1 text-center gradient-red text-base uppercase tracking-wide">{{ .title }}</h3>
+                <p class="py-2 text-center text-sm">{{ .description | markdownify }}</p>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
+{{ end }}

@@ -1,0 +1,2 @@
+{{- $class := slice .Params.class }}
+<section class="{{ delimit $class " " }}">{{ .Inner | markdownify }}</section>

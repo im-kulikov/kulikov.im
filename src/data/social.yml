@@ -1,0 +1,13 @@
+main:
+  - name: telegram
+    icon: telegram
+    link: https://t.me/li_si_qing
+#  - name: twitter
+#    icon: fab fa-twitter
+#    link: https://x.com/tuxuls
+  - name: github
+    icon: github
+    link: https://www.github.com/im-kulikov
+  - name: linkedin
+    icon: v-card
+    link: https://spb.hh.ru/resume/fbe68504ff0948201a0039ed1f5a5443333573

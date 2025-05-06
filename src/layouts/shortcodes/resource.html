@@ -1,0 +1,5 @@
+{{ with .Page.Resources.GetMatch (.Get "name") }}
+    {{ .Content }}
+{{ else }}
+    {{ .Inner }}
+{{ end }}

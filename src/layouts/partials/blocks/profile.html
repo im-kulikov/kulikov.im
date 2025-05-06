@@ -1,0 +1,53 @@
+{{- $data := .Inner | transform.Unmarshal }}
+<!-- Profile blocks -->
+<section class="section-sm bg-gradient">
+    <div class="container grid grid-cols-2 gap-8">
+        {{ range $data }}
+        <div class="col-span-2">
+            <div class="flex items-center gap-4 my-0 mb-8">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <h3 class="h3 text-center font-light">
+                    {{ page.RenderString (printf `{{< svg icon=%q class="w-10 h-10 inline" />}}` .icon) }}
+                    {{ .title }}
+                </h3>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+            {{ if .description }}
+            <p class="text-zinc-700 mb-10 dark:text-zinc-300 leading-relaxed text-justify hyphens-auto">
+                {{ .description | markdownify }}
+            </p>
+            {{ else if .subtitle }}
+            <h5 class="h5 mb-10 text-center font-light">{{ .subtitle }}</h5>
+            {{ end }}
+            {{ if .blocks }}
+            <div class="space-y-6 grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-8">
+                {{ range .blocks }}
+                <div>
+                    <h5 class="h7 text-center mb-5 font-light">
+                        {{ page.RenderString (printf `{{< svg icon=%q class="w-10 h-10 inline" />}}` .icon) }}
+                        {{ .title }}
+                    </h5>
+                    {{ if .items }}
+                    <div class="grid grid-cols-3 gap-5 md:gap-3 text-center text-sm">
+                    {{ range .items }}
+                    <div class="bg-light dark:bg-zinc-800 rounded-lg py-4">{{ . }}</div>
+                    {{ end }}
+                    </div>
+                    {{ else if .list }}
+                    <ul>
+                    {{ range .list }}
+                    <li class="relative mb-4 pl-6">
+                        {{ page.RenderString `{{< svg icon="check" class="w-3 h-3 absolute left-0 top-2" />}}` }}
+                        {{ . | markdownify }}
+                    </li>
+                    {{ end }}
+                    </ul>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</section>

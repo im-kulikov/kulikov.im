@@ -1,0 +1,30 @@
+hugoVersion:
+  extended: true
+  min: 0.141.0
+imports:
+#  - path: github.com/gethugothemes/hugo-modules/seo-tools/basic-seo
+#  - path: github.com/gethugothemes/hugo-modules/search
+#  - path: github.com/gethugothemes/hugo-modules/pwa
+#  - path: github.com/gethugothemes/hugo-modules/images
+#  - path: github.com/gethugothemes/hugo-modules/videos
+#  - path: github.com/gethugothemes/hugo-modules/icons/font-awesome
+#  - path: github.com/gethugothemes/hugo-modules/gzip-caching
+#  - path: github.com/gethugothemes/hugo-modules/adsense
+#  - path: github.com/gethugothemes/hugo-modules/accordion
+#  - path: github.com/gethugothemes/hugo-modules/table-of-contents
+#  - path: github.com/gethugothemes/hugo-modules/tab
+#  - path: github.com/gethugothemes/hugo-modules/modal
+#  - path: github.com/gethugothemes/hugo-modules/gallery-slider
+#  - path: github.com/gethugothemes/hugo-modules/components/preloader
+#  - path: github.com/gethugothemes/hugo-modules/components/social-share
+  - path: github.com/gethugothemes/hugo-modules/components/cookie-consent
+#  - path: github.com/gethugothemes/hugo-modules/components/announcement
+#  - path: github.com/gethugothemes/hugo-modules/components/custom-script
+#  - path: github.com/gethugothemes/hugo-modules/components/render-link
+#  - path: github.com/gethugothemes/hugo-modules/shortcodes/button
+#  - path: github.com/gethugothemes/hugo-modules/shortcodes/notice
+#  - path: github.com/gethugothemes/hugo-modules/seo-tools/basic-seo
+#  - path: github.com/gethugothemes/hugo-modules/seo-tools/site-verifications
+#  - path: github.com/gethugothemes/hugo-modules/seo-tools/google-tag-manager
+#  - path: github.com/hugomods/images
+#  - path: github.com/hugomods/mermaid

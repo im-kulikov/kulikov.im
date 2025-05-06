@@ -1,0 +1,26 @@
+{{/* layouts/shortcodes/components.html */}}
+{{ $name := (printf "components/%s.html" (.Get "name")) }}
+{{ $context:= .Page }}
+{{ $params := .Params }}
+{{ $content := .Inner }}
+{{ $data := .Get "file" }}
+{{ with .Get "file" }}
+    {{ with $context.Resources.GetMatch $data }}
+        {{ $content = . }}
+    {{ end }}
+{{ end }}
+{{ if templates.Exists (printf "partials/%s" $name) }}
+    {{ partial $name (dict "Page" .Page "Params" $params "Inner" $content) }}
+{{ else }}
+    {{ if hugo.IsProduction }}
+        {{ errorf "component shortcode: не найден или не передан параметр 'name=%s'" (.Get "name") }}
+    {{ else }}
+        {{ warnf "component shortcode: не найден или не передан параметр 'name=%s'" (.Get "name") }}
+        <div class="mx-auto my-5 flex items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-pink-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+            <div>
+                <div class="text-xl font-medium text-black dark:text-white">Ошибка!</div>
+                <p class="text-gray-500 dark:text-gray-400">{{ printf "component: не найден или не передан параметр 'name=`%s`'" (.Get "name") }}</p>
+            </div>
+        </div>
+    {{ end }}
+{{ end }}

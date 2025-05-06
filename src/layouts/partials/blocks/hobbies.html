@@ -1,0 +1,67 @@
+{{- $data := .Inner | transform.Unmarshal }}
+{{- $context := .Page }}
+{{ with $data }}
+<section class="section-sm bg-gradient grid grid-cols-1 gap-y-20">
+    {{ range . }}
+    <div class="container space-y-12">
+        {{ if .title }}
+        <div class="flex items-center gap-4 my-0 mb-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <h2 class="h3 text-center font-light">
+                {{ $context.RenderString (printf `{{< svg icon=%q class="w-10 h-10 inline" />}}` .icon) }}
+                {{ .title | markdownify }}
+            </h2>
+            <div class="flex-grow border-t border-gray-300" ></div>
+        </div>
+        {{ end }}
+        {{ if eq .type "projects" }}{{ template "projects" . }}{{ end }}
+        {{ if eq .type "books" }}{{ template "books" . }}{{ end }}
+    </div>
+    {{ end }}
+</section>
+{{ end }}
+
+{{ define "books"}}
+<!-- Books -->
+{{ range .items }}
+<!-- {{ .category }} -->
+<div>
+    <h2 class="h3 font-light mb-4">{{ .category }}</h2>
+    <ul class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {{ range .items }}
+            <li>
+                <h4 class="h6 font-light mb-2">
+                    «{{ .title }}»
+                    {{ if .author }} — {{ .author }}{{ end }}
+                </h4>
+                <p class="text-gray-700 dark:text-gray-300">{{ .description }}</p>
+            </li>
+        {{ end }}
+    </ul>
+</div>
+{{ end }}
+{{ end }}
+
+{{ define "projects" }}
+<!-- Projects -->
+{{ range .items }}
+<!-- {{ .category }} -->
+<div>
+    <h2 class="h3 font-light mb-4">{{ .category }}</h2>
+    <ul class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {{ range .items }}
+            <li class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow">
+                {{ if .url }}
+                    <a href="{{ .url }}" class="h5 font-light hover:underline" target="_blank" rel="noopener">
+                        &#8690 {{ .title }}
+                    </a>
+                {{ else }}
+                    <span class="h5 font-light">{{ .title }}</span>
+                {{ end }}
+                <p class="text-sm text-gray-700 dark:text-gray-300">{{ .description }}</p>
+            </li>
+        {{ end }}
+    </ul>
+</div>
+{{ end }}
+{{ end }}

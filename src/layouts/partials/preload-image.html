@@ -1,0 +1,8 @@
+{{- if .Params.section }}
+    {{- /* Генерируем страницу, чтобы получить preload-image: */}}
+    {{- with (partial "page.html" .) }}
+        <!-- preload image -->
+        {{- warnf `.Scratch.Get "preload-image" %s` page.Path }}
+        {{- page.Scratch.Get (printf "preload-image-%s" page.Path) | safeHTML }}
+    {{- end }}
+{{- end }}

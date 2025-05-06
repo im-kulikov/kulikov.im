@@ -1,0 +1,2 @@
+{{- $class := slice "container" .Params.class }}
+<div class="{{ delimit $class " " }}">{{ .Inner | markdownify }}</div>

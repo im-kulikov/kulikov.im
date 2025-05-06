@@ -1,0 +1,50 @@
+<!-- JS Plugins + Main script -->
+{{- $scripts := slice }}
+{{- $scriptsLazy := slice }}
+{{- range site.Params.plugins.js }}
+  {{- if findRE "^http" .link }}
+    <script
+      src="{{ .link | relURL }}"
+      type="application/javascript"
+      {{ .attributes | safeHTMLAttr }}></script>
+  {{- else if resources.Get .link }}
+    {{- if not .lazy }}
+      {{ $scripts = $scripts | append (resources.Get .link) }}
+    {{- else }}
+      {{- $scriptsLazy = $scriptsLazy | append (resources.Get .link) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+<!-- main script -->
+{{- $scripts = $scripts | append (resources.Get "js/main.js") }}
+{{- $scripts = $scripts | resources.Concat "js/script.js" }}
+{{- if len $scriptsLazy }}
+{{- $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
+{{- end }}
+{{- if (($scripts | minify).Content | len) }}
+{{- $scripts = $scripts | js.Build }}
+{{- end }}
+{{- if hugo.IsProduction }}
+  {{- $scripts = $scripts | minify | fingerprint "sha256" }}
+  {{- if len $scriptsLazy }}
+  {{- $scriptsLazy = $scriptsLazy | minify | fingerprint "sha256" }}
+  {{- end }}
+{{- end }}
+{{- /* scripts */}}
+{{- if (($scripts | minify).Content | len) }}
+<script
+  defer
+  async
+  crossorigin="anonymous"
+  integrity="{{ $scripts.Data.Integrity }}"
+  src="{{ $scripts.RelPermalink }}"></script>
+{{- end }}
+{{- /* scripts lazy */}}
+{{- if len $scriptsLazy }}
+<script
+  defer
+  async
+  crossorigin="anonymous"
+  integrity="{{ $scriptsLazy.Data.Integrity }}"
+  src="{{ $scriptsLazy.RelPermalink }}"></script>
+{{- end }}

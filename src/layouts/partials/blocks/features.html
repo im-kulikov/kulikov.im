@@ -1,0 +1,52 @@
+{{- $data := .Inner | transform.Unmarshal }}
+<!-- Features -->
+{{ range $i, $e:= $data }}
+    <section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
+        <div class="container">
+            <div class="row items-center justify-between">
+                <div class="mb:md-0 {{ if not (modBool $i 2) }} md:order-2{{ end }} md:col-5 mb-6">
+                    {{ partial "components/image" (dict
+                            "src" .image
+                            "alt" "feature image"
+                            "class" "feature-img"
+                            "preload" true
+                            "sizes" (dict "xl" 520 "lg" 425 "md" 360)
+                    ) }}
+                </div>
+                <div class="{{ if not (modBool $i 2) }} md:order-1{{ end }} md:col-7 lg:col-6">
+                    <h2 class="mb-4 h3">
+                        {{ .title | markdownify }}
+                    </h2>
+                    <p class="mb-8 text-lg">
+                        {{ .content | markdownify }}
+                    </p>
+                    <ul>
+                        {{ range .bullets }}
+                            <li class="relative mb-4 pl-6">
+                                {{ page.RenderString `{{< svg icon="check" class="w-3 h-3 absolute left-0 top-2" />}}` }}
+                                {{ . | markdownify }}
+                            </li>
+                        {{ end }}
+                    </ul>
+                    {{ with .button }}
+                        {{ if .enable }}
+                            <a
+                                {{- with site.GetPage .link }}
+                                    href="{{ .RelPermalink }}"
+                                {{- else }}
+                                    href="{{ .link | absURL }}"
+                                {{- end }}
+                                {{- if strings.HasPrefix .link `http` }}
+                                    target="_blank" rel="noopener"
+                                {{- end }}
+                                class="btn btn-primary mt-6">
+                                {{ .label }} →
+                            </a>
+                        {{ end }}
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </section>
+{{ end }}
+<!-- /Features -->
