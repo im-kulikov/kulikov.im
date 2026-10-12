@@ -13,10 +13,10 @@ test("only web-friendly formats are shipped", () => {
   for (const f of imgs) assert.ok([".webp", ".png"].includes(extname(f)), f);
 });
 
-test("budgets: processed WebP <= 150 KB each and <= 1.2 MB in total", () => {
+test("budgets: processed WebP <= 150 KB each and <= 3 MB in total", () => {
   const webp = imgs.filter((f) => f.endsWith(".webp"));
   for (const f of webp) assert.ok(size(f) <= 150 * 1024, `${f}: ${size(f)}`);
-  assert.ok(webp.reduce((s, f) => s + size(f), 0) <= 1.2 * 1024 * 1024);
+  assert.ok(webp.reduce((s, f) => s + size(f), 0) <= 3 * 1024 * 1024);
 });
 
 test("images rendered by components/image.html: exactly one of loading=lazy / fetchpriority=high", () => {

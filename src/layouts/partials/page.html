@@ -26,7 +26,7 @@
                         {{ end }}
                     </div>
                     {{ with .image }}
-                        <div class="hero-art hero-art--color max-w-[620px]">
+                        <div class="hero-art hero-art--color hero-art--portrait max-w-[620px]">
                             {{ partial "components/image" (dict
                                     "src" .
                                     "alt" $.Title
@@ -53,14 +53,14 @@
                     </ul>
                 {{ end }}
                 {{- if .image }}
-                    <div class="hero-art mt-8 max-w-[560px]">
+                    <div class="hero-art {{ if .color }}hero-art--color max-w-[760px]{{ else }}max-w-[560px]{{ end }} mt-8">
                         {{ partial "components/image" (dict
                                 "src" .image
                                 "alt" .title
                                 "preload" true
                                 "responsive" false
-                                "class" "grayscale mx-auto h-auto w-full"
-                                "sizes" (dict "xl" 560 "lg" 480)) }}
+                                "class" (cond .color "mx-auto h-auto w-full" "grayscale mx-auto h-auto w-full")
+                                "sizes" (cond .color (dict "xl" 760 "lg" 640) (dict "xl" 560 "lg" 480))) }}
                     </div>
                 {{ end }}
             {{- end }}

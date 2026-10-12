@@ -226,11 +226,14 @@
     }
     .hero-art--color img {
         @apply w-full rounded-2xl;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+    }
+
+    .hero-art--portrait img {
         aspect-ratio: 10 / 11;
         object-fit: cover;
         object-position: 50% 0;
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow);
     }
 
     .eyebrow {

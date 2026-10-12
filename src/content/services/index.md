@@ -16,7 +16,8 @@ section:
   class: services
   eyebrow: Услуги
   title: Чем могу помочь?
-  image: /img/services-01.png
+  image: img/services-hero.webp
+  color: true
   description: |
     Проектирование устойчивых и масштабируемых сервисов, архитектурный аудит, 
     внедрение инженерной культуры, CI/CD и DDD. Помогаю командам запускать MVP, 
