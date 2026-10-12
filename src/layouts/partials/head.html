@@ -11,13 +11,13 @@
 <!-- site verifications -->
 {{- partial "site-verifications.html" . }}
 <!-- meta-theme-color -->
-{{- with .Site.Data.theme }}
+{{- with hugo.Data.theme }}
     {{- range $k, $v := .body }}
 <meta name="theme-color" media="(prefers-color-scheme: {{ $k }})" content="{{ $v }}" />
 <meta name=color-scheme media="(prefers-color-scheme: {{ $k }})" content="{{ $k }}" />
     {{- end }}
 {{- end }}
 <!-- style (always cache it) -->
-{{- partialCached "styles.html" . }}
+{{- partial "styles.html" . }}
 <!-- scripts (always cache it) -->
 {{- partialCached "scripts.html" . }}

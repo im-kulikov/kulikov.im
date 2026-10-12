@@ -12,7 +12,7 @@ baseURL: "https://kulikov.im/"
 title: "Персональный сайт Евгения Куликова"
 #theme: [  "github.com/luizdepra/hugo-coder" ]
 enableRobotsTXT: true
-languageCode: "ru"
+locale: "ru"
 defaultContentLanguage: "ru"
 logLevel: debug
 icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
@@ -61,12 +61,18 @@ module:
 ############################# Outputs ############################
 outputs:
   home:
-    - html
+    - HomeHTML
 #    - RSS
     - WebAppManifest
 #    - SearchIndex
 ########################### Output Format ##########################
 outputFormats:
+  # With uglyURLs Hugo >= 0.15x links the home page as /index.html; keep it as /
+  HomeHTML:
+    mediaType: text/html
+    baseName: index
+    noUgly: true
+    isHTML: true
   WebAppManifest:
     mediaType: application/manifest+json
     rel: manifest
