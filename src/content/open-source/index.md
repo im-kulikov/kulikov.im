@@ -22,7 +22,6 @@ common:
 section:
   title: Open Source и увлечения
   image: img/open-source-hero.webp
-  color: true
   placeholder: true
   class: open-source
   eyebrow: Open Source

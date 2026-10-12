@@ -4,11 +4,11 @@
         <div class="container">
             <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 <div class="{{ if not (modBool $i 2) }}lg:order-2{{ end }}">
-                    <div class="hero-art {{ if .color }}hero-art--color {{ end }}max-w-[520px]">
+                    <div class="hero-art max-w-[520px]">
                         {{ partial "components/image" (dict
                                 "src" .image
                                 "alt" (.title | plainify)
-                                "class" (cond .color "mx-auto h-auto w-full" "feature-img grayscale")
+                                "class" "mx-auto h-auto w-full"
                                 "sizes" (dict "xl" 520 "lg" 425 "md" 360)) }}
                     </div>
                 </div>

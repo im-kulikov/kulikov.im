@@ -25,7 +25,6 @@ section:
   class: resume
   eyebrow: Резюме
   image: img/resume-hero.webp
-  color: true
   title: "Опыт и достижения"
   description: |
     **Евгений Куликов** | Golang, Software Engineer, Team / Tech lead

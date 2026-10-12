@@ -1,7 +1,6 @@
 ---
 - title: Предоставляемые услуги
   image: "/img/features-services.webp"
-  color: true
   content: Мой опыт охватывает как коммерческую разработку в крупных и стартап-компаниях,
     так и точечные проектные задачи, где нужно быстро разобраться и предложить решение.
   bullets:
@@ -21,7 +20,6 @@
     link: services
 - title: Почему стоит выбрать меня?
   image: "/img/features-why.webp"
-  color: true
   content: 'За годы работы я собрал обширный набор навыков и решений, которыми готов
     поделиться. Вот почему вам стоит выбрать меня:'
   bullets:
@@ -39,7 +37,7 @@
     label: Моё резюме на HeadHunter
     link: https://spb.hh.ru/resume/fbe68504ff0948201a0039ed1f5a5443333573
 - title: Всё ещё сомневаетесь?
-  image: "/img/features-03.png"
+  image: "/img/features-talk.webp"
   content: Выбрать специалиста, который поможет реализовать ваш план — непростое,
     но важное решение.
   bullets:

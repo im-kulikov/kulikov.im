@@ -215,16 +215,11 @@
     .hero-art::before {
         content: "";
         @apply absolute -z-10 rounded-full;
-        inset: 8% 6%;
+        inset: 0 -4%;
         background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 24%, transparent), transparent);
         filter: blur(20px);
     }
-
-    /* colour illustration: crop the cluttered bottom, frame it */
-    .hero-art--color::before {
-        inset: 0 -4% 0;
-    }
-    .hero-art--color img {
+    .hero-art img {
         @apply w-full rounded-2xl;
         border: 1px solid var(--line);
         box-shadow: var(--shadow);
@@ -349,11 +344,6 @@
         @apply h-3 w-3;
     }
 
-    /* ---------- illustrations ---------- */
-    .feature-img {
-        @apply mx-auto h-auto max-h-72 w-auto max-w-full lg:max-h-none lg:w-full;
-    }
-
     /* ---------- books ---------- */
     details.disclosure {
         @apply rounded-2xl p-5 md:p-6;
@@ -410,14 +400,6 @@
     }
     .cookie-box-button {
         @apply mt-4 block;
-    }
-}
-
-/* outside @layer on purpose: it has to beat Tailwind's `grayscale` utility on the same <img>.
-   White blobs of the line art would glare on a dark page, so they are inverted into dark ones. */
-@media (prefers-color-scheme: dark) {
-    .hero-art:not(.hero-art--color) img {
-        filter: grayscale(1) invert(0.92) brightness(0.95);
     }
 }
 
