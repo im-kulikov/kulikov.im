@@ -23,7 +23,7 @@ common:
 section:
   layout: split
   eyebrow: Go · Архитектура · Technical Lead
-  title: Просто и без лишних слов.
+  title: Просто и без лишних <span class="hero-accent">слов.</span>
   image: img/banner-01.png
   class: home
   description: |-

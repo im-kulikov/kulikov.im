@@ -5,7 +5,7 @@
             <div class="container">
                 {{ partial "components/section-title" (dict "icon" "bookmarks" "title" .title) }}
                 <p class="mb-12 max-w-3xl text-lg">{{ .description | markdownify }}</p>
-                <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 md:[&>li:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-3">
                     {{ range .projects }}
                         <li class="card">
                             <h3 class="h5">{{ .title }}</h3>

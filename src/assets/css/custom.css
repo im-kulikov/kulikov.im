@@ -173,9 +173,12 @@
         mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 10%, transparent 75%);
     }
     .hero-title {
-        font-size: clamp(2.25rem, 5.2vw, 4rem);
-        line-height: 1.05;
+        font-size: clamp(2.5rem, 5.6vw, 4.5rem);
+        line-height: 1.04;
         letter-spacing: -0.03em;
+    }
+    .hero-accent {
+        color: var(--accent);
     }
     .hero-title-sm {
         font-size: clamp(2rem, 4.2vw, 3rem);
@@ -210,7 +213,7 @@
     }
 
     .stat {
-        @apply rounded-2xl px-5 py-4;
+        @apply flex items-baseline gap-4 rounded-2xl px-5 py-4 sm:block;
         background: color-mix(in srgb, var(--surface-raised) 80%, transparent);
         border: 1px solid var(--line);
     }
@@ -219,7 +222,7 @@
         color: var(--ink);
     }
     .stat-label {
-        @apply mt-2 text-sm leading-snug;
+        @apply text-sm leading-snug sm:mt-2;
         color: color-mix(in srgb, var(--ink) 65%, transparent);
     }
 
@@ -260,7 +263,7 @@
     }
     .section-title .rule {
         @apply hidden h-px flex-1 sm:block;
-        background: linear-gradient(to right, var(--line), transparent);
+        background: linear-gradient(to right, color-mix(in srgb, var(--accent) 45%, var(--line)), transparent);
     }
 
     /* ---------- cards & chips ---------- */
@@ -311,13 +314,8 @@
     }
 
     /* ---------- illustrations ---------- */
-    @media (prefers-color-scheme: dark) {
-        .hero-art img {
-            filter: grayscale(1) brightness(0.86) contrast(1.05);
-        }
-    }
     .feature-img {
-        @apply mx-auto h-auto max-w-full;
+        @apply mx-auto h-auto max-h-72 w-auto max-w-full lg:max-h-none lg:w-full;
     }
 
     /* ---------- books ---------- */
@@ -376,6 +374,14 @@
     }
     .cookie-box-button {
         @apply mt-4 block;
+    }
+}
+
+/* outside @layer on purpose: it has to beat Tailwind's `grayscale` utility on the same <img>.
+   White blobs of the line art would glare on a dark page, so they are inverted into dark ones. */
+@media (prefers-color-scheme: dark) {
+    .hero-art img {
+        filter: grayscale(1) invert(0.92) brightness(0.95);
     }
 }
 

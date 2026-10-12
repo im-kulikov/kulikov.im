@@ -6,6 +6,7 @@
 /* subtle section background used between alternating sections */
 @utility bg-gradient {
     background-image: linear-gradient(to bottom, var(--surface-sunken), var(--surface));
+    border-top: 1px solid var(--line);
 }
 
 @layer base {
