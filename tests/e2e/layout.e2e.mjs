@@ -186,8 +186,8 @@ describe("accessibility", () => {
   });
 });
 
-describe("known gaps (todo) — real defects found in review; remove `todo` when fixed", () => {
-  test("a phone downloads exactly one hero image variant", { todo: "five banner variants are requested: all max-width preload queries match" }, async () => {
+describe("images", () => {
+  test("a phone downloads exactly one hero image variant", async () => {
     const { page, context, requests } = await open("index", { width: 390 });
     await page.waitForLoadState("networkidle");
     await context.close();

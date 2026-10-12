@@ -48,11 +48,16 @@ test("og:image is 1200x630 and at most 300 KB", () => {
   assert.ok(size(f) <= 300 * 1024, `${f}: ${size(f)}B`);
 });
 
+test("preload media ranges do not overlap: any screen width matches at most one", () => {
+  const matches = (media, w) => [...media.matchAll(/\((min|max)-width:\s*(\d+)px\)/g)].every(([, k, v]) => (k === "min" ? w >= +v : w <= +v));
+  for (const p of PAGES) {
+    const pre = link(dom(p), "preload").filter((n) => attr(n, "as") === "image");
+    for (const w of [320, 390, 450, 451, 575, 576, 767, 768, 991, 992, 1280, 1281, 1920]) assert.ok(pre.filter((l) => matches(attr(l, "media") ?? "", w)).length <= 1, `${p} @${w}`);
+  }
+});
+
 describe("known gaps (todo)", () => {
-  test("at most one preload link per image (no media-query ladder)", { todo: "five banner preloads: all (max-width) queries match on phones" }, () => {
-    for (const p of PAGES) assert.ok(link(dom(p), "preload").filter((n) => attr(n, "as") === "image").length <= 1, p);
-  });
-  test("<picture> media sources are ordered so small screens get small files", { todo: "max-width:1280px source is first and matches everywhere" }, () => {
+  test("<picture> media sources are ordered so small screens get small files", () => {
     for (const p of PAGES)
       for (const pic of tags(dom(p), "picture")) {
         const widths = tags(pic, "source").map((s) => +(attr(s, "media") ?? "").match(/max-width:\s*(\d+)/)?.[1]).filter(Boolean);

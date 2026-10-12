@@ -222,7 +222,7 @@
     .hero-art img {
         @apply w-full rounded-2xl;
         border: 1px solid var(--line);
-        box-shadow: var(--shadow);
+        box-shadow: 0 24px 48px -24px rgb(var(--shadow) / 0.35);
     }
 
     .hero-art--portrait img {
