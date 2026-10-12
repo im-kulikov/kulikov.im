@@ -17,16 +17,6 @@
 <meta name=color-scheme media="(prefers-color-scheme: {{ $k }})" content="{{ $k }}" />
     {{- end }}
 {{- end }}
-<!-- preload -->
-{{- range .Site.Pages }}
-    {{- $menuURL := .Permalink }}
-    {{- $pageURL:= page.Permalink | absLangURL }}
-    {{- $active := eq $menuURL $pageURL }}
-    {{- if not $active }}
-    <link rel="prefetch" href="{{ .Permalink }}" />
-    <link rel="prerender" href="{{ .Permalink }}" />
-    {{- end }}
-{{- end }}
 <!-- style (always cache it) -->
 {{- partialCached "styles.html" . }}
 <!-- scripts (always cache it) -->

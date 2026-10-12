@@ -27,7 +27,7 @@
             class="{{ $class }} img"
             sizes="100vw"
             decoding="auto"
-            fetchpriority="high" />
+            loading="lazy" />
     </picture>
 {{ else }}
     {{ $images := slice }}
@@ -92,6 +92,6 @@
                 decoding="auto"
                 width="{{ $fallback.image.Width }}"
                 height="{{ $fallback.image.Height }}"
-                fetchpriority="high" />
+                {{ if $preload }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} />
     </picture>
 {{ end }}

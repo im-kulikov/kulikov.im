@@ -61,6 +61,11 @@ cookies:
   content: "Этот сайт использует файлы cookie. Продолжая пользоваться этим сайтом, вы соглашаетесь на их использование."
   button: "Согласен"
 
-site-verification:
+metadata:
+  author: "Евгений Куликов"
+  description: "Персональный сайт Евгения Куликова: разработка на Go, архитектура, технический лидер. Аудит, проектирование, запуск MVP."
+  keywords: ["разработка ПО", "Go", "технический лидер", "архитектура"]
+
+site_verification:
   google: "HD2O9rqdsfA0uvw28uW_BecCW4Cqokn2YOgi4P_UMyc"
   yandex: "790e711e531050be"
