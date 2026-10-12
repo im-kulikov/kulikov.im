@@ -1,6 +1,6 @@
 /*!-- design layer: tokens and components. Edit the look here (palette: src/data/theme.yml for the base colours). --*/
 @theme {
-    /* weights match the loaded font files (Roboto Slab 300/400/600) */
+    /* weights match the loaded font files (Roboto Slab 400/500/600, subset in partials/styles.html) */
     --font-weight-normal: 400;
     --font-weight-semibold: 600;
     --font-weight-bold: 600;
