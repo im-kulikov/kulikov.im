@@ -34,7 +34,6 @@
 {{- if (($scripts | minify).Content | len) }}
 <script
   defer
-  async
   crossorigin="anonymous"
   integrity="{{ $scripts.Data.Integrity }}"
   src="{{ $scripts.RelPermalink }}"></script>
@@ -43,7 +42,6 @@
 {{- if len $scriptsLazy }}
 <script
   defer
-  async
   crossorigin="anonymous"
   integrity="{{ $scriptsLazy.Data.Integrity }}"
   src="{{ $scriptsLazy.RelPermalink }}"></script>

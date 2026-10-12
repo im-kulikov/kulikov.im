@@ -1,52 +1,93 @@
-<!-- page section header -->
+<!-- page hero -->
 {{ with .Params.section }}
-    <section class="{{ .class }}">
-        <div class="container md-8 text-center">
-            <div class="row justify-center">
-                <div class="lg:col-6 md:col-9 mb-8 text-center">
-                    <!-- page section title -->
-                    {{- if .title }}
-                        <h1 class="mb-4 h2">{{ .title }}</h1>
-                    {{- end }}
-                    <!-- page section description -->
-                    {{- if .description }}
-                        <p class="mb-8">{{ .description | markdownify }}</p>
-                    {{- end}}
-                    <!-- page section image -->
+    {{- $split := eq .layout "split" }}
+    <section class="hero {{ if $split }}pt-12 pb-16 lg:pt-20 lg:pb-24{{ else }}pt-12 pb-6 lg:pt-16{{ end }} {{ .class }}">
+        <div class="container">
+            {{- if $split }}
+                <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+                    <div>
+                        {{ template "hero-text" (dict "s" . "h" "hero-title") }}
+                        {{ with .stats }}
+                            <dl class="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
+                                {{ range . }}
+                                    <div class="stat">
+                                        <dt class="sr-only">{{ .label }}</dt>
+                                        <dd class="stat-value" aria-hidden="true">{{ .value }}</dd>
+                                        <dd class="stat-label">{{ .label }}</dd>
+                                    </div>
+                                {{ end }}
+                            </dl>
+                        {{ end }}
+                    </div>
+                    {{ with .image }}
+                        <div class="hero-art hero-art--portrait max-w-[620px]">
+                            {{ partial "components/image" (dict
+                                    "src" .
+                                    "alt" $.Title
+                                    "preload" true
+                                    "responsive" false
+                                    "class" "mx-auto h-auto w-full"
+                                    "sizes" (dict "xl" 620 "lg" 520)) }}
+                        </div>
+                    {{ end }}
                 </div>
+            {{- else }}
+                <div class="mx-auto max-w-3xl text-center">
+                    {{ template "hero-text" (dict "s" . "h" "hero-title-sm" "center" true) }}
+                </div>
+                {{- if .socials }}
+                    <ul class="social-icons mt-8">
+                        {{ range hugo.Data.social.main }}
+                            <li>
+                                <a target="_blank" aria-label="{{ .name }}" rel="noopener" href="{{ .link | safeURL }}">
+                                    {{ partial "components/icon" (dict "name" .icon "class" "h-5 w-5") }}
+                                </a>
+                            </li>
+                        {{ end }}
+                    </ul>
+                {{ end }}
                 {{- if .image }}
-                    <div class="col-12">
+                    <div class="hero-art mt-8 max-w-[760px]">
                         {{ partial "components/image" (dict
                                 "src" .image
                                 "alt" .title
                                 "preload" true
                                 "responsive" false
-                                "class" "grayscale mx-auto lg:!max-w-[800px]"
-                                "sizes" (dict "xl" 800) ) }}
-
+                                "class" "mx-auto h-auto w-full"
+                                "sizes" (dict "xl" 760 "lg" 640)) }}
                     </div>
                 {{ end }}
-                {{- if .socials }}
-                    <div>
-                        <ul class="social-icons">
-                            {{ range hugo.Data.social.main }}
-                                <li>
-                                    <a
-                                            target="_blank"
-                                            aria-label="{{ .name }}"
-                                            rel="nofollow noopener"
-                                            href="{{ .link | safeURL }}">
-                                        {{ page.RenderString (printf `{{< svg icon=%q class="w-9 h-9 inline" />}}` .icon) }}
-                                    </a>
-                                </li>
-                            {{ end }}
-                        </ul>
-                    </div>
-                {{ end }}
-            </div>
+            {{- end }}
         </div>
     </section>
 {{ end }}
 <!-- page content -->
 {{ .Content }}
+{{ with site.Params.cta }}
+    <section class="section-sm">
+        <div class="container">
+            <div class="cta">
+                <h2 class="h3">{{ .title }}</h2>
+                <p class="mx-auto mt-3 max-w-xl text-lg">{{ .text }}</p>
+                <div class="mt-8">{{ partial "components/action" (dict "label" site.Params.contact.label "contact" true "style" "primary") }}</div>
+            </div>
+        </div>
+    </section>
+{{ end }}
 <!-- page end -->
+
+{{ define "hero-text" }}
+    {{- $s := .s -}}
+    {{- with $s.eyebrow }}<p><span class="eyebrow">{{ . }}</span></p>{{ end }}
+    {{- if $s.title }}
+        <h1 class="{{ .h }} mt-5">{{ $s.title | markdownify }}</h1>
+    {{- end }}
+    {{- with $s.description }}
+        <p class="hero-lead mt-5{{ if $.center }} mx-auto{{ end }} max-w-2xl">{{ . | markdownify }}</p>
+    {{- end }}
+    {{- with $s.actions }}
+        <div class="mt-8 flex flex-wrap gap-3{{ if $.center }} justify-center{{ end }}">
+            {{ range . }}{{ partial "components/action" (dict "label" .label "style" .style "url" .url "page" .page "contact" .contact "class" "w-full sm:w-auto") }}{{ end }}
+        </div>
+    {{- end }}
+{{ end }}

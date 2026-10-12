@@ -13,9 +13,10 @@ description: |
   Помогаю командам запускать и масштабировать сервисы: архитектура, аудит, процессы, культура, кризисные задачи. 
   Быстрый старт и системный подход.
 section:
-  class: section pt-14 services
+  class: services
+  eyebrow: Услуги
   title: Чем могу помочь?
-  image: /img/services-01.png
+  image: img/services-hero.webp
   description: |
     Проектирование устойчивых и масштабируемых сервисов, архитектурный аудит, 
     внедрение инженерной культуры, CI/CD и DDD. Помогаю командам запускать MVP, 
@@ -24,7 +25,7 @@ menus:
   main:
     name: Услуги
     identifier: "services"
-    weight: 2
+    weight: 1
 common:
   class: services-page
   title: "Услуги"
@@ -35,4 +36,8 @@ build:
   render: always
 ---
 
+{{< block name="list" file="help.yml" />}}
+
 {{< block name="services" file="services.yml" />}}
+
+{{< block name="list" file="how.yml" />}}

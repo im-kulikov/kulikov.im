@@ -1,6 +1,6 @@
 author: "Evgeniy Kulikov"
 since: 2004
-meta_image: "/img/preview.png"
+meta_image: "/img/preview.jpg"
 favicon: "img/favicon.jpg"
 logo: img/logo-light-mode.png
 logos:
@@ -14,6 +14,17 @@ logo_height: 32
 # logo text will only show when logo is missing.
 logo_text: "Kulikov.im"
 navbar_fixed: true
+# primary contact (header button, hero, footer); point it at /contacts.html when that page is ready
+contact:
+  label: Написать в Telegram
+  url: https://t.me/li_si_qing
+cta:
+  title: Расскажите о задаче
+  text: Опишите задачу или проблему в двух словах. Отвечу в Telegram и честно скажу, чем могу быть полезен.
+navigation_button:
+  enable: true
+  label: Написать в Telegram
+  link: https://t.me/li_si_qing
 # copyright
 copyright:
   - "Качественный подход к решению ваших задач"

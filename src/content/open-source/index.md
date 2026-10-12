@@ -1,5 +1,5 @@
 ---
-title: Чем я увлекаюсь? Хобби — GitHub, Open Source, DIY и книги
+title: Open Source и увлечения — GitHub, Go, DIY и книги
 keywords:
   - хобби
   - Open Source
@@ -16,14 +16,15 @@ description: |
   Проекты на GitHub, DIY-устройства на ESPHome и Arduino, настройка умного дома, 
   а также книги технического и художественного жанра.
 common:
-  class: hobbies-page
-  title: Моё хобби
+  class: open-source-page
+  title: Open Source и увлечения
   icon: bookmark
 section:
-  title: Чем я увлекаюсь?
-  image: img/hobbies-01.png
+  title: Open Source и увлечения
+  image: img/open-source-hero.webp
   placeholder: true
-  class: section pt-14 hobbies
+  class: open-source
+  eyebrow: Open Source
   description: |-
     Я увлекаюсь разработкой на Go, публикую проекты на GitHub и активно участвую в Open Source-сообществе. 
     В свободное время создаю DIY-устройства на Arduino и ESPHome, развивая собственную систему умного дома. 
@@ -31,12 +32,14 @@ section:
     так и технические книги по программированию и архитектуре.
 menus:
   main:
-    name: "Хобби"
-    identifier: "hobbies"
-    weight: 4
+    name: "Open Source"
+    identifier: "open-source"
+    weight: 5
+aliases:
+  - /hobbies.html
 build:
   list: always
   publishResources: false
 ---
 
-{{< block name="hobbies" file="hobbies.yml" />}}
+{{< block name="hobbies" file="open-source.yml" />}}

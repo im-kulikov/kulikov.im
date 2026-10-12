@@ -1,30 +1,19 @@
 {{- $data := .Inner | transform.Unmarshal }}
-<section class="{{ $data.class | default "section-sm bg-gradient" }}">
+<section class="section-sm bg-gradient">
     <div class="container">
-        <div class="flex items-center gap-4 my-0 mb-6">
-            <div class="flex-grow border-t border-gray-300"></div>
-            <h2 class="h3 text-center font-light">
-                {{ page.RenderString `{{< svg icon="bookmarks" class="w-10 h-10 inline" />}}` }}
-                {{ $data.title | markdownify }}
-            </h2>
-            <div class="flex-grow border-t border-gray-300" ></div>
-        </div>
-
-        <div class="flex flex-col gap-2 lg:flex-row md:gap-x-6">
+        {{ partial "components/section-title" (dict "icon" "bookmarks" "title" $data.title) }}
+        <div class="grid items-start gap-10 lg:grid-cols-[17rem_1fr] lg:gap-14">
             {{ with $data.image }}
-            {{ partial "components/image" (dict
-                    "src" .
-                    "alt" $data.title
-                    "pClass" "mx-auto block h-full max-h-64 mb-15 lg:max-h-50 lg:mx-0 lg:shrink-0 "
-                    "class" "grayscale  rounded-full border-2 border-black dark:border-white p-1"
-                    "size" "200x200") }}
-
+                {{ partial "components/image" (dict
+                        "src" .
+                        "alt" $data.sub_title
+                        "pClass" "mx-auto block w-56 lg:w-full"
+                        "class" "aspect-square w-full rounded-3xl object-cover shadow-lg ring-1 ring-black/10 dark:ring-white/15"
+                        "size" "460x460") }}
             {{ end }}
-            <div class="space-y-2 text-center lg:text-left">
-                <div class="space-y-0.5 about-me-description">
-                    <h3 class="h3 mb-6 font-light">{{ $data.sub_title }}</h3>
-                    <div class="text-left">{{ $data.description | markdownify }}</div>
-                </div>
+            <div class="about-me-description max-w-3xl text-lg leading-8">
+                <h3 class="h3 mb-6">{{ $data.sub_title }}</h3>
+                {{ $data.description | markdownify }}
             </div>
         </div>
     </div>

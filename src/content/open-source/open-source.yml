@@ -1,5 +1,5 @@
-- title: Увлечения
-  icon: profile
+- title: Open Source
+  icon: github
   type: projects
   items:
     - category: Github проекты
@@ -29,6 +29,18 @@
             Библиотека на Go для доступа к устройствам Mikrotik с использованием RouterOS API.
             В своё время использовал и вносил правки, сейчас же с другом поддерживаем и развиваем функционал.
             Моё текущее участие больше ориентировано на аудит, ревью и консультации.
+        - title: resolvex
+          url: "https://github.com/im-kulikov/resolvex"
+          description: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+        - title: traefik-provider
+          url: "https://github.com/im-kulikov/traefik-provider"
+          description: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+        - title: docker-dns
+          url: "https://github.com/im-kulikov/docker-dns"
+          description: "DNS-сервер для Docker-контейнеров."
+        - title: helium
+          url: "https://github.com/im-kulikov/helium"
+          description: "Модульный каркас для Go-сервисов (сервисы, логгер, NATS, PostgreSQL). Развитие остановлено в пользу go-bones."
         - title: tz-hash
           url: "https://github.com/nspcc-dev/tzhash"
           description: "Реализация хеширования Тиллиха-Земора (Tillich-Zemor) на Go."
@@ -41,6 +53,73 @@
         - title: golang
           url: "https://github.com/golang/go"
           description: "Нашёл и исправил ряд проблем связанных с эллиптическими кривыми, а так же с криптографией."
+
+
+- title: Домашняя лаборатория
+  icon: tools
+  type: projects
+  items:
+    - category: Инфраструктура и автоматизация
+      items:
+        - title: SpeechKit Proxy
+          type: Streaming Gateway
+          description: 'Этот проект начался как эксперимент дома: мне хотелось соединить голосовое
+            управление и приватность. Я реализовал прокси-сервер на Go для локальной обработки
+            речи с протоколом Wyoming, внедрив кэширование и fallback-механизмы. Это позволило
+            Home Assistant работать без интернета. В процессе изучил особенности stream-аудио
+            и построил систему, которой пользуюсь каждый день.'
+          skills:
+            - Home / Hobby
+            - SpeachKit
+            - Golang
+        - title: HomeInfra
+          type: Smart Home Stack
+          description: Умный дом — больше чем комфорт. Этот хобби-проект начался с одной розетки,
+            а превратился в распределённую систему из Zigbee, Matter и MQTT. Я настраивал
+            автоматизации, следил за стабильностью, изучал особенности Zigbee2MQTT и взаимодействие
+            устройств. Благодаря этому моя семья управляет домом голосом, а я — научился проектировать
+            IoT-инфраструктуру.
+          skills:
+            - Home / Hobby
+            - HomeAssistant
+            - ESPHome
+            - Zigbee2MQTT
+            - Matter
+            - Automation
+        - title: AutoNAS
+          type: Storage / Media Infrastructure
+          description: 'Меня не устраивали облачные решения и я решил собрать свой NAS на
+            базе TrueNAS. Проект стал настоящей школой DevOps: пришлось разобраться с ZFS,
+            Docker, автоматическим бэкапом и медиа-сервисами. Теперь моя медиатека обновляется
+            автоматически, а все данные под контролем. Этот проект многое дал мне в плане
+            понимания хранения и автоматизации.'
+          skills:
+            - Home / Hobby
+            - TrueNAS / Media Server
+            - Ansible
+        - title: VoiceAssistant Stack
+          type: Local Voice Assistant
+          description: 'Я захотел голосового помощника, который работает без интернета. Начался
+            домашний проект: Whisper.cpp + TTS Wyoming + Home Assistant. Я собрал стек, настроил
+            локальное STT/TTS, добавил обработку команд и управляющие сценарии. Это был вызов
+            — real-time, низкие задержки, поддержка команд. Зато теперь у меня — автономный
+            помощник, не зависимый от облаков.'
+          skills:
+            - Home / Hobby
+            - Wyoming
+            - HomeAssistant
+        - title: Router Automation
+          type: Networking / Infrastructure
+          description: Работая с Mikrotik и Keenetic, я устал вручную вносить настройки. Так
+            родился проект автоматизации домашней сети. Я внедрил DHCP, VPN, WireGuard, VLAN
+            через скрипты и шаблоны. Разобрался в RouterOS и API, научился устранять проблемы
+            удалённо. Теперь моя сеть самонастраивается при сбое — и всё это началось с желания
+            облегчить себе жизнь.
+          skills:
+            - Mikrotik / Keenetic
+            - RouterOS
+            - VPN
+            - Firewall
 
     - category: DIY / HomeAssistant
       items:

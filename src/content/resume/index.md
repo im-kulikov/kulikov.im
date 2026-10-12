@@ -16,15 +16,16 @@ menus:
   main:
     name: Резюме
     identifier: "resume"
-    weight: 3
+    weight: 4
 common:
   class: resume-page
   title: Резюме
   icon: bookmark
 section:
-  class: section pt-14
-  image: /img/resume-01.png
-  title: "Вы меня искали?"
+  class: resume
+  eyebrow: Резюме
+  image: img/resume-hero.webp
+  title: "Опыт и достижения"
   description: |
     **Евгений Куликов** | Golang, Software Engineer, Team / Tech lead
 build:
@@ -33,5 +34,3 @@ build:
 ---
 
 {{< block name="profile" file="profile.yml" />}}
-
-{{< block name="projects" file="projects.yml" />}}

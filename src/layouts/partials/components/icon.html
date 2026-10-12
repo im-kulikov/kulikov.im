@@ -1,0 +1,7 @@
+{{- /* Inline SVG from assets/svg. Args: name, class. Replaces rendering the svg shortcode through page.RenderString. */ -}}
+{{- $class := .class | default "" -}}
+{{- with resources.Get (printf "svg/%s.svg" .name) -}}
+    {{- replaceRE `<svg([^>]*)>` (printf `<svg class="%s" ${1}>` $class) .Content | safeHTML -}}
+{{- else -}}
+    {{- errorf "icon %q not found in assets/svg" .name -}}
+{{- end -}}

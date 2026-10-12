@@ -21,12 +21,29 @@ common:
   title: Главная
   icon: bookmark
 section:
-  title: Просто и без лишних слов.
-  image: img/banner-01.png
-  placeholder: true
-  class: section pt-14 home
+  layout: split
+  eyebrow: Go · Архитектура · Technical Lead
+  title: Просто и без лишних <span class="hero-accent">слов.</span>
+  image: img/home-hero.webp
+  class: home
   description: |-
-    Быстрая, качественная и продуманная реализация ваших проектов.
+    Технический лидер и архитектор программного обеспечения. Специализируюсь на Go,
+    аудите и проектировании архитектуры, разработке и запуске MVP, развитии инженерных команд.
+    Опыт работы в Wildberries, СберМаркете, Coins.ph и Cryptopay.
+  actions:
+    - label: Написать в Telegram
+      contact: true
+      style: primary
+    - label: Смотреть проекты
+      page: projects
+      style: outline
+  stats:
+    - value: 20+
+      label: лет в разработке ПО
+    - value: 2–3×
+      label: быстрее путь от идеи до продакшена
+    - value: <1 нед
+      label: онбординг разработчика вместо 2–3 недель
 build:
   list: always
   publishResources: false
@@ -34,3 +51,5 @@ build:
 ---
 
 {{< block name="features" file="features.yml" />}}
+
+{{< block name="hobbies" file="proof.yml" />}}

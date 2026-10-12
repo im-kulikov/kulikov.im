@@ -20,7 +20,7 @@ function* deep(v, path = "") {
 }
 
 test("every YAML data file was found and parsed", () => {
-  assert.deepEqual(Object.keys(data).sort(), ["about/about.yml", "about/help.yml", "features.yml", "hobbies/hobbies.yml", "resume/profile.yml", "resume/projects.yml", "services/services.yml"]);
+  assert.deepEqual(Object.keys(data).sort(), ["about/about.yml", "features.yml", "open-source/open-source.yml", "projects/projects.yml", "proof.yml", "resume/profile.yml", "services/help.yml", "services/how.yml", "services/services.yml"]);
 });
 
 describe("references", () => {
@@ -51,22 +51,28 @@ describe("block schemas", () => {
   });
   test("about.yml and help.yml", () => {
     need(data["about/about.yml"], ["title", "sub_title", "description", "image"], "about");
-    need(data["about/help.yml"], ["title", "icon", "description"], "help");
-    list(data["about/help.yml"].items, "help.items").forEach((b) => assert.ok(str(b)));
+    need(data["services/help.yml"], ["title", "icon", "description"], "help");
+    list(data["services/help.yml"].items, "help.items").forEach((b) => assert.ok(str(b)));
   });
-  test("hobbies.yml", () => {
-    for (const [i, g] of list(data["hobbies/hobbies.yml"], "hobbies").entries()) {
+  test("open-source.yml", () => {
+    for (const [i, g] of list(data["open-source/open-source.yml"], "open-source").entries()) {
       need(g, ["title", "icon", "type"], `hobbies[${i}]`);
       assert.ok(["projects", "books"].includes(g.type), `hobbies[${i}].type=${g.type}`);
       for (const [j, c] of list(g.items, `hobbies[${i}].items`).entries()) {
         need(c, ["category"], `hobbies[${i}].items[${j}]`);
-        list(c.items, `hobbies[${i}].items[${j}].items`).forEach((x, k) => need(x, ["title", "description"], `hobbies[${i}].items[${j}].items[${k}]`));
+        list(c.items, `hobbies[${i}].items[${j}].items`).forEach((x, k) => {
+          need(x, ["title", "description"], `hobbies[${i}].items[${j}].items[${k}]`);
+          if (x.skills !== undefined) list(x.skills, "skills").forEach((v) => assert.ok(str(v)));
+        });
       }
     }
   });
+  test("projects page does not contain hobby projects (they live on the open-source page)", () => {
+    for (const x of data["projects/projects.yml"].projects) assert.ok(!(x.role ?? []).includes("Хобби"), x.title);
+  });
   test("profile.yml and projects.yml", () => {
     for (const [i, g] of list(data["resume/profile.yml"], "profile").entries()) need(g, ["title", "icon"], `profile[${i}]`);
-    const p = data["resume/projects.yml"];
+    const p = data["projects/projects.yml"];
     need(p, ["title", "description"], "projects");
     list(p.projects, "projects.projects").forEach((x, i) => {
       need(x, ["title", "type", "description"], `projects[${i}]`);

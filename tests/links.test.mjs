@@ -1,7 +1,7 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
-import { ALL_PAGES, SITE, all, attr, classes, dom, exists, fileFor, link, localPath, read, tags, urlPath } from "./helpers/site.mjs";
+import { ALIASES, ALL_PAGES, SITE, all, attr, classes, dom, exists, fileFor, link, localPath, read, tags, urlPath } from "./helpers/site.mjs";
 
 // Every reference found in a page: [kind, url, node]
 function refs(p) {
@@ -58,6 +58,9 @@ describe("fragments", () => {
 describe("policy", () => {
   test("nothing links to /index.html (home is '/')", () => {
     for (const p of ALL_PAGES) for (const [kind, url] of refs(p)) assert.ok(!/(^|\/)index\.html$/.test(url), `${p}: ${kind} ${url}`);
+  });
+  test("nothing links to an alias URL (aliases only serve old external links)", () => {
+    for (const p of ALL_PAGES) for (const [kind, url] of refs(p)) for (const a of ALIASES) assert.ok(!url.endsWith(`/${a.from}.html`), `${p}: ${kind} ${url}`);
   });
   test("external links use https; target=_blank links have rel=noopener", () => {
     let n = 0;
