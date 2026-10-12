@@ -7,9 +7,8 @@
                 <div class="mb:md-0 {{ if not (modBool $i 2) }} md:order-2{{ end }} md:col-5 mb-6">
                     {{ partial "components/image" (dict
                             "src" .image
-                            "alt" "feature image"
+                            "alt" (.title | plainify)
                             "class" "feature-img"
-                            "preload" true
                             "sizes" (dict "xl" 520 "lg" 425 "md" 360)
                     ) }}
                 </div>

@@ -1,10 +1,3 @@
-<!-- base url -->
-{{ if or (eq site.BaseURL "/") (not hugo.IsProduction) }}
-{{ else }}
-  <base href="{{ .Permalink }}" />
-{{ end }}
-
-
 <!-- title -->
 {{ $title := site.Title }}
 <!-- checking page meta title -->
@@ -14,11 +7,14 @@
 {{ else if .Params.title }}
   {{ $title = .Params.title }}
 {{ end }}
+{{ if eq .Kind "404" }}
+  {{ $title = T "page_not_found" | default "Страница не найдена" }}
+{{ end }}
 
-<title>{{ printf "%s :: %s" $title site.Title }}</title>
+<title>{{ if .IsHome }}{{ $title }}{{ else }}{{ printf "%s :: %s" $title (site.Params.logo_text | default site.Title) }}{{ end }}</title>
 
 <!-- meta noindex -->
-{{ if .Params.noindex }}
+{{ if or .Params.noindex (eq .Kind "404") }}
   <meta name="robots" content="noindex,nofollow" />
 {{ else }}
   <meta name="robots" content="index, follow">
@@ -26,8 +22,8 @@
 
 
 <!-- meta canonical -->
-{{ with .Params.canonical }}
-  <link rel="canonical" href="{{ . }}" itemprop="url" />
+{{ if ne .Kind "404" }}
+  <link rel="canonical" href="{{ .Params.canonical | default .Permalink }}" itemprop="url" />
 {{ end }}
 
 
@@ -168,10 +164,3 @@
 <!-- ########## twitter others meta ############### -->
 <meta name="twitter:title" content="{{ $title }}" />
 <meta name="twitter:description" content="{{ $description }}" />
-
-{{ with site.Params.metadata.twitter }}
-  <meta name="twitter:site" content="@{{ . }}" />
-{{ end }}
-{{ with site.Params.metadata.author }}
-  <meta name="twitter:creator" content="@{{ . }}" />
-{{ end }}

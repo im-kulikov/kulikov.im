@@ -1,0 +1,35 @@
+name: Setup
+description: Node (from .nvmrc), Hugo (from .hugo-version, checksum-verified), npm packages and the Hugo resource cache
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - name: Install Hugo
+      shell: bash
+      run: |
+        set -euo pipefail
+        v="$(cat .hugo-version)"
+        base="https://github.com/gohugoio/hugo/releases/download/v${v}"
+        f="hugo_extended_${v}_linux-amd64.tar.gz"
+        cd "$RUNNER_TEMP"
+        curl -fsSLO "${base}/${f}"
+        curl -fsSLO "${base}/hugo_${v}_checksums.txt"
+        grep " ${f}\$" "hugo_${v}_checksums.txt" | sha256sum -c -
+        tar -xzf "$f" hugo
+        sudo mv hugo /usr/local/bin/hugo
+        hugo version
+
+    - name: Install npm packages
+      shell: bash
+      run: npm ci
+
+    # Processed images / Tailwind output (build/resources) are the slow part of a cold build.
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: build/resources
+        key: hugo-${{ runner.os }}-${{ hashFiles('.hugo-version', 'package-lock.json', 'config/**', 'src/assets/**') }}
+        restore-keys: hugo-${{ runner.os }}-

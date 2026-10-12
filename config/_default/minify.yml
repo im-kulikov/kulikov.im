@@ -8,11 +8,10 @@ minifyOutput: true
 tdewolff:
   css:
     inline: false
-    keepCSS2: true
+    version: 2
     precision: 0
   html:
     keepComments: false
-    keepConditionalComments: false
     keepDefaultAttrVals: true
     keepDocumentTags: false
     keepEndTags: true
