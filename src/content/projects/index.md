@@ -20,7 +20,8 @@ section:
   class: projects
   eyebrow: Проекты
   title: Что я уже сделал?
-  image: /img/resume-01.png
+  image: img/projects-hero.webp
+  color: true
   description: |
     Избранные проекты: от CMS и CRM до платформенных систем и технического аудита.
 menus:
