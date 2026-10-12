@@ -22,7 +22,8 @@ common:
   title: Резюме
   icon: bookmark
 section:
-  class: section pt-14
+  class: resume
+  eyebrow: Резюме
   image: /img/resume-01.png
   title: "Опыт и достижения"
   description: |

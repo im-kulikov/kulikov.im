@@ -47,7 +47,7 @@ test("webmanifest is valid JSON with existing icons and a name", () => {
 test("hugo_stats.json keeps classes of the home page (input for Tailwind)", () => {
   // regression guard: the HomeHTML output format must be collected by Hugo's build stats
   const { classes } = JSON.parse(readFileSync(STATS_COPY, "utf8")).htmlElements;
-  for (const c of ["home-page", "feature-img", "md:col-5"]) assert.ok(classes.includes(c), c);
+  for (const c of ["home-page", "hero-title", "stat-value"]) assert.ok(classes.includes(c), c);
 });
 
 test("Hugo binary version equals .hugo-version (the version CI installs)", () => {

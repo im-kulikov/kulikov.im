@@ -17,7 +17,8 @@ common:
   title: Проекты
   icon: bookmark
 section:
-  class: section pt-14 projects
+  class: projects
+  eyebrow: Проекты
   title: Что я уже сделал?
   image: /img/resume-01.png
   description: |

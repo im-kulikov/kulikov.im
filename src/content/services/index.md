@@ -13,7 +13,8 @@ description: |
   Помогаю командам запускать и масштабировать сервисы: архитектура, аудит, процессы, культура, кризисные задачи. 
   Быстрый старт и системный подход.
 section:
-  class: section pt-14 services
+  class: services
+  eyebrow: Услуги
   title: Чем могу помочь?
   image: /img/services-01.png
   description: |

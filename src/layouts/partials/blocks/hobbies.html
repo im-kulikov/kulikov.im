@@ -1,77 +1,62 @@
 {{- $data := .Inner | transform.Unmarshal }}
-{{- $context := .Page }}
 {{ with $data }}
-<section class="section-sm bg-gradient grid grid-cols-1 gap-y-20">
-    {{ range . }}
-    <div class="container space-y-12">
-        {{ if .title }}
-        <div class="flex items-center gap-4 my-0 mb-6">
-            <div class="flex-grow border-t border-gray-300"></div>
-            <h2 class="h3 text-center font-light">
-                {{ $context.RenderString (printf `{{< svg icon=%q class="w-10 h-10 inline" />}}` .icon) }}
-                {{ .title | markdownify }}
-            </h2>
-            <div class="flex-grow border-t border-gray-300" ></div>
+    <section class="section-sm bg-gradient">
+        <div class="container space-y-20">
+            {{ range . }}
+                <div>
+                    {{ partial "components/section-title" (dict "icon" .icon "title" .title) }}
+                    <div class="space-y-12">
+                        {{ if eq .type "projects" }}{{ template "projects" . }}{{ end }}
+                        {{ if eq .type "books" }}{{ template "books" . }}{{ end }}
+                    </div>
+                </div>
+            {{ end }}
         </div>
-        {{ end }}
-        {{ if eq .type "projects" }}{{ template "projects" . }}{{ end }}
-        {{ if eq .type "books" }}{{ template "books" . }}{{ end }}
-    </div>
-    {{ end }}
-</section>
-{{ end }}
-
-{{ define "books"}}
-<!-- Books -->
-{{ range .items }}
-<!-- {{ .category }} -->
-<details class="group">
-    <summary class="cursor-pointer mb-4">
-        <h2 class="h3 font-light inline">{{ .category }} <span class="text-base text-text-light dark:text-darkmode-text-light">({{ len .items }})</span></h2>
-    </summary>
-    <ul class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {{ range .items }}
-            <li>
-                <h4 class="h6 font-light mb-2">
-                    «{{ .title }}»
-                    {{ if .author }} — {{ .author }}{{ end }}
-                </h4>
-                <p class="text-gray-700 dark:text-gray-300">{{ .description }}</p>
-            </li>
-        {{ end }}
-    </ul>
-</details>
-{{ end }}
+    </section>
 {{ end }}
 
 {{ define "projects" }}
-<!-- Projects -->
-{{ range .items }}
-<!-- {{ .category }} -->
-<div>
-    <h2 class="h3 font-light mb-4">{{ .category }}</h2>
-    <ul class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{ range .items }}
-            <li class="p-4 bg-white dark:bg-gray-800 rounded-xl shadow">
-                {{ if .url }}
-                    <a href="{{ .url }}" class="h5 font-light hover:underline" target="_blank" rel="noopener">
-                        &#8690 {{ .title }}
-                    </a>
-                {{ else }}
-                    <span class="h5 font-light">{{ .title }}</span>
-                {{ end }}
-                {{ with .type }}<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">{{ . }}</p>{{ end }}
-                <p class="text-sm text-gray-700 dark:text-gray-300">{{ .description }}</p>
-                {{ with .skills }}
-                    <div class="flex flex-wrap gap-2 mt-4">
-                        {{ range . }}
-                            <span class="text-xs px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-100">{{ . }}</span>
+    {{ range .items }}
+        <div>
+            <h3 class="h4 mb-6">{{ .category }}</h3>
+            <ul class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {{ range .items }}
+                    <li class="card">
+                        {{ if .url }}
+                            <a href="{{ .url }}" class="card-link h5 inline-flex items-center gap-2" target="_blank" rel="noopener">
+                                {{ .title }} <span aria-hidden="true">↗</span>
+                            </a>
+                        {{ else }}
+                            <h4 class="h5">{{ .title }}</h4>
                         {{ end }}
-                    </div>
+                        {{ with .type }}<p class="card-caption mt-1">{{ . }}</p>{{ end }}
+                        <p class="mt-3 text-[0.95rem] leading-relaxed">{{ .description }}</p>
+                        {{ with .skills }}
+                            <ul class="mt-auto flex flex-wrap gap-2 pt-5">
+                                {{ range . }}<li class="chip">{{ . }}</li>{{ end }}
+                            </ul>
+                        {{ end }}
+                    </li>
                 {{ end }}
-            </li>
-        {{ end }}
-    </ul>
-</div>
+            </ul>
+        </div>
+    {{ end }}
 {{ end }}
+
+{{ define "books" }}
+    {{ range .items }}
+        <details class="disclosure">
+            <summary>
+                <h3 class="h4">{{ .category }} <span class="card-caption font-normal">({{ len .items }})</span></h3>
+            </summary>
+            <ul class="mt-8 grid grid-cols-1 gap-x-10 gap-y-6 lg:grid-cols-2">
+                {{ range .items }}
+                    <li>
+                        <h4 class="h6 mb-1">«{{ .title }}»{{ if .author }} <span class="card-caption font-normal">— {{ .author }}</span>{{ end }}</h4>
+                        <p class="text-[0.95rem] leading-relaxed">{{ .description }}</p>
+                    </li>
+                {{ end }}
+            </ul>
+        </details>
+    {{ end }}
 {{ end }}

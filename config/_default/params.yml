@@ -14,6 +14,14 @@ logo_height: 32
 # logo text will only show when logo is missing.
 logo_text: "Kulikov.im"
 navbar_fixed: true
+# primary contact (header button, hero, footer); point it at /contacts.html when that page is ready
+contact:
+  label: Написать в Telegram
+  url: https://t.me/li_si_qing
+navigation_button:
+  enable: true
+  label: Написать
+  link: https://t.me/li_si_qing
 # copyright
 copyright:
   - "Качественный подход к решению ваших задач"

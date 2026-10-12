@@ -1,45 +1,51 @@
-{{/* layouts/partials/footer.html */}}
-<footer class="bg-light dark:bg-darkmode-light border-border dark:border-darkmode-border border-t">
-    <div class="container">
-        <div class="row items-center py-5">
-            <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
-                <!-- navbar brand/logo -->
-                <a
-                        class="navbar-brand inline-block"
-                        href="{{ site.Home.RelPermalink }}">
+<footer class="footer mt-8">
+    <div class="container py-12">
+        <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+                <a class="navbar-brand inline-block" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Title }}">
                     {{ partial "components/logo" }}
                 </a>
+                {{- with site.Params.copyright }}
+                    {{ $list := (cond (reflect.IsSlice .) . (slice .)) }}
+                    <div class="footer-muted mt-5 space-y-1 text-sm">
+                        {{ range $list }}<p class="text-balance">{{ . | markdownify }}</p>{{ end }}
+                    </div>
+                {{- end }}
             </div>
-            <div class="lg:col-9 lg:pl-40 mb-8 text-center lg:mb-0 lg:text-left">
-                <div class="text-text-light dark:text-darkmode-text-light container">
-                    {{- with site.Params.copyright }}
-                        {{ $raw := . }}
-                        {{ $list := (cond (reflect.IsSlice $raw) $raw (slice $raw)) }}
-                        {{ range $list }}
-                            <p class="text-balance">{{ . | markdownify }}</p>
-                        {{ end }}
-                    {{- else }}
-                        <p>{{ T "copyright" | default "❤️ Сделано с любовью" }}</p>
-                    {{- end }}
-                </div>
+            <nav aria-label="Разделы сайта">
+                <p class="mb-3 font-semibold" style="color: var(--ink)">Разделы</p>
+                <ul class="space-y-2">
+                    {{ range site.Menus.main }}
+                        <li><a class="footer-link" href="{{ .URL | relLangURL }}">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </nav>
+            <div>
+                <p class="mb-3 font-semibold" style="color: var(--ink)">Связаться</p>
+                <ul class="flex flex-wrap gap-3">
+                    {{ range hugo.Data.social.main }}
+                        <li>
+                            <a class="social-link" target="_blank" rel="noopener" aria-label="{{ .name }}" href="{{ .link | safeURL }}">
+                                {{ partial "components/icon" (dict "name" .icon "class" "h-5 w-5") }}
+                            </a>
+                        </li>
+                    {{ end }}
+                </ul>
+                {{ with site.Params.contact }}
+                    <p class="mt-4 text-sm"><a class="footer-link underline underline-offset-4" href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></p>
+                {{ end }}
             </div>
-            <div class="lg:col-3"></div>
-            <div class="hidden git-info lg:col-9 lg:pl-40 py-5">
-                <div class="container">
-                    {{- with .GitInfo }}
-                        <p class="git-user">{{ .AuthorName }}</p>
-                        <p class="git-date">{{ .CommitDate }}</p>
-                        <p class="git-hash">{{ .Hash }}</p>
-                        <p class="git-subj">{{ .Subject }}</p>
-                    {{- end }}
-                </div>
-            </div>
-            <script defer async type="text/javascript">
-                const params = new URL(document.location.toString()).searchParams;
-                if (params.get('gitinfo')) {
-                    document.querySelector('.git-info').classList.remove('hidden');
-                }
-            </script>
         </div>
+        <div class="hidden git-info py-5">
+            {{- with .GitInfo }}
+                <p class="git-user">{{ .AuthorName }}</p>
+                <p class="git-date">{{ .CommitDate }}</p>
+                <p class="git-hash">{{ .Hash }}</p>
+                <p class="git-subj">{{ .Subject }}</p>
+            {{- end }}
+        </div>
+        <script>
+            if (new URL(document.location.toString()).searchParams.get("gitinfo")) document.querySelector(".git-info").classList.remove("hidden");
+        </script>
     </div>
 </footer>

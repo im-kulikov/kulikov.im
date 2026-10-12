@@ -1,0 +1,9 @@
+{{- /* Button/link. Args: label, style (primary|outline), and one of: url, page (content page), contact (true = params.contact.url). */ -}}
+{{- $url := .url -}}
+{{- if .contact }}{{ $url = site.Params.contact.url }}{{ end -}}
+{{- with .page }}{{ with site.GetPage . }}{{ $url = .RelPermalink }}{{ else }}{{ errorf "action: page %q not found" . }}{{ end }}{{ end -}}
+{{- $external := strings.HasPrefix $url "http" -}}
+<a class="btn {{ if eq .style "outline" }}btn-outline-primary{{ else }}btn-primary{{ end }}{{ with .class }} {{ . }}{{ end }}"
+   href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener"{{ end }}>
+    {{- .label }} <span class="arrow" aria-hidden="true">→</span>
+</a>

@@ -10,7 +10,8 @@ description: |
   Более 20 лет опыта в системной разработке, архитектуре и техническом лидерстве. Инженерный подход, зрелость решений и 
   результат.
 section:
-  class: section pt-14 about
+  class: about
+  eyebrow: Обо мне
   title: И так, кто же я такой?
   socials: true
   description: |-

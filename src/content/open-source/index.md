@@ -23,7 +23,8 @@ section:
   title: Open Source и увлечения
   image: img/hobbies-01.png
   placeholder: true
-  class: section pt-14 open-source
+  class: open-source
+  eyebrow: Open Source
   description: |-
     Я увлекаюсь разработкой на Go, публикую проекты на GitHub и активно участвую в Open Source-сообществе. 
     В свободное время создаю DIY-устройства на Arduino и ESPHome, развивая собственную систему умного дома. 

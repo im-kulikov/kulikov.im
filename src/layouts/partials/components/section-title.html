@@ -1,0 +1,9 @@
+{{- /* Section heading used by all blocks. Args: title (markdown), icon, level (default 2). */ -}}
+{{- $level := .level | default 2 -}}
+<div class="section-title">
+    {{- with .icon }}
+        <span class="icon-box">{{ partial "components/icon" (dict "name" . "class" "h-6 w-6") }}</span>
+    {{- end }}
+    <h{{ $level }} class="h3">{{ .title | markdownify }}</h{{ $level }}>
+    <span class="rule" aria-hidden="true"></span>
+</div>

@@ -25,7 +25,8 @@
             src="{{ $img.RelPermalink }}"
             alt="{{ $alt }}"
             class="{{ $class }} img"
-            sizes="100vw"
+            width="{{ $img.Width }}"
+            height="{{ $img.Height }}"
             decoding="auto"
             loading="lazy" />
     </picture>

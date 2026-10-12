@@ -1,34 +1,421 @@
-/*!-- custom styles: If you want to add your own styles, please write it in the `./assets/css/custom.css` file. */
+/*!-- design layer: tokens and components. Edit the look here (palette: src/data/theme.yml for the base colours). --*/
 @theme {
-    --font-weight-normal: 300;
+    /* weights match the loaded font files (Roboto Slab 300/400/600) */
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
     --font-weight-bold: 600;
-    --font-weight-semibold: 400;
 }
 
-.figure-img.img-fluid {
-    display: inline;
-    @apply mx-auto lg:!max-w-[800px];
+:root {
+    --accent: #0369a1; /* links, buttons, icons: 5.9:1 on white */
+    --accent-ink: #fff; /* text on an accent background */
+    --accent-soft: #e6f3fa;
+    --glow: #00add8; /* decorative only (Go cyan) */
+    --surface: #fff;
+    --surface-raised: #fff;
+    --surface-sunken: #f6f7f9;
+    --line: #e5e7eb;
+    --ink: #0b0f14;
+    --shadow: 3 105 161;
 }
 
-.figure.d-block {
-    @apply mt-16;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --accent: #38bdf8;
+        --accent-ink: #06121b;
+        --accent-soft: #0f2433;
+        --surface: #0b0f14;
+        --surface-raised: #111720;
+        --surface-sunken: #0e131a;
+        --line: #222a35;
+        --ink: #f5f7fa;
+        --shadow: 0 0 0;
+    }
 }
 
-.about-me-description p:first-child
-{
-    @apply my-0;
+@layer components {
+    /* ---------- skip link ---------- */
+    .skip-link {
+        @apply sr-only;
+    }
+    .skip-link:focus {
+        @apply not-sr-only fixed left-4 top-4 z-50 rounded-lg px-4 py-2 font-semibold;
+        background: var(--accent);
+        color: var(--accent-ink);
+    }
+
+    /* ---------- header ---------- */
+    .header {
+        background: color-mix(in srgb, var(--surface) 82%, transparent);
+        -webkit-backdrop-filter: saturate(1.4) blur(14px);
+        backdrop-filter: saturate(1.4) blur(14px);
+        @apply py-3;
+    }
+    .navbar {
+        @apply relative flex flex-wrap items-center justify-between gap-y-2;
+    }
+    .navbar-brand {
+        @apply block rounded-lg;
+    }
+
+    .nav-toggle {
+        @apply inline-grid h-11 w-11 place-items-center rounded-xl lg:hidden;
+        color: var(--ink);
+        border: 1px solid var(--line);
+    }
+    .nav-toggle:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    .nav-toggle .icon-close {
+        @apply hidden;
+    }
+    .nav-toggle[aria-expanded="true"] .icon-open {
+        @apply hidden;
+    }
+    .nav-toggle[aria-expanded="true"] .icon-close {
+        @apply block;
+    }
+
+    .navbar-nav {
+        @apply flex w-full flex-col items-stretch gap-1 pb-3 pt-2 lg:w-auto lg:flex-row lg:items-center lg:gap-1 lg:pb-0 lg:pt-0 xl:gap-3;
+    }
+    /* with JS the menu collapses on small screens; without JS it stays visible */
+    .js .navbar-nav {
+        @apply hidden lg:flex;
+    }
+    .js .navbar-nav[data-open] {
+        @apply flex;
+    }
+
+    .nav-link {
+        @apply relative block rounded-lg px-3 py-2.5 font-semibold transition-colors lg:px-2.5 xl:px-3;
+        color: color-mix(in srgb, var(--ink) 78%, transparent);
+    }
+    .nav-link::after {
+        content: "";
+        @apply absolute inset-x-3 -bottom-0.5 h-0.5 origin-left scale-x-0 rounded-full transition-transform duration-200;
+        background: var(--accent);
+    }
+    .nav-link:hover {
+        color: var(--ink);
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after {
+        @apply scale-x-100;
+    }
+    .nav-link.active {
+        color: var(--accent);
+    }
+
+    /* ---------- buttons ---------- */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border px-5 py-3 font-semibold leading-none transition duration-200;
+        border-color: transparent;
+    }
+    .btn-sm {
+        @apply px-4 py-2.5 text-sm;
+    }
+    .btn-primary {
+        background: var(--accent);
+        color: var(--accent-ink);
+        box-shadow: 0 8px 20px -10px rgb(var(--shadow) / 0.7);
+    }
+    .btn-primary:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 12px 26px -10px rgb(var(--shadow) / 0.85);
+    }
+    .btn-outline-primary {
+        background: transparent;
+        color: var(--ink);
+        border-color: color-mix(in srgb, var(--ink) 22%, var(--line));
+    }
+    .btn-outline-primary:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+    }
+    .btn .arrow {
+        @apply transition-transform duration-200;
+    }
+    .btn:hover .arrow {
+        @apply translate-x-0.5;
+    }
+
+    /* focus */
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 0.5rem;
+    }
+
+    /* ---------- hero ---------- */
+    .hero {
+        @apply relative isolate overflow-hidden;
+    }
+    .hero::before {
+        content: "";
+        @apply pointer-events-none absolute -z-10;
+        inset: -30% -10% auto -10%;
+        height: 85%;
+        background:
+            radial-gradient(55% 60% at 78% 25%, color-mix(in srgb, var(--glow) 20%, transparent), transparent 70%),
+            radial-gradient(40% 45% at 8% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+    }
+    .hero::after {
+        content: "";
+        @apply pointer-events-none absolute inset-x-0 top-0 -z-10 h-[70%];
+        background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1px, transparent 1.2px);
+        background-size: 24px 24px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 10%, transparent 75%);
+        mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, #000 10%, transparent 75%);
+    }
+    .hero-title {
+        font-size: clamp(2.25rem, 5.2vw, 4rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+    }
+    .hero-title-sm {
+        font-size: clamp(2rem, 4.2vw, 3rem);
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+    }
+    .hero-lead {
+        @apply text-lg md:text-xl;
+        color: color-mix(in srgb, var(--ink) 72%, transparent);
+    }
+    .hero-art {
+        @apply relative mx-auto w-full;
+    }
+    .hero-art::before {
+        content: "";
+        @apply absolute -z-10 rounded-full;
+        inset: 8% 6%;
+        background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 24%, transparent), transparent);
+        filter: blur(20px);
+    }
+
+    .eyebrow {
+        @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+    .eyebrow::before {
+        content: "";
+        @apply h-1.5 w-1.5 rounded-full;
+        background: var(--accent);
+    }
+
+    .stat {
+        @apply rounded-2xl px-5 py-4;
+        background: color-mix(in srgb, var(--surface-raised) 80%, transparent);
+        border: 1px solid var(--line);
+    }
+    .stat-value {
+        @apply font-secondary text-3xl font-bold leading-none md:text-4xl;
+        color: var(--ink);
+    }
+    .stat-label {
+        @apply mt-2 text-sm leading-snug;
+        color: color-mix(in srgb, var(--ink) 65%, transparent);
+    }
+
+    .trust {
+        @apply flex flex-wrap items-center gap-x-5 gap-y-2 text-sm;
+        color: color-mix(in srgb, var(--ink) 60%, transparent);
+    }
+    .trust strong {
+        color: color-mix(in srgb, var(--ink) 85%, transparent);
+    }
+
+    .social-icons {
+        @apply flex flex-wrap items-center justify-center gap-3;
+    }
+    .social-icons li a,
+    .social-link {
+        @apply inline-grid h-11 w-11 place-items-center rounded-xl transition duration-200;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        background: var(--surface-raised);
+    }
+    .social-icons li a:hover,
+    .social-link:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+    }
+
+    /* ---------- section title ---------- */
+    .section-title {
+        @apply mb-10 flex items-center gap-4;
+    }
+    .section-title .icon-box {
+        @apply inline-grid h-12 w-12 shrink-0 place-items-center rounded-xl;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+    .section-title .rule {
+        @apply hidden h-px flex-1 sm:block;
+        background: linear-gradient(to right, var(--line), transparent);
+    }
+
+    /* ---------- cards & chips ---------- */
+    .card {
+        @apply relative flex h-full flex-col rounded-2xl p-6 transition duration-200;
+        background: var(--surface-raised);
+        border: 1px solid var(--line);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    }
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+            box-shadow: 0 18px 36px -18px rgb(var(--shadow) / 0.45);
+        }
+    }
+    .card-icon {
+        @apply mb-4 inline-grid h-12 w-12 place-items-center rounded-xl;
+        color: var(--accent);
+        background: var(--accent-soft);
+    }
+    .card-caption {
+        @apply text-sm;
+        color: color-mix(in srgb, var(--ink) 62%, transparent);
+    }
+    .chip {
+        @apply rounded-full px-3 py-1 text-xs font-semibold;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+    .card-link {
+        @apply rounded-sm font-semibold underline-offset-4 hover:underline;
+        color: var(--ink);
+    }
+    .card-link:hover {
+        color: var(--accent);
+    }
+
+    /* ---------- checklists ---------- */
+    .check-dot {
+        @apply mt-1 inline-grid h-6 w-6 shrink-0 place-items-center rounded-full;
+        color: var(--accent);
+        background: var(--accent-soft);
+    }
+    .check-dot svg {
+        @apply h-3 w-3;
+    }
+
+    /* ---------- illustrations ---------- */
+    @media (prefers-color-scheme: dark) {
+        .hero-art img {
+            filter: grayscale(1) brightness(0.86) contrast(1.05);
+        }
+    }
+    .feature-img {
+        @apply mx-auto h-auto max-w-full;
+    }
+
+    /* ---------- books ---------- */
+    details.disclosure {
+        @apply rounded-2xl p-5 md:p-6;
+        background: var(--surface-raised);
+        border: 1px solid var(--line);
+    }
+    details.disclosure > summary {
+        @apply flex cursor-pointer list-none items-center justify-between gap-4;
+    }
+    details.disclosure > summary::-webkit-details-marker {
+        display: none;
+    }
+    details.disclosure > summary::after {
+        content: "+";
+        @apply grid h-9 w-9 shrink-0 place-items-center rounded-full text-xl leading-none transition;
+        color: var(--accent);
+        background: var(--accent-soft);
+    }
+    details.disclosure[open] > summary::after {
+        content: "\2212";
+    }
+
+    /* ---------- footer ---------- */
+    .footer {
+        background: var(--surface-sunken);
+        border-top: 1px solid var(--line);
+    }
+    .footer-link {
+        @apply rounded-sm transition-colors;
+        color: color-mix(in srgb, var(--ink) 70%, transparent);
+    }
+    .footer-link:hover {
+        color: var(--accent);
+    }
+    .footer-muted {
+        color: color-mix(in srgb, var(--ink) 62%, transparent);
+    }
+
+    /* the original page markers stay as hooks (no styles) */
+    .about-me-description p {
+        @apply my-4;
+    }
+    .about-me-description p:first-child {
+        @apply my-0;
+    }
+
+    .cookie-box {
+        @apply fixed bottom-6 left-6 z-50 w-[min(28rem,calc(100%-3rem))] rounded-2xl p-5 shadow-xl;
+        background: var(--surface-raised);
+        border: 1px solid var(--line);
+    }
+    .cookie-box-hide {
+        @apply hidden;
+    }
+    .cookie-box-button {
+        @apply mt-4 block;
+    }
 }
 
-.about-me-description p {
-    @apply my-4;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
-.cookie-box {
-    @apply bg-body fixed left-10 bottom-10 z-999 p-5 w-md dark:bg-darkmode-body drop-shadow-xl rounded-lg;
-}
-.cookie-box-hide {
-    @apply hidden;
-}
-.cookie-box-button {
-    @apply block mt-4;
+@media print {
+    .header,
+    .skip-link,
+    .nav-toggle,
+    .hero::before,
+    .hero::after,
+    .hero-art,
+    .cookie-box {
+        display: none !important;
+    }
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11pt;
+    }
+    .card,
+    details.disclosure {
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+    details.disclosure > :not(summary) {
+        display: block;
+    }
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        word-break: break-all;
+    }
 }

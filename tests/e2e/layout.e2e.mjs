@@ -76,8 +76,9 @@ describe("layout", () => {
   test("the mobile menu opens with a click on the toggle", async () => {
     const { page, context } = await open("about", { width: 390 });
     assert.ok(!(await page.locator("#nav-menu").isVisible()));
-    await page.locator('label[for="nav-toggle"]').click();
+    await page.locator("#nav-toggle").click();
     assert.ok(await page.locator("#nav-menu").isVisible());
+    assert.equal(await page.locator("#nav-toggle").getAttribute("aria-expanded"), "true");
     await context.close();
   });
 
@@ -102,13 +103,14 @@ describe("layout", () => {
   });
 });
 
-describe("known gaps (todo) — real defects found in review; remove `todo` when fixed", () => {
-  test("the mobile menu is operable with the keyboard (Tab to the toggle, Enter opens, Escape closes)", { todo: "input#nav-toggle is display:none, so Tab never reaches it" }, async () => {
+describe("accessibility", () => {
+  test("the mobile menu is operable with the keyboard (Tab to the toggle, Enter opens, Escape closes)", async () => {
     const { page, context } = await open("about", { width: 390 });
     for (let i = 0; i < 6; i++) {
       await page.keyboard.press("Tab");
-      if (await page.evaluate(() => document.activeElement?.id === "nav-toggle" || document.activeElement?.closest("label[for=nav-toggle]"))) break;
+      if (await page.evaluate(() => document.activeElement?.id === "nav-toggle")) break;
     }
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "nav-toggle", "Tab should reach the toggle");
     await page.keyboard.press("Enter");
     assert.ok(await page.locator("#nav-menu").isVisible(), "Enter should open the menu");
     await page.keyboard.press("Escape");
@@ -116,48 +118,67 @@ describe("known gaps (todo) — real defects found in review; remove `todo` when
     await context.close();
   });
 
-  test("the menu toggle is at least 24x24 CSS px (WCAG 2.2 target size)", { todo: "label is 19x19" }, async () => {
+  test("the menu toggle is at least 24x24 CSS px (WCAG 2.2 target size)", async () => {
     const { page, context } = await open("about", { width: 390 });
-    const b = await page.locator('label[for="nav-toggle"]').boundingBox();
+    const b = await page.locator("#nav-toggle").boundingBox();
     await context.close();
     assert.ok(b.width >= 24 && b.height >= 24, `${b.width}x${b.height}`);
   });
 
-  test("a phone downloads exactly one hero image variant", { todo: "five banner variants are requested: all max-width preload queries match" }, async () => {
-    const { page, context, requests } = await open("index", { width: 390 });
-    await page.waitForLoadState("networkidle");
+  test("the skip link becomes visible on focus and moves focus to the content", async () => {
+    const { page, context } = await open("index");
+    await page.keyboard.press("Tab");
+    const box = await page.locator(".skip-link").boundingBox();
+    assert.ok(box && box.width > 20 && box.y >= 0, "skip link is visible when focused");
+    await page.keyboard.press("Enter");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "main");
     await context.close();
-    assert.equal(requests.filter((r) => /\/img\/banner-01/.test(r)).length, 1);
   });
 
-  test("the sticky header is not sticky when printing", { todo: "no @media print rules" }, async () => {
+  test("the sticky header is not sticky when printing", async () => {
     const { page, context } = await open("index");
     await page.emulateMedia({ media: "print" });
-    const pos = await page.evaluate(() => getComputedStyle(document.querySelector("header")).position);
+    const display = await page.evaluate(() => getComputedStyle(document.querySelector("header")).display);
     await context.close();
-    assert.ok(!["sticky", "fixed"].includes(pos), pos);
+    assert.equal(display, "none");
   });
 
-  test("text contrast is at least 4.5:1 in light and dark mode", { todo: "projects: p.text-sm.text-gray-500 is 4.48:1" }, async () => {
-    for (const [p, colorScheme] of ["resume", "projects", "services", "open-source"].flatMap((p) => ["light", "dark"].map((c) => [p, c]))) {
+  // Real contrast: text colour is composited over every translucent background layer behind it.
+  test("text contrast is at least 4.5:1 on every page in light and dark mode", async () => {
+    for (const p of ALL_PAGES) for (const colorScheme of ["light", "dark"]) {
       const { page, context } = await open(p, { width: 390, colorScheme });
       const bad = await page.evaluate(() => {
         const px = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
-        const rgba = (c) => { px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data]; };
+        const rgba = (c) => { px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); const d = px.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
+        const over = (f, b) => [0, 1, 2].map((i) => f[i] * f[3] + b[i] * (1 - f[3]));
         const lum = ([r, g, b]) => [r, g, b].map((v) => (v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
-        const bgOf = (el) => { for (; el; el = el.parentElement) { const c = rgba(getComputedStyle(el).backgroundColor); if (c[3] > 0) return c; } return [255, 255, 255, 255]; };
+        const bgOf = (el) => {
+          const layers = [];
+          for (; el; el = el.parentElement) { const c = rgba(getComputedStyle(el).backgroundColor); if (c[3] > 0) layers.push(c); if (c[3] === 1) break; }
+          return layers.reduceRight((base, c) => over(c, base), [255, 255, 255]);
+        };
         const out = [];
-        for (const el of document.querySelectorAll("main p, main li, main h1, main h2, main h3, main h4, main h5, main span")) {
-          if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
-          const f = rgba(getComputedStyle(el).color), b = bgOf(el);
-          const [l1, l2] = [lum(f), lum(b)].sort((a, c) => c - a);
+        for (const el of document.querySelectorAll("body *")) {
+          if (!el.checkVisibility?.() || ![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
+          if (el.closest("details:not([open]) > :not(summary)")) continue;
+          const bg = bgOf(el), fg = over(rgba(getComputedStyle(el).color), bg);
+          const [l1, l2] = [lum(fg), lum(bg)].sort((a, c) => c - a);
           const ratio = (l1 + 0.05) / (l2 + 0.05);
-          if (ratio < 4.5) out.push(`${el.tagName}.${el.className} ${ratio.toFixed(2)}`);
+          if (ratio < 4.5) out.push(`${el.tagName.toLowerCase()}.${String(el.className).split(" ")[0]} ${ratio.toFixed(2)}`);
         }
         return [...new Set(out)];
       });
       await context.close();
       assert.deepEqual(bad, [], `${p} (${colorScheme})`);
     }
+  });
+});
+
+describe("known gaps (todo) — real defects found in review; remove `todo` when fixed", () => {
+  test("a phone downloads exactly one hero image variant", { todo: "five banner variants are requested: all max-width preload queries match" }, async () => {
+    const { page, context, requests } = await open("index", { width: 390 });
+    await page.waitForLoadState("networkidle");
+    await context.close();
+    assert.equal(requests.filter((r) => /\/img\/banner-01/.test(r)).length, 1);
   });
 });

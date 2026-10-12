@@ -21,12 +21,34 @@ common:
   title: Главная
   icon: bookmark
 section:
+  layout: split
+  eyebrow: Go · Архитектура · Technical Lead
   title: Просто и без лишних слов.
   image: img/banner-01.png
-  placeholder: true
-  class: section pt-14 home
+  class: home
   description: |-
     Быстрая, качественная и продуманная реализация ваших проектов.
+  actions:
+    - label: Написать в Telegram
+      contact: true
+      style: primary
+    - label: Смотреть проекты
+      page: projects
+      style: outline
+  stats:
+    - value: 20+
+      label: лет в разработке ПО
+    - value: 8+
+      label: лет тимлидом и техлидом
+    - value: 80%
+      label: задач команды закрывают без моего участия
+  trust:
+    label: Опыт в
+    items:
+      - Wildberries
+      - СберМаркет
+      - Coins.ph
+      - Cryptopay
 build:
   list: always
   publishResources: false
