@@ -12,6 +12,9 @@
     "build": "hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic"
   },
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@hotwired/turbo": "^8.0.13",
     "@tailwindcss/cli": "^4.1.4",
