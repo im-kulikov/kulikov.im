@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "hugo server --disableFastRender --logLevel debug --gc --cleanDestinationDir --bind 0.0.0.0 --baseURL http://192.168.88.10:1313",
     "prod": "hugo server --disableFastRender --logLevel debug -e production --enableGitInfo --minify --disableLiveReload --gc --cleanDestinationDir --bind 0.0.0.0 --baseURL http://192.168.88.10:1313",
+    "pretest": "node tests/build.mjs",
     "test": "node --test tests/*.test.mjs",
+    "test:e2e": "node --test tests/e2e/*.e2e.mjs",
     "build": "hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic"
   },
   "type": "module",
@@ -26,5 +28,9 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.4",
     "yaml": "^2.7.1"
+  },
+  "devDependencies": {
+    "parse5": "^8.0.1",
+    "playwright-core": "^1.64.0"
   }
 }
