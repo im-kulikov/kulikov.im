@@ -18,13 +18,12 @@
     "node": ">=24"
   },
   "dependencies": {
-    "@hotwired/turbo": "^8.0.13",
-    "@tailwindcss/cli": "^4.1.4",
+    "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/language-server": "^0.14.16",
     "prettier": "^3.5.3",
     "prettier-plugin-go-template": "^0.0.15",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^4.1.4",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwindcss": "^4.3.3",
     "yaml": "^2.7.1"
   },
   "devDependencies": {
