@@ -28,9 +28,9 @@ colors:
 fonts:
   font_family:
     primary: Roboto+Slab:wght@300;400;600
-    primary_type: sans-serif
+    primary_type: "\"Roboto Slab Fallback\", sans-serif"
     secondary: Roboto+Slab:wght@300;400;600
-    secondary_type: sans-serif
+    secondary_type: "\"Roboto Slab Fallback\", sans-serif"
   font_size:
     base: '16'
     scale: '1.2'

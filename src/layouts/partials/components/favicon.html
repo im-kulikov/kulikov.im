@@ -13,6 +13,8 @@
 {{ $favicon_48:= $favicon.Resize "48x png"}}
 {{ $favicon_96:= $favicon.Resize "96x png"}}
 {{ $favicon_144:= $favicon.Resize "144x png"}}
+<!-- browsers and bots always request /favicon.ico; a PNG under that name is accepted -->
+<link rel="icon" href="{{ ($favicon_48 | resources.Copy "favicon.ico").RelPermalink }}" sizes="48x48">
 <link rel="shortcut icon" href="{{$favicon_96.RelPermalink}}" type="image/x-icon">
 <link rel="icon" href="{{$favicon_96.RelPermalink}}" type="image/x-icon">
 <link rel="icon" type="image/png" sizes="48x48" href="{{$favicon_48.RelPermalink}}">

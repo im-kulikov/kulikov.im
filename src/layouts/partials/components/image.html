@@ -19,7 +19,7 @@
         "al" (dict "max" 450 "size" 450 "width" 700)
 }}
 {{ if $size }}
-    {{ $img := (resources.Get $src).Resize (printf "%s q75 %s" $size $format) }}
+    {{ $img := (resources.Get $src).Resize (printf "%s q65 %s" $size $format) }}
     <picture class="{{ $pClass }}">
         <img
             src="{{ $img.RelPermalink }}"
@@ -42,12 +42,12 @@
                 {{ $tmp := . }}
                 {{ range $dpr := $dprs }}
                     {{ $w := mul $baseWidth $dpr }}
-                    {{ $img := $tmp.Resize (printf "%dx q75 %s" $w $format) }}
+                    {{ $img := $tmp.Resize (printf "%dx q65 %s" $w $format) }}
                     {{ $srcset = $srcset | append (printf "%s %dx" $img.RelPermalink $dpr) }}
                     {{ $mediaType = $img.MediaType }}
                 {{ end }}
             {{ else }}
-                {{ $img := .Resize (printf "%dx q75 %s" $baseWidth $format) }}
+                {{ $img := .Resize (printf "%dx q65 %s" $baseWidth $format) }}
                 {{ $srcset = $srcset | append $img.RelPermalink }}
                 {{ $mediaType = $img.MediaType.Type }}
             {{ end }}
@@ -56,7 +56,7 @@
                     "label" $label
                     "size" $baseSize
                     "type" $mediaType
-                    "image" (.Resize (printf "%dx q75 %s" $baseWidth $format))
+                    "image" (.Resize (printf "%dx q65 %s" $baseWidth $format))
                     "srcset" (delimit $srcset ", ")
                     ) }}
         {{ end }}
