@@ -20,7 +20,8 @@
     label: Что я умею?
     link: services
 - title: Почему стоит выбрать меня?
-  image: "/img/features-02.png"
+  image: "/img/features-why.webp"
+  color: true
   content: 'За годы работы я собрал обширный набор навыков и решений, которыми готов
     поделиться. Вот почему вам стоит выбрать меня:'
   bullets:
