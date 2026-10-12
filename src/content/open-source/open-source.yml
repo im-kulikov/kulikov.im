@@ -29,6 +29,18 @@
             Библиотека на Go для доступа к устройствам Mikrotik с использованием RouterOS API.
             В своё время использовал и вносил правки, сейчас же с другом поддерживаем и развиваем функционал.
             Моё текущее участие больше ориентировано на аудит, ревью и консультации.
+        - title: resolvex
+          url: "https://github.com/im-kulikov/resolvex"
+          description: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+        - title: traefik-provider
+          url: "https://github.com/im-kulikov/traefik-provider"
+          description: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+        - title: docker-dns
+          url: "https://github.com/im-kulikov/docker-dns"
+          description: "DNS-сервер для Docker-контейнеров."
+        - title: helium
+          url: "https://github.com/im-kulikov/helium"
+          description: "Модульный каркас для Go-сервисов (сервисы, логгер, NATS, PostgreSQL). Развитие остановлено в пользу go-bones."
         - title: tz-hash
           url: "https://github.com/nspcc-dev/tzhash"
           description: "Реализация хеширования Тиллиха-Земора (Tillich-Zemor) на Go."

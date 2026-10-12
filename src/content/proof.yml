@@ -2,17 +2,22 @@
   icon: github
   type: projects
   items:
-    - category: Вклад в Go и собственные библиотеки
+    - category: Библиотеки и инструменты
       items:
-        - title: golang/go
-          url: "https://github.com/golang/go"
-          description: "Нашёл и исправил ряд проблем, связанных с эллиптическими кривыми и криптографией."
         - title: go-bones
           url: "https://github.com/im-kulikov/go-bones"
-          description: "Каркас для быстрого старта микросервисов с DevOps-ориентированной конфигурацией."
+          description: "Каркас продакшен-сервисов на Go: health-пробы, graceful drain, OpenTelemetry и ops-эндпоинты. Только stdlib, без DI-контейнера."
         - title: gonfig
           url: "https://github.com/im-kulikov/gonfig"
-          description: "Библиотека управления конфигурацией: переменные окружения, флаги и файлы разных форматов."
+          description: "Конфигурация Go-программ одной структурой с тегами: значения по умолчанию, файлы (YAML, JSON, TOML), переменные окружения и флаги."
+        - title: resolvex
+          url: "https://github.com/im-kulikov/resolvex"
+          description: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+        - title: traefik-provider
+          url: "https://github.com/im-kulikov/traefik-provider"
+          description: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
         - title: go-routeros
           url: "https://github.com/go-routeros/routeros"
-          description: "Библиотека для RouterOS API (Mikrotik), которую мы с другом поддерживаем и развиваем."
+          description: "Клиент RouterOS API (Mikrotik) на Go. Поддерживаем и развиваем вместе с другом."
+        - title: Вклад в другие проекты
+          description: "Исправления и доработки (pull request) в Golang, Labstack Echo, TiDB и RouterOS."
