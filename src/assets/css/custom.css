@@ -220,6 +220,19 @@
         filter: blur(20px);
     }
 
+    /* colour illustration: crop the cluttered bottom, frame it */
+    .hero-art--color::before {
+        inset: 0 -4% 0;
+    }
+    .hero-art--color img {
+        @apply w-full rounded-2xl;
+        aspect-ratio: 10 / 11;
+        object-fit: cover;
+        object-position: 50% 0;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+    }
+
     .eyebrow {
         @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold;
         color: var(--accent);
@@ -400,7 +413,7 @@
 /* outside @layer on purpose: it has to beat Tailwind's `grayscale` utility on the same <img>.
    White blobs of the line art would glare on a dark page, so they are inverted into dark ones. */
 @media (prefers-color-scheme: dark) {
-    .hero-art img {
+    .hero-art:not(.hero-art--color) img {
         filter: grayscale(1) invert(0.92) brightness(0.95);
     }
 }

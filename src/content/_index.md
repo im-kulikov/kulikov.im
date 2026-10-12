@@ -24,7 +24,7 @@ section:
   layout: split
   eyebrow: Go · Архитектура · Technical Lead
   title: Просто и без лишних <span class="hero-accent">слов.</span>
-  image: img/banner-01.png
+  image: img/home-hero.webp
   class: home
   description: |-
     Быстрая, качественная и продуманная реализация ваших проектов.

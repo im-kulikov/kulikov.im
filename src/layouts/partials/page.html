@@ -26,13 +26,13 @@
                         {{ end }}
                     </div>
                     {{ with .image }}
-                        <div class="hero-art max-w-[620px]">
+                        <div class="hero-art hero-art--color max-w-[620px]">
                             {{ partial "components/image" (dict
                                     "src" .
                                     "alt" $.Title
                                     "preload" true
                                     "responsive" false
-                                    "class" "grayscale mx-auto h-auto w-full"
+                                    "class" "mx-auto h-auto w-full"
                                     "sizes" (dict "xl" 620 "lg" 520)) }}
                         </div>
                     {{ end }}

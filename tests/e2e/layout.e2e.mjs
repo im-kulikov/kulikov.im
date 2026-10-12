@@ -191,6 +191,6 @@ describe("known gaps (todo) — real defects found in review; remove `todo` when
     const { page, context, requests } = await open("index", { width: 390 });
     await page.waitForLoadState("networkidle");
     await context.close();
-    assert.equal(requests.filter((r) => /\/img\/banner-01/.test(r)).length, 1);
+    assert.equal(requests.filter((r) => /\/img\/home-hero/.test(r)).length, 1);
   });
 });
