@@ -20,7 +20,7 @@
   "dependencies": {
     "@hotwired/turbo": "^8.0.13",
     "@tailwindcss/cli": "^4.1.4",
-    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/language-server": "^0.14.16",
     "@tailwindcss/typography": "^0.5.16",
     "prettier": "^3.5.3",
