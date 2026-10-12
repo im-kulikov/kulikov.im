@@ -1,7 +1,7 @@
 // Structure, semantics and static accessibility of the built pages.
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { ALL_PAGES, PAGES, all, attr, classes, dom, hasAttr, read, tags, text, urlPath, walk } from "./helpers/site.mjs";
+import { ALL_PAGES, MENU_ORDER, PAGES, all, attr, classes, dom, hasAttr, read, tags, text, urlPath, walk } from "./helpers/site.mjs";
 
 const headings = (p) => all(dom(p), (n) => /^h[1-6]$/.test(n.tagName));
 const eachPage = (fn, pages = ALL_PAGES) => pages.forEach((p) => fn(p, dom(p)));
@@ -55,6 +55,13 @@ describe("document structure", () => {
 });
 
 describe("navigation", () => {
+  test("menu order is services > projects > about > resume > open-source (clients first, then employers, then community)", () => {
+    assert.deepEqual(MENU_ORDER, ["services", "projects", "about", "resume", "open-source"]);
+    eachPage((p, d) => {
+      const hrefs = tags(tags(d, "nav")[0], "a").map((a) => attr(a, "href"));
+      assert.deepEqual(hrefs.filter((h) => h !== "/"), MENU_ORDER.map(urlPath), p);
+    });
+  });
   test("active menu item has aria-current=page; home and 404 have none", () => {
     eachPage((p, d) => {
       const cur = all(d, (n) => attr(n, "aria-current") === "page");
@@ -86,7 +93,7 @@ describe("images and icons", () => {
 });
 
 describe("known gaps (todo) — each is a real defect found in review; remove `todo` when fixed", () => {
-  test("heading levels never skip (h1 > h2 > h3 ...)", { todo: "resume: h1>h3>h5, hobbies: h2>h4, services: h1>h3" }, () => {
+  test("heading levels never skip (h1 > h2 > h3 ...)", { todo: "resume: h1>h3>h5, open-source: h2>h4, services: h1>h3" }, () => {
     eachPage((p) => {
       const lv = headings(p).map((n) => +n.tagName[1]);
       lv.forEach((l, i) => i && assert.ok(l - lv[i - 1] <= 1, `${p}: h${lv[i - 1]} -> h${l} (#${i})`));

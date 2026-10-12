@@ -24,7 +24,7 @@ menus:
   main:
     name: Услуги
     identifier: "services"
-    weight: 2
+    weight: 1
 common:
   class: services-page
   title: "Услуги"
@@ -34,5 +34,7 @@ build:
   publishResources: false
   render: always
 ---
+
+{{< block name="list" file="help.yml" />}}
 
 {{< block name="services" file="services.yml" />}}

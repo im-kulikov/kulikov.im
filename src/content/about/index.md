@@ -17,14 +17,12 @@ section:
     Я инженер-программист, технический лидер и архитектор решений с более чем <span>20-летним</span> опытом в разработке программного обеспечения.
 menus:
   main:
-    name: "Кто я?"
+    name: "Обо мне"
     identifier: "about"
-    weight: 1
+    weight: 3
 build:
   list: always
   publishResources: false
 ---
 
 {{< block name="about" file="about.yml" />}}
-
-{{< block name="list" file="help.yml" />}}

@@ -31,7 +31,7 @@ test("no unprocessed Tailwind/PostCSS directives leaked into the output", () => 
 // typos are not: a new entry here means a class that silently does nothing. Review before adding.
 const NO_RULE = new Set([
   // semantic hooks / page markers (intended)
-  "about", "default-page", "home", "home-page", "hobbies", "hobbies-page", "resume-page", "services", "services-page",
+  "about", "default-page", "home", "home-page", "open-source", "open-source-page", "projects", "projects-page", "resume-page", "services", "services-page",
   "feature-img", "img", "system", "git-info", "nav-item", "h7",
   // suspected typos / leftovers from the original theme (todo: fix in templates, then delete from this list)
   "mb:md-0", // features.html: probably meant md:mb-0

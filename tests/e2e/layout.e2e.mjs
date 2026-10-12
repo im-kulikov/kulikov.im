@@ -8,7 +8,7 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
-import { ALL_PAGES, PAGES, SITE, urlPath } from "../helpers/site.mjs";
+import { ALIASES, ALL_PAGES, PAGES, SITE, urlPath } from "../helpers/site.mjs";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".xml": "application/xml", ".txt": "text/plain", ".webmanifest": "application/manifest+json" };
 let server, origin, browser;
@@ -81,6 +81,19 @@ describe("layout", () => {
     await context.close();
   });
 
+  test("old URLs of renamed pages make the browser go to the new page", async () => {
+    assert.ok(ALIASES.length > 0);
+    for (const a of ALIASES) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      // production URLs are not served here: abort them, but the browser's request proves where the redirect leads
+      await page.route("**/*", (r) => (r.request().url().startsWith(origin) ? r.continue() : r.abort()));
+      const target = `https://kulikov.im${urlPath(a.to)}`;
+      await Promise.all([page.waitForRequest(target, { timeout: 5000 }), page.goto(`${origin}/${a.from}.html`).catch(() => {})]);
+      await context.close();
+    }
+  });
+
   test("every indexable page is reachable from the menu on desktop", async () => {
     const { page, context } = await open("index");
     const hrefs = await page.locator("header nav a").evaluateAll((a) => a.map((x) => x.getAttribute("href")));
@@ -125,9 +138,9 @@ describe("known gaps (todo) — real defects found in review; remove `todo` when
     assert.ok(!["sticky", "fixed"].includes(pos), pos);
   });
 
-  test("text contrast is at least 4.5:1 in light and dark mode", { todo: "resume: p.text-sm.text-gray-500 is 4.48:1" }, async () => {
-    for (const colorScheme of ["light", "dark"]) {
-      const { page, context } = await open("resume", { width: 390, colorScheme });
+  test("text contrast is at least 4.5:1 in light and dark mode", { todo: "projects: p.text-sm.text-gray-500 is 4.48:1" }, async () => {
+    for (const [p, colorScheme] of ["resume", "projects", "services", "open-source"].flatMap((p) => ["light", "dark"].map((c) => [p, c]))) {
+      const { page, context } = await open(p, { width: 390, colorScheme });
       const bad = await page.evaluate(() => {
         const px = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
         const rgba = (c) => { px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data]; };
@@ -144,7 +157,7 @@ describe("known gaps (todo) — real defects found in review; remove `todo` when
         return [...new Set(out)];
       });
       await context.close();
-      assert.deepEqual(bad, [], colorScheme);
+      assert.deepEqual(bad, [], `${p} (${colorScheme})`);
     }
   });
 });
