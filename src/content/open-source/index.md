@@ -32,7 +32,7 @@ section:
     так и технические книги по программированию и архитектуре.
 menus:
   main:
-    name: "Open Source и увлечения"
+    name: "Open Source"
     identifier: "open-source"
     weight: 5
 aliases:

@@ -88,9 +88,25 @@
         @apply flex;
     }
 
+    /* numbered items (01-05) give the menu a rhythm instead of separators; the contact button is not numbered */
+    .navbar-nav {
+        counter-reset: nav;
+    }
+    .navbar-nav > li:has(> .nav-link) {
+        counter-increment: nav;
+    }
     .nav-link {
-        @apply relative block rounded-lg px-3 py-2.5 font-semibold transition-colors lg:px-2.5 xl:px-3;
-        color: color-mix(in srgb, var(--ink) 78%, transparent);
+        @apply relative flex items-baseline gap-2 rounded-lg px-3 py-2.5 text-[0.95rem] font-medium transition-colors lg:px-2.5 xl:px-3;
+        color: color-mix(in srgb, var(--ink) 72%, transparent);
+    }
+    .nav-link::before {
+        content: counter(nav, decimal-leading-zero);
+        content: counter(nav, decimal-leading-zero) / ""; /* empty alt text: screen readers skip the number */
+        font: 600 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        letter-spacing: 0.04em;
+        transform: translateY(-0.3em);
+        color: color-mix(in srgb, var(--ink) 50%, transparent);
+        transition: color 0.2s;
     }
     .nav-link::after {
         content: "";
@@ -105,6 +121,10 @@
         @apply scale-x-100;
     }
     .nav-link.active {
+        @apply font-bold;
+        color: var(--ink);
+    }
+    .nav-link.active::before {
         color: var(--accent);
     }
 

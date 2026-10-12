@@ -95,6 +95,18 @@ describe("layout", () => {
     }
   });
 
+  test("the five menu items are numbered by a CSS counter and the contact button is not", async () => {
+    const { page, context } = await open("index");
+    // getComputedStyle does not resolve counter(), so check the declaration and render the number
+    const marks = await page.locator("#nav-menu > li").evaluateAll((lis) =>
+      lis.map((li) => getComputedStyle(li.firstElementChild, "::before").content));
+    const shot = await page.locator("#nav-menu > li").first().screenshot();
+    await context.close();
+    assert.deepEqual(marks.slice(0, 5).map((m) => m.startsWith("counter(nav")), [true, true, true, true, true]);
+    assert.ok(!marks[5].startsWith("counter("), `contact button must not be numbered: ${marks[5]}`);
+    assert.ok(shot.length > 500);
+  });
+
   test("every indexable page is reachable from the menu on desktop", async () => {
     const { page, context } = await open("index");
     const hrefs = await page.locator("header nav a").evaluateAll((a) => a.map((x) => x.getAttribute("href")));
