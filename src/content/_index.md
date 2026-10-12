@@ -27,7 +27,9 @@ section:
   image: img/home-hero.webp
   class: home
   description: |-
-    Быстрая, качественная и продуманная реализация ваших проектов.
+    Технический лидер и архитектор программного обеспечения. Специализируюсь на Go,
+    аудите и проектировании архитектуры, разработке и запуске MVP, развитии инженерных команд.
+    Опыт работы в Wildberries, СберМаркете, Coins.ph и Cryptopay.
   actions:
     - label: Написать в Telegram
       contact: true
@@ -41,14 +43,7 @@ section:
     - value: 8+
       label: лет тимлидом и техлидом
     - value: 80%
-      label: задач команды закрывают без моего участия
-  trust:
-    label: Опыт в
-    items:
-      - Wildberries
-      - СберМаркет
-      - Coins.ph
-      - Cryptopay
+      label: задач команда закрывает автономно
 build:
   list: always
   publishResources: false
@@ -56,3 +51,5 @@ build:
 ---
 
 {{< block name="features" file="features.yml" />}}
+
+{{< block name="hobbies" file="proof.yml" />}}

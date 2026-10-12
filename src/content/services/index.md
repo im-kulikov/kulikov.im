@@ -39,3 +39,5 @@ build:
 {{< block name="list" file="help.yml" />}}
 
 {{< block name="services" file="services.yml" />}}
+
+{{< block name="list" file="how.yml" />}}

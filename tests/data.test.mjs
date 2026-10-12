@@ -20,7 +20,7 @@ function* deep(v, path = "") {
 }
 
 test("every YAML data file was found and parsed", () => {
-  assert.deepEqual(Object.keys(data).sort(), ["about/about.yml", "features.yml", "open-source/open-source.yml", "projects/projects.yml", "resume/profile.yml", "services/help.yml", "services/services.yml"]);
+  assert.deepEqual(Object.keys(data).sort(), ["about/about.yml", "features.yml", "open-source/open-source.yml", "projects/projects.yml", "proof.yml", "resume/profile.yml", "services/help.yml", "services/how.yml", "services/services.yml"]);
 });
 
 describe("references", () => {

@@ -257,14 +257,6 @@
         color: color-mix(in srgb, var(--ink) 65%, transparent);
     }
 
-    .trust {
-        @apply flex flex-wrap items-center gap-x-5 gap-y-2 text-sm;
-        color: color-mix(in srgb, var(--ink) 60%, transparent);
-    }
-    .trust strong {
-        color: color-mix(in srgb, var(--ink) 85%, transparent);
-    }
-
     .social-icons {
         @apply flex flex-wrap items-center justify-center gap-3;
     }

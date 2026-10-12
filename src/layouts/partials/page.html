@@ -18,12 +18,6 @@
                                 {{ end }}
                             </dl>
                         {{ end }}
-                        {{ with .trust }}
-                            <p class="trust mt-8">
-                                <span>{{ .label }}</span>
-                                {{ range .items }}<strong>{{ . }}</strong>{{ end }}
-                            </p>
-                        {{ end }}
                     </div>
                     {{ with .image }}
                         <div class="hero-art hero-art--portrait max-w-[620px]">
