@@ -71,11 +71,11 @@ describe("404 page", () => {
   });
 });
 
-describe("known gaps (todo)", () => {
-  test("titles are at most 70 characters (SERP truncation)", { todo: "services title has 96 chars" }, () => {
+describe("SERP and social metadata", () => {
+  test("titles are at most 70 characters (SERP truncation)", () => {
     for (const p of PAGES) assert.ok(title(p).length <= 70, `${p}: ${title(p).length}`);
   });
-  test("og:locale and og:site_name are set", { todo: "not implemented" }, () => {
+  test("og:locale and og:site_name are set", () => {
     for (const p of PAGES) assert.ok(meta(dom(p), "og:locale") && meta(dom(p), "og:site_name"), p);
   });
 });
