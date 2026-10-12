@@ -63,6 +63,17 @@
 {{ end }}
 <!-- page content -->
 {{ .Content }}
+{{ with site.Params.cta }}
+    <section class="section-sm">
+        <div class="container">
+            <div class="cta">
+                <h2 class="h3">{{ .title }}</h2>
+                <p class="mx-auto mt-3 max-w-xl text-lg">{{ .text }}</p>
+                <div class="mt-8">{{ partial "components/action" (dict "label" site.Params.contact.label "contact" true "style" "primary") }}</div>
+            </div>
+        </div>
+    </section>
+{{ end }}
 <!-- page end -->
 
 {{ define "hero-text" }}

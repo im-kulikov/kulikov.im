@@ -231,6 +231,12 @@
         object-position: 50% 0;
     }
 
+    .cta {
+        @apply rounded-3xl px-6 py-12 text-center md:px-12 md:py-16;
+        background: radial-gradient(60% 100% at 50% 0%, color-mix(in srgb, var(--glow) 16%, transparent), transparent), var(--surface-raised);
+        border: 1px solid var(--line);
+    }
+
     .eyebrow {
         @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold;
         color: var(--accent);

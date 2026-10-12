@@ -18,9 +18,12 @@ navbar_fixed: true
 contact:
   label: Написать в Telegram
   url: https://t.me/li_si_qing
+cta:
+  title: Расскажите о задаче
+  text: Опишите задачу или проблему в двух словах. Отвечу в Telegram и честно скажу, чем могу быть полезен.
 navigation_button:
   enable: true
-  label: Написать
+  label: Написать в Telegram
   link: https://t.me/li_si_qing
 # copyright
 copyright:
