@@ -18,7 +18,7 @@ logLevel: debug
 icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
 
 #paginate: 20
-ignoreLogs: ['warning-goldmark-raw-html', 'deprecation.debug']
+ignoreLogs: ['warning-goldmark-raw-html']
 ############################# server ############################
 server:
   redirects:

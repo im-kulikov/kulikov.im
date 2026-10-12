@@ -2,9 +2,6 @@ main:
   - name: telegram
     icon: telegram
     link: https://t.me/li_si_qing
-#  - name: twitter
-#    icon: fab fa-twitter
-#    link: https://x.com/tuxuls
   - name: github
     icon: github
     link: https://www.github.com/im-kulikov
