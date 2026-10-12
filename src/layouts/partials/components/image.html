@@ -74,7 +74,6 @@
                             .image.RelPermalink .media
                 ) }}
         {{ end }}
-        {{- warnf `.Scratch.Set "preload-image" %s` page.Path }}
         {{ page.Scratch.Add (printf "preload-image-%s" page.Path) (delimit $srcPreload "") }}
     {{ end }}
     <picture>

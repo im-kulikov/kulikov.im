@@ -14,7 +14,6 @@ title: "Персональный сайт Евгения Куликова"
 enableRobotsTXT: true
 locale: "ru"
 defaultContentLanguage: "ru"
-logLevel: debug
 icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
 
 #paginate: 20
@@ -33,12 +32,6 @@ markup:
   goldmark:
     renderer:
       unsafe: true
-############################# caches #############################
-caches:
-  images:
-    dir: ":resourceDir/_gen"
-  assets:
-    dir: ":resourceDir/_gen"
 ############################# Build ##############################
 build:
   buildStats:

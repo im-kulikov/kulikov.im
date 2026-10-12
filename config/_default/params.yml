@@ -8,10 +8,9 @@ logos:
   light: img/logo-light-mode.png
 
 logos_resize: "320x64 webp"
-# use `px` or `x` with logo_width, example: "100px".
-# Note: logo_width is not work with .svg file
-logo_width: "160px"
-logo_height: "32px"
+# width/height attributes of the logo <img>: integers (CSS pixels)
+logo_width: 160
+logo_height: 32
 # logo text will only show when logo is missing.
 logo_text: "Kulikov.im"
 navbar_fixed: true
