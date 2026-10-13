@@ -19,13 +19,25 @@
       items:
         - Golang
         - gRPC
-        - Kubernetes
+        - REST API
         - PostgreSQL
+        - MongoDB
+        - ClickHouse
         - Redis
+        - Kafka
+        - Apache Flink
+        - Arroyo
+        - Kubernetes
+        - Docker
+        - Proxmox
         - CI/CD
         - Ansible
-        - Grafana
+        - Keycloak
+        - OpenTelemetry
+        - OpenFeature
+        - Prometheus
         - VictoriaMetrics
+        - Grafana
 - title: Достижения
   icon: archive
   subtitle: Чтобы не пересказывать всё, выделил ключевые места и чем занимался
