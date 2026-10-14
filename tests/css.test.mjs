@@ -30,7 +30,7 @@ test("no unprocessed Tailwind/PostCSS directives leaked into the output", () => 
 // Classes used in the HTML but without any rule in the CSS: only page/marker hooks are allowed.
 // A new entry here would be a class that silently does nothing (typo): review before adding.
 const NO_RULE = new Set([
-  "about", "default-page", "git-info", "home", "home-page", "img", "open-source", "open-source-page",
+  "about", "default-page", "git-date", "git-hash", "git-info", "git-subj", "git-user", "home", "home-page", "img", "open-source", "open-source-page",
   "projects", "projects-page", "resume", "resume-page", "services", "services-page", "system",
 ]);
 test("classes used in HTML have a CSS rule (except the allowlist)", () => {
