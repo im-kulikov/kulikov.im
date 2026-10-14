@@ -11,7 +11,7 @@ keywords:
   - Open Source
 description: |
   Completed projects: platform and microservice systems, CRM and e-commerce,
-  technical audit, Open Source. The role, the task and the result for each project.
+  technical audit, Open Source. The role, task and outcome of each project.
 common:
   class: projects-page
   title: Projects
@@ -19,7 +19,7 @@ common:
 section:
   class: projects
   eyebrow: Projects
-  title: What have I already done?
+  title: What have I done so far?
   image: img/projects-hero.webp
   description: |
     Selected projects: from CMS and CRM to platform systems and technical audit.

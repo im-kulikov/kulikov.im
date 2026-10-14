@@ -61,30 +61,30 @@
   icon: archive
   subtitle:
     ru: Чтобы не пересказывать всё, выделил ключевые места и чем занимался
-    en: To avoid retelling everything, here are the key places I worked and what I did
+    en: "To avoid retelling everything, here are the key places I worked at and what I did there"
   blocks:
     - title:
         ru: Wildberries / СберМаркет
         en: Wildberries / SberMarket
       list:
         - ru: "Настроил команду платформенной разработки: от хаоса к устойчивой delivery-машине."
-          en: "Set up the platform development team: from chaos to a steady delivery machine."
+          en: "Turned the platform development team from chaos into a steady delivery machine."
         - ru: "Повысил автономность команд — 80% задач закрываются без моего участия."
-          en: "Increased team autonomy: 80% of tasks are closed without my involvement."
+          en: "Increased team autonomy: 80% of tasks now close without my involvement."
         - ru: "Внедрил KPI и метрики: Lead Time, SLO, Delivery On Date."
           en: "Introduced KPIs and metrics: Lead Time, SLO, Delivery On Date."
         - ru: "Выстраивал продуктовую и тех-стратегию совместно с доменами."
-          en: "Shaped product and tech strategy together with the domains."
+          en: "Shaped product and tech strategy together with the business domains."
         - ru: "Собрал платформенную команду, нанял недостающие позиции, выстроил процессы."
-          en: "Assembled the platform team, hired the missing positions, set up the processes."
+          en: "Assembled the platform team, filled the missing roles and set up the processes."
     - title: Coins.ph / FinchPay
       list:
         - ru: "Выделил и выстроил отдельную команду PaaS: найм, OKR, процессы, метрики."
           en: "Spun out and built a dedicated PaaS team: hiring, OKRs, processes, metrics."
         - ru: "Внедрил DDD как основу архитектуры новых сервисов."
-          en: "Introduced DDD as the foundation of new services' architecture."
+          en: "Introduced DDD as the architectural foundation for new services."
         - ru: "Создал сервис визуализации зависимости микросервисов: сократил время аудита и анализа."
-          en: "Built a microservice dependency visualisation service, which cut the time for audits and analysis."
+          en: "Built a service that visualises microservice dependencies, which cut the time needed for audits and analysis."
         - ru: "Интегрировал observability решения на уровне всей компании."
           en: "Integrated observability solutions company-wide."
         - ru: "Спроектировал и впоследствии реализовал мультитрейд платформу, которая выстояла кризис на рынке"
@@ -94,11 +94,11 @@
         - ru: "Руководил core-командой и командой интеграционных сервисов."
           en: "Led the core team and the integration services team."
         - ru: "Построил с нуля процессы CI/CD, autotests, staging."
-          en: "Built CI/CD, autotests and staging processes from scratch."
+          en: "Built CI/CD, automated testing and staging processes from scratch."
         - ru: "Реализовал интеграции с S3, WebDAV, FTP и другими протоколами."
           en: "Implemented integrations with S3, WebDAV, FTP and other protocols."
         - ru: "Участвовал в Opensource-проектах сообщества CityOfZeon."
-          en: "Contributed to the CityOfZeon community's open source projects."
+          en: "Contributed to the open-source projects of the CityOfZeon community."
         - ru: "Перенял проект, а в последствии построил команду для сопровождения Go-ноды NeoBlockchain."
           en: "Took over the project and later built a team to maintain the NeoBlockchain Go node."
     - title: Cryptopay
@@ -106,8 +106,8 @@
         - ru: "Собрал core-команду: найм, OKR, процессы, метрики."
           en: "Assembled the core team: hiring, OKRs, processes, metrics."
         - ru: "Реализовал и внедрил фреймворк-конструктор для быстрого запуска микросервисов."
-          en: "Built and rolled out a framework toolkit for launching microservices quickly."
+          en: "Built and rolled out a modular framework for launching microservices quickly."
         - ru: "Спроектировал, а позже запустил сервис взаимодействия межбиржевой торговли."
-          en: "Designed and later launched a service for inter-exchange trading."
+          en: "Designed and later launched an inter-exchange trading integration service."
         - ru: "Совместно с DevOps командой спроектировали, а позже внедрили CICD практики на уровне компании."
-          en: "Together with the DevOps team, designed and later introduced company-wide CI/CD practices."
+          en: "Together with the DevOps team, I designed and later rolled out company-wide CI/CD practices."

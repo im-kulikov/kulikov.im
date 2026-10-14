@@ -12,23 +12,23 @@
     - ru: Реализация высоконагруженных и отказоустойчивых систем.
       en: Building high-load, fault-tolerant systems.
     - ru: Создание решений на основе микросервисной архитектуры.
-      en: Designing solutions on a microservice architecture.
+      en: "Building solutions based on a microservice architecture."
     - ru: Работа с сетевыми протоколами, распределёнными системами и системным программированием.
-      en: Network protocols, distributed systems and systems programming.
+      en: "Working with network protocols, distributed systems and systems programming."
     - ru: Формирование, развитие и менторство команд разработки.
       en: Building, growing and mentoring development teams.
     - ru: Проведение PerfReview и составление индивидуальных планов развития.
       en: Running performance reviews and writing individual growth plans.
     - ru: Настройка продуктовой и инженерной прозрачности (планы, процессы, метрики).
-      en: Product and engineering transparency (plans, processes, metrics).
+      en: "Setting up product and engineering transparency (plans, processes, metrics)."
     - ru: 'Внедрение и масштабирование процессов: Delivery on Date, Lead Time, SLO и др.'
       en: 'Introducing and scaling processes: Delivery on Date, Lead Time, SLO and more.'
     - ru: Проектирование архитектуры сервисов и платформенных решений.
-      en: Architecture of services and platform solutions.
+      en: "Designing the architecture of services and platform solutions."
     - ru: Внедрение DDD, Observability и стандартизация инженерных практик.
-      en: Introducing DDD and observability, standardising engineering practices.
+      en: "Introducing DDD and observability and standardising engineering practices."
     - ru: Проведение технической экспертизы, аудит кода и инфраструктуры.
-      en: Technical expertise, code and infrastructure audits.
+      en: "Conducting technical expert reviews and auditing code and infrastructure."
   button:
     enable: true
     label:
@@ -46,21 +46,20 @@
       to share. Here is why you should choose me:'
   bullets:
     - ru: Более 20 лет в разработке ПО, свыше 8 лет в роли тимлида и техлида, команды от 5 до 15 человек.
-      en: 20+ years in software development, over 8 years as a team lead and tech lead, teams of 5 to 15 people.
+      en: "20+ years in software development, 8+ years as a team lead and tech lead, teams of 5 to 15 people."
     - ru: Опыт в ведущих продуктовых и технологических компаниях (Wildberries, СберМаркет,
         Coins.ph, Cryptopay и др.).
-      en: Experience in leading product and technology companies (Wildberries, SberMarket,
-        Coins.ph, Cryptopay and others).
+      en: "Experience at leading product and technology companies (Wildberries, SberMarket, Coins.ph, Cryptopay and others)."
     - ru: Сократил time-to-market в 2–3 раза, от идеи до выпуска в продакшен.
-      en: Cut time-to-market by 2–3×, from idea to production release.
+      en: "Cut time-to-market by a factor of two to three, from idea to production release."
     - ru: Сократил онбординг новых разработчиков с 2–3 недель до менее чем недели.
-      en: Cut onboarding of new developers from 2–3 weeks to under a week.
+      en: "Cut onboarding time for new developers from 2–3 weeks to under a week."
     - ru: Наладил кросс-ревью, которое начинается почти сразу после публикации изменений.
-      en: Set up cross-review that starts almost right after a change is published.
+      en: "Set up a cross-review process in which reviews start almost immediately after changes are published."
     - ru: Снизил затраты на найм и ротацию в командах за счёт обучения, наставничества и вовлечённости.
       en: Reduced hiring and turnover costs through training, mentoring and engagement.
     - ru: Кризис-менеджмент и стабилизация проектов в сложных условиях.
-      en: Crisis management and stabilising projects under difficult conditions.
+      en: "Crisis management and project stabilisation in difficult conditions."
     - ru: Помогаю быстро запустить проект, выбрав оптимальный стек для ваших задач.
       en: I help launch a project quickly by choosing the right stack for your needs.
   button:
@@ -82,7 +81,7 @@
     - ru: Развивал инженерные практики и инфраструктуру с прицелом на масштабирование.
       en: Grew engineering practices and infrastructure with scaling in mind.
     - ru: Выступаю за чистый, поддерживаемый код и придерживаюсь принципов DDD и Clean Architecture.
-      en: I stand for clean, maintainable code and follow the principles of DDD and Clean Architecture.
+      en: "I advocate clean, maintainable code and follow the principles of DDD and Clean Architecture."
     - ru: Следую принципам DRY, KISS и SOLID, уделяя внимание деталям и читаемости.
       en: I follow DRY, KISS and SOLID, paying attention to detail and readability.
     - ru: Проектировал платформенные решения с нуля и формировал команды под конкретные
@@ -91,12 +90,10 @@
         tasks.
     - ru: Создаю понятную и полезную документацию, обучающие материалы. Считаю документацию
         обязательной частью любого проекта.
-      en: I write clear, useful documentation and training materials. I consider documentation
-        a mandatory part of any project.
+      en: "I write clear, useful documentation and training materials. I consider documentation an essential part of any project."
     - ru: Развиваю собственные open source-проекты и участвую в крупных инициативах (Golang,
         TiDB, Echo).
-      en: I maintain my own open source projects and contribute to large initiatives (Golang,
-        TiDB, Echo).
+      en: "I maintain my own open-source projects and contribute to major initiatives (Golang, TiDB, Echo)."
   button:
     enable: true
     label:

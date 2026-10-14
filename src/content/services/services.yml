@@ -1,16 +1,16 @@
 enabled: true
 title:
   ru: Что могу предложить?
-  en: What I can offer
+  en: "What can I offer?"
 description:
   ru: |
     Помогаю командам и компаниям решать сложные инженерные задачи: от архитектуры и разработки систем до технического лидерства, 
     аудита и поддержки процессов. Работаю с распределёнными системами, высоконагруженными сервисами и внутренними платформами. 
     Мои подходы основаны на прагматизме, опыте и глубоком понимании технологий.
   en: |
-    I help teams and companies solve hard engineering problems: from architecture and system development to technical leadership,
+    I help teams and companies solve complex engineering problems: from architecture and system development to technical leadership,
     audits and process support. I work with distributed systems, high-load services and internal platforms.
-    My approach is built on pragmatism, experience and a deep understanding of technology.
+    My approach is grounded in pragmatism, experience and a deep understanding of technology.
 abilities:
   - title:
       ru: Аудит и рекомендации
@@ -29,7 +29,7 @@ abilities:
         always taking the team's specifics and business goals into account.
   - title:
       ru: Проектирование
-      en: Design
+      en: "System design"
     icon: layers
     description:
       ru: |
@@ -38,11 +38,11 @@ abilities:
         Помогаю внедрять лучшие инженерные практики — от API-дизайна до отказоустойчивости в продакшене.
       en: |
         I design service architecture with a focus on reliability, scalability and ease of maintenance.
-        I build system cores, interfaces and internal platforms following DDD, Clean Architecture and SOLID.
-        I help introduce the best engineering practices, from API design to fault tolerance in production.
+        I develop system cores, interfaces and internal platforms in line with DDD, Clean Architecture and SOLID.
+        I help introduce engineering best practices, from API design to fault tolerance in production.
   - title:
       ru: Оптимизация команд
-      en: Team optimisation
+      en: "Team development"
     icon: profile
     description:
       ru: |
@@ -51,11 +51,11 @@ abilities:
         Работаю с фокусом на рост, ответственность и результат.
       en: |
         I help build strong, autonomous teams: from hiring developers to setting up effective processes.
-        I join as a team lead or technical mentor, pass on experience, grow engineering culture and raise the quality of decisions and team engagement.
+        I join as a team lead or technical mentor, share experience, nurture engineering culture and raise the quality of decisions and team engagement.
         I work with a focus on growth, accountability and results.
   - title:
       ru: Исправление процессов
-      en: Fixing processes
+      en: "Process improvement"
     icon: glass-clock
     description:
       ru: |
@@ -64,8 +64,8 @@ abilities:
         Внедряю практики, повышающие предсказуемость, управляемость и доверие между бизнесом и разработкой.
       en: |
         I set up transparent development and planning processes: from goals and roadmaps to technical metrics and feedback.
-        I help teams see the real state of the product, spot problems in time and make well-founded decisions.
-        I introduce practices that improve predictability, manageability and trust between the business and engineering.
+        I help teams see the real state of the product, spot problems in time and make well-informed decisions.
+        I introduce practices that improve predictability, control and trust between the business and engineering.
   - title:
       ru: Менеджмент проектов
       en: Project management
@@ -76,9 +76,9 @@ abilities:
         Организую работу команды, решаю возникающие конфликты и поддерживаю продуктивное взаимодействие.
         Ориентирован на достижение бизнес-целей, своевременное решение задач и высокое качество результатов.
       en: |
-        I help manage projects effectively, with a clear distribution of tasks and control over their completion.
+        I help manage projects effectively, with a clear allocation of tasks and control over their delivery.
         I organise the team's work, resolve conflicts as they arise and keep collaboration productive.
-        I am focused on reaching business goals, delivering on time and keeping results high quality.
+        I am focused on achieving business goals, delivering on time and maintaining high-quality results.
   - title:
       ru: Создание микросервисов
       en: Building microservices
@@ -90,7 +90,7 @@ abilities:
         Использую проверенные подходы: DDD, event-driven архитектуру и контрактное тестирование.
       en: |
         I design and deliver solutions with the business domain, scalability and fault tolerance in mind.
-        I help split a monolith into services, set up their interaction, keep data consistent and simplify maintenance.
+        I help split a monolith into services, set up their interaction, ensure data consistency across services and simplify maintenance.
         I use proven approaches: DDD, event-driven architecture and contract testing.
   - title:
       ru: Адаптивная и чистая вёрстка
@@ -107,7 +107,7 @@ abilities:
         I pay special attention to code readability, component structure and long-term maintainability.
   - title:
       ru: Вёрстка с Tailwind / Headless
-      en: Tailwind / Headless UI
+      en: "Markup with Tailwind / Headless UI"
     icon: css
     description:
       ru: |
@@ -128,6 +128,6 @@ abilities:
         Создаю PWA, обеспечиваю офлайн-доступ, push-уведомления и высокую отзывчивость интерфейса.
         Соблюдаю архитектурную дисциплину, обеспечиваю удобство сопровождения и оптимизирую производительность для разных устройств 
       en: |
-        I build client applications in plain JavaScript and with modern approaches.
-        I create PWAs with offline access, push notifications and a highly responsive interface.
-        I keep to architectural discipline, make the code easy to maintain and optimise performance for different devices.
+        I build client applications in vanilla JavaScript and with modern approaches.
+        I create progressive web apps (PWAs) with offline access, push notifications and a highly responsive interface.
+        I maintain architectural discipline, make the code easy to support and optimise performance for different devices.

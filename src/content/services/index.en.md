@@ -1,6 +1,6 @@
 ---
 meta_title: "Services: architecture, processes, engineering culture"
-title: "Services — design and architecture, engineering culture, building processes"
+title: "Services — architecture and design, engineering culture, setting up processes"
 keywords:
   - services
   - architecture
@@ -11,7 +11,7 @@ keywords:
   - systems approach
   - service development
 description: |
-  I help teams launch and scale services: architecture, audit, processes, culture, crisis tasks.
+  I help teams launch and scale services: architecture, audits, processes, culture, crisis situations.
   A fast start and a systems approach.
 section:
   class: services
@@ -19,9 +19,9 @@ section:
   title: How can I help?
   image: img/services-hero.webp
   description: |
-    Design of resilient, scalable services, architecture audit,
+    Designing resilient, scalable services, architecture audits,
     introducing engineering culture, CI/CD and DDD. I help teams launch MVPs,
-    build processes and solve critical technical problems.
+    build processes and solve crisis-mode technical problems.
 menus:
   main:
     name: Services

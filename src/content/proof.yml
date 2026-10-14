@@ -22,20 +22,20 @@
           url: "https://github.com/im-kulikov/resolvex"
           description:
             ru: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
-            en: "A service that joins BGP and DNS: manage domains and their IP addresses from an admin panel."
+            en: "A service that combines BGP and DNS: manage domains and their IP addresses from an admin panel."
         - title: traefik-provider
           url: "https://github.com/im-kulikov/traefik-provider"
           description:
             ru: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
-            en: "A Traefik v3 plugin that configures routing from the state of another Traefik instance."
+            en: "A Traefik v3 plugin that configures routing based on the state of another Traefik instance."
         - title: go-routeros
           url: "https://github.com/go-routeros/routeros"
           description:
             ru: "Клиент RouterOS API (Mikrotik) на Go. Поддерживаем и развиваем вместе с другом."
-            en: "A RouterOS (MikroTik) API client for Go. Maintained together with a friend."
+            en: "A RouterOS (MikroTik) API client for Go. Maintained and developed together with a friend."
         - title:
             ru: Вклад в другие проекты
             en: Contributions to other projects
           description:
             ru: "Исправления и доработки (pull request) в Golang, Labstack Echo, TiDB и RouterOS."
-            en: "Fixes and improvements (pull requests) in Golang, Labstack Echo, TiDB and RouterOS."
+            en: "Fixes and improvements (pull requests) to Golang, LabStack Echo, TiDB and RouterOS."

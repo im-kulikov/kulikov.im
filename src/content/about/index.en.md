@@ -7,7 +7,7 @@ keywords:
   - software development
   - systems thinking
 description: |
-  20+ years in systems development, architecture and technical leadership. An engineering approach, mature decisions and
+  20+ years in systems development, architecture and technical leadership. An engineering approach, mature solutions and
   results.
 section:
   class: about

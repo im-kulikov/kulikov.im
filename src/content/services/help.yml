@@ -1,6 +1,6 @@
 title:
   ru: С какими проблемами я помогаю
-  en: Problems I help with
+  en: "Problems I help solve"
 class: section-md mb-20
 icon: briefcase
 description:
@@ -10,7 +10,7 @@ description:
     Устраняю хаос в коде, документации и взаимодействии между ролями — от Dev до Ops — чтобы команда могла сосредоточиться 
     на создании ценности, а не тушении пожаров.
   en: |
-    I help teams build predictable, stable development that the business really trusts.
+    I help teams build predictable, stable development that the business genuinely trusts.
     I set up processes that reduce the number of bugs, speed up releases and raise trust in the team.
     I clear up the chaos in code, documentation and the interaction between roles, from Dev to Ops, so the team
     can focus on creating value instead of firefighting.
@@ -24,9 +24,9 @@ items:
   - ru: Сервисы и приложения работают нестабильно, часто падают, а поиск причин занимает часы или дни.
     en: Services and applications are unstable, crash often, and finding the cause takes hours or days.
   - ru: Между разработчиками, тестировщиками и DevOps-инженерами регулярно возникают конфликты.
-    en: Developers, testers and DevOps engineers regularly come into conflict.
+    en: "Conflicts regularly arise between developers, testers and DevOps engineers."
   - ru: Релиз вызывает стресс, потому что никто не уверен, как поведёт себя система в продакшене.
-    en: A release is stressful because nobody is sure how the system will behave in production.
+    en: "Releases are stressful because nobody is sure how the system will behave in production."
   - ru: Хочется выпускать обновления ежедневно, но реальность этому мешает.
     en: You want to ship updates every day, but reality gets in the way.
   - ru: Разработка и поставка ценности проходят непредсказуемо, бизнесу сложно доверять команде.

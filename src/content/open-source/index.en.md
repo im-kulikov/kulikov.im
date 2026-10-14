@@ -22,8 +22,8 @@ section:
   class: open-source
   eyebrow: Open Source
   description: |-
-    I enjoy developing in Go, publish projects on GitHub and take an active part in the Open Source community.
-    In my free time I build DIY devices on Arduino and ESPHome, growing my own smart home system.
+    I enjoy developing in Go, publish projects on GitHub and actively contribute to the Open Source community.
+    In my free time I build DIY devices on Arduino and ESPHome and develop my own smart home system.
 menus:
   main:
     name: "Open Source"

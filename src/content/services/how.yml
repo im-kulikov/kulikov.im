@@ -1,6 +1,6 @@
 title:
   ru: Как мы будем работать
-  en: How we will work
+  en: "How we work together"
 class: section-md mb-20
 icon: briefcase
 description:
@@ -8,14 +8,14 @@ description:
     Формат подбираем под задачу: аудит, проектирование, запуск MVP, усиление команды или ведение направления —
     на контракте, по найму или как совместный проект.
   en: |
-    We pick the format to fit the task: an audit, design, an MVP launch, strengthening a team or leading a direction,
-    on a contract, as an employee or as a joint project.
+    We pick the format to fit the task: an audit, design, an MVP launch, team reinforcement or leading a workstream,
+    whether on a contract, as an employee or as a joint project.
 items:
   - ru: Короткий созвон. Вы описываете задачу и ограничения, я задаю вопросы и честно говорю, моя ли это задача.
-    en: A short call. You describe the task and constraints, I ask questions and tell you honestly whether it is a task for me.
+    en: "A short call. You describe the task and constraints, I ask questions and tell you honestly whether I am the right person for it."
   - ru: Фиксируем цель, объём и формат. Вы заранее знаете, что получите на выходе и как мы будем отслеживать прогресс.
-    en: We fix the goal, scope and format. You know in advance what you will get and how we will track progress.
+    en: "We agree the goal, scope and format. You know in advance what you will get and how we will track progress."
   - ru: Работаю прозрачно. Регулярные короткие отчёты, решения и договорённости фиксируются письменно.
-    en: I work transparently. Regular short reports, with decisions and agreements put in writing.
+    en: "I work transparently: regular short reports, with decisions and agreements put in writing."
   - ru: Передаю результат так, чтобы команда могла жить без меня. Документация, обучение, понятные процессы.
-    en: I hand over the result so the team can live without me. Documentation, training, clear processes.
+    en: "I hand over the result so that the team can carry on without me: documentation, training, clear processes."
