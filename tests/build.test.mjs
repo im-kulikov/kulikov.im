@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { ALIASES, ALL_PAGES, BASE, EN_PAGES, PAGES, ROOT, SITE, all, classes, dom, enPath, exists, read, text, urlPath } from "./helpers/site.mjs";
 import { BUILD_LOG, STATS_COPY } from "./helpers/paths.mjs";
-import { HUGO } from "./helpers/hugo.mjs";
+import { BUILD_SHA, HUGO } from "./helpers/hugo.mjs";
 
 test("build log has no warnings, errors or deprecations", () => {
   const bad = readFileSync(BUILD_LOG, "utf8").split("\n").filter((l) => /^(WARN|ERROR)|deprecated/i.test(l));
@@ -63,9 +63,9 @@ test("the site does not need Go or Hugo modules", () => {
   assert.ok(!readdirSync(ROOT).includes("go.mod"), "go.mod would make every build depend on Go and the network");
 });
 
-test("the footer git-info block is filled on every content page (enableGitInfo): author, date, 40-char hash, subject", () => {
+test("the footer git-info block names the commit the site was built from (HUGO_BUILD_SHA), the same on every page", () => {
   for (const p of [...PAGES, ...EN_PAGES.map((x) => `en/${x === "index" ? "index" : x}`)]) {
     const [hash] = all(dom(p), (n) => n.tagName === "p" && classes(n).includes("git-hash"));
-    assert.match(text(hash), /^[0-9a-f]{40}$/, p);
+    assert.equal(text(hash), BUILD_SHA, p);
   }
 });

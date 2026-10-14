@@ -7,7 +7,7 @@ publishDir: build/public
 resourceDir: build/resources
 i18nDir: src/i18n
 uglyURLs: true
-# .GitInfo (last commit of a page): shown in the footer by ?gitinfo=1, also feeds lastmod in the sitemap
+# .GitInfo (last commit of a page) feeds lastmod in the sitemap; the footer shows the build commit instead (?gitinfo=1)
 enableGitInfo: true
 #minify: true
 baseURL: "https://kulikov.im/"

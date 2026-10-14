@@ -4,6 +4,9 @@ import { join } from "node:path";
 import { BASE, ROOT } from "./paths.mjs";
 
 export const HUGO = process.env.HUGO_BIN || "hugo";
+// the commit the footer reports (CI's deploy sets the same variables from the event)
+const git = (...a) => spawnSync("git", a, { cwd: ROOT, encoding: "utf8" }).stdout.trim();
+export const BUILD_SHA = git("rev-parse", "HEAD");
 const STATS = join(ROOT, "hugo_stats.json");
 
 // Production build exactly like CI. --panicOnWarning turns any template/config warning
@@ -14,7 +17,7 @@ export function buildSite(dest) {
     const r = spawnSync(HUGO, ["--gc", "--minify", "--panicOnWarning", "--baseURL", `${BASE}/`, "--destination", dest], {
       cwd: ROOT,
       encoding: "utf8",
-      env: { ...process.env, HUGO_ENVIRONMENT: "production", TZ: "Europe/Moscow" },
+      env: { ...process.env, HUGO_ENVIRONMENT: "production", HUGO_BUILD_SHA: BUILD_SHA, HUGO_BUILD_DATE: git("show", "-s", "--format=%cI", "HEAD"), TZ: "Europe/Moscow" },
     });
     return { status: r.status, error: r.error, log: `${r.stdout ?? ""}\n${r.stderr ?? ""}`, stats: readFileSync(STATS, "utf8") };
   } finally {
