@@ -54,6 +54,10 @@ describe("supply chain", () => {
     assert.ok(u.length > 5);
     for (const a of u.filter((x) => !x.startsWith("./"))) assert.match(a, /^[\w.-]+\/[\w./-]+@[0-9a-f]{40}$/, a);
   });
+  test("the deploy checks out the full history so .GitInfo (footer, sitemap lastmod) is per page", () => {
+    const co = ci.jobs.deploy.steps.find((x) => x.uses?.startsWith("actions/checkout@"));
+    assert.equal(co.with?.["fetch-depth"], 0);
+  });
   test("runners are pinned to an OS version, not a moving *-latest label", () => {
     for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
   });
