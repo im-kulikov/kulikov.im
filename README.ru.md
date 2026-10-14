@@ -8,6 +8,7 @@
 ![Hugo](https://img.shields.io/badge/Hugo-0.167-ff4088?logo=hugo&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8?logo=tailwindcss&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-97%20%2F%20100%20%2F%20100%20%2F%20100-0cce6b?logo=lighthouse&logoColor=white)
+[![codecov](https://codecov.io/gh/im-kulikov/kulikov.im/graph/badge.svg)](https://codecov.io/gh/im-kulikov/kulikov.im)
 
 [**kulikov.im**](https://kulikov.im) · [**kulikov.im/en**](https://kulikov.im/en/) · [English README](README.md)
 
@@ -49,6 +50,8 @@
 - **Картинки, иконки, манифест**: бюджеты, валидный ICO, maskable-иконка, правильные размеры PNG.
 - **Конвейер**: права workflow, закреплённые действия и раннеры, проверяемая загрузка Hugo.
 - **Детерминизм**: две сборки с одинаковыми байтами.
+
+`npm run test:coverage` запускает те же браузерные тесты на несжатой сборке с source map и отправляет в [Codecov](https://codecov.io/gh/im-kulikov/kulikov.im) покрытие строк JavaScript сайта (сейчас все строки; у шаблонов Hugo, YAML и CSS построчного покрытия нет, их проверяют тесты выше).
 
 `npm run test:e2e` прогоняет собранный сайт через Chromium (Playwright): переполнение по ширине на пяти размерах, контраст WCAG в обеих темах, переключатель языка и запоминание выбора, раскладка сетки.
 

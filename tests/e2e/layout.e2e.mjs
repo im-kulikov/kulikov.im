@@ -5,13 +5,15 @@
 import { after, before, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 import { ALIASES, ALL_PAGES, EN_PAGES, PAGES, SITE, enPath, urlPath } from "../helpers/site.mjs";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".xml": "application/xml", ".txt": "text/plain", ".webmanifest": "application/manifest+json" };
 let server, origin, browser;
+const COVERAGE = process.env.COVERAGE === "1"; // tests/coverage.mjs: V8 coverage of the (unminified, source-mapped) site bundle
+const scriptCoverage = [];
 const url = (p) => origin + (p.startsWith("/") ? p : p === "404" ? "/404.html" : urlPath(p));
 const EVERY = [...ALL_PAGES, ...EN_PAGES.map(enPath)]; // Russian pages and their English translations
 
@@ -23,6 +25,14 @@ async function open(p, { width = 1280, height = 900, ...ctx } = {}) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.route("**/*", (r) => (r.request().url().startsWith(origin) ? r.continue() : r.abort()));
+  if (COVERAGE) {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    const close = context.close.bind(context);
+    context.close = async () => {
+      scriptCoverage.push(...(await page.coverage.stopJSCoverage()).filter((e) => /\/js\/script\.js$/.test(e.url)));
+      return close();
+    };
+  }
   await page.goto(url(p), { waitUntil: "load" });
   return { page, context, requests, errors };
 }
@@ -40,6 +50,10 @@ before(async () => {
   browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
 });
 after(async () => {
+  if (COVERAGE) {
+    mkdirSync("build/coverage", { recursive: true });
+    writeFileSync("build/coverage/v8.json", JSON.stringify(scriptCoverage));
+  }
   await browser?.close();
   server?.close();
 });
