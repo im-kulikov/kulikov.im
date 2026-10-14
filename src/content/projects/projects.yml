@@ -1,19 +1,30 @@
 enable: true
-title: Реализованные проекты
-description: Я выбрал несколько проектов, историей которых хотел бы поделиться. Не
-  подумайте, это не самые лёгкие или беспроблемные проекты, у каждого сложная судьба,
-  а потому считаю важным осветить её.
+title:
+  ru: Реализованные проекты
+  en: Completed projects
+description:
+  ru: Я выбрал несколько проектов, историей которых хотел бы поделиться. Не
+    подумайте, это не самые лёгкие или беспроблемные проекты, у каждого сложная судьба,
+    а потому считаю важным осветить её.
+  en: "I have picked a few projects whose stories I would like to share. Don't get me wrong: these are not the easiest or most trouble-free projects. Each has a complicated history, which is why I think it is worth telling."
 projects:
-  - title: ПрофМастер
+  - title:
+      ru: ПрофМастер
+      en: ProfMaster
     type: Website / CMS
     role:
-      - Разработка
-      - Архитектура
-      - Клиентская поддержка
-    description: 'Заказ был простым: сделать сайт. Но стояла задача создать систему,
-      независимую от разработчиков. Я спроектировал структуру, внедрил админку-конструктор
-      и обучил клиента самостоятельной работе. Через годы проект остался актуальным
-      — благодаря архитектуре, которая учитывает будущее.'
+      - ru: Разработка
+        en: Development
+      - ru: Архитектура
+        en: Architecture
+      - ru: Клиентская поддержка
+        en: "Customer support"
+    description:
+      ru: 'Заказ был простым: сделать сайт. Но стояла задача создать систему,
+        независимую от разработчиков. Я спроектировал структуру, внедрил админку-конструктор
+        и обучил клиента самостоятельной работе. Через годы проект остался актуальным
+        — благодаря архитектуре, которая учитывает будущее.'
+      en: "The brief was simple: build a website. But the real goal was a system that would not depend on its developers. I designed the structure, built a site-builder admin panel and trained the client to work independently. Years later the project is still relevant, thanks to an architecture designed with the future in mind."
     skills:
       - Ruby/Rails
       - UI/UX
@@ -22,109 +33,153 @@ projects:
   - title: Teratek
     type: E-commerce
     role:
-      - Кризис-менеджмент
+      - ru: Кризис-менеджмент
+        en: Crisis management
       - DevOps
-      - Поддержка
-    description: 'Магазин был на грани закрытия: падения, ошибки, ноль документации.
-      Вместе с командой мы быстро проведи аудит, исправили критичные баги, настроили
-      CI/CD и начали восстанавливать доверие клиентов. Спустя месяц продажи стабилизировались.
-      Этот проект стал отличным примером кризис-менеджмента под давлением.'
+      - ru: Поддержка
+        en: Support
+    description:
+      ru: 'Магазин был на грани закрытия: падения, ошибки, ноль документации.
+        Вместе с командой мы быстро проведи аудит, исправили критичные баги, настроили
+        CI/CD и начали восстанавливать доверие клиентов. Спустя месяц продажи стабилизировались.
+        Этот проект стал отличным примером кризис-менеджмента под давлением.'
+      en: "The store was on the verge of closing: outages, errors, zero documentation. Together with the team we quickly ran an audit, fixed the critical bugs, set up CI/CD and began to win back customers' trust. A month later sales had stabilised. This project became an excellent example of crisis management under pressure."
     skills:
       - PHP
       - CI/CD
       - Docker
       - Observability
-  - title: Золотая Цифра
+  - title:
+      ru: Золотая Цифра
+      en: "Golden Digit"
     type: CRM (Custom)
     role:
-      - Аналитика
-      - Архитектура
-      - Разработка
-    description: 'Пока работал как freelancer, ко мне и коллеге обратились с вопросом:
-      «Сможете сделать CRM?». Мы с Александром начали с глубокой аналитики, даже поработали
-      «в полях», чтобы понять процессы. Архитектура, решения и UX выросли по сути из
-      реальных задач и общения с потенциальными пользователями. Итог — не просто CRM,
-      а инструмент, которым сотрудники компании действительно хотели пользоваться.'
+      - ru: Аналитика
+        en: Analysis
+      - ru: Архитектура
+        en: Architecture
+      - ru: Разработка
+        en: Development
+    description:
+      ru: 'Пока работал как freelancer, ко мне и коллеге обратились с вопросом:
+        «Сможете сделать CRM?». Мы с Александром начали с глубокой аналитики, даже поработали
+        «в полях», чтобы понять процессы. Архитектура, решения и UX выросли по сути из
+        реальных задач и общения с потенциальными пользователями. Итог — не просто CRM,
+        а инструмент, которым сотрудники компании действительно хотели пользоваться.'
+      en: "While I was working as a freelancer, a colleague and I were asked: \"Can you build a CRM?\" Alexander and I started with in-depth analysis and even worked \"in the field\" to understand the processes. The architecture, the decisions and the UX grew essentially out of real tasks and conversations with prospective users. The result was not just a CRM but a tool that the company's employees really wanted to use."
     skills:
       - Freelance
       - Backend
       - UX
       - PHP / Go
-  - title: ПрайсХаус
+  - title:
+      ru: ПрайсХаус
+      en: PriceHouse
     type: SaaS CRM
     role:
-      - Архитектура
-      - Командообразование
+      - ru: Архитектура
+        en: Architecture
+      - ru: Командообразование
+        en: "Team formation"
       - CI/CD
-    description: После успеха предыдущего проекта заказчик захотел чтобы продукт не
-      только работал у него, но и на него, а именно под аренду другим компаниям. Совместно
-      с коллегой спроектировали SaaS-архитектуру с конфигурируемыми, независимыми модулями.
-      Потребовалось много рефакторинга и поддержки миграций. Но в итоге получился первый
-      в моей практике продукт с моделью масштабируемого внедрения.
+    description:
+      ru: После успеха предыдущего проекта заказчик захотел чтобы продукт не
+        только работал у него, но и на него, а именно под аренду другим компаниям. Совместно
+        с коллегой спроектировали SaaS-архитектуру с конфигурируемыми, независимыми модулями.
+        Потребовалось много рефакторинга и поддержки миграций. Но в итоге получился первый
+        в моей практике продукт с моделью масштабируемого внедрения.
+      en: "After the success of the previous project, the client wanted the product to work not only for their own company but also to earn money for them by being rented out to other companies. Together with a colleague, we designed a SaaS architecture with configurable, independent modules. It took a lot of refactoring and migration support. But in the end it became the first product in my practice with a scalable deployment model."
     skills:
       - SaaS
       - Multi-Tenant
       - DevOps
       - Observability
-  - title: ИнТелКом / FiberSide
-    type: Платформенные сервисы
+  - title:
+      ru: ИнТелКом / FiberSide
+      en: InTelCom / FiberSide
+    type:
+      ru: Платформенные сервисы
+      en: Platform services
     role:
-      - Архитектура
+      - ru: Архитектура
+        en: Architecture
       - Backend
-      - Сетевой стек
-    description: Компания запускала Wi-Fi точки в общественных местах, а так же авторизацию
-      согласно законов РФ — всё должно было работать 24/7. Вместе с командой вели разработку
-      ключевых сервисов, интеграцию с billing-системой, внедрение мониторинга и логирования.
-      Это был мой первый продакшн-опыт с незнакомыми ранее решениями, и он дал сильный
-      рост.
+      - ru: Сетевой стек
+        en: Network stack
+    description:
+      ru: Компания запускала Wi-Fi точки в общественных местах, а так же авторизацию
+        согласно законов РФ — всё должно было работать 24/7. Вместе с командой вели разработку
+        ключевых сервисов, интеграцию с billing-системой, внедрение мониторинга и логирования.
+        Это был мой первый продакшн-опыт с незнакомыми ранее решениями, и он дал сильный
+        рост.
+      en: "The company was launching Wi-Fi hotspots in public places, together with user authentication as required by Russian law, and everything had to work 24/7. Together with the team, I developed the key services, integrated with the billing system and introduced monitoring and logging. It was my first production experience with technologies that were new to me, and it accelerated my growth."
     skills:
       - Networking
       - Audit
       - Microservices
       - Golang
   - title: StartBase
-    type: Frontend-платформа
+    type:
+      ru: Frontend-платформа
+      en: Frontend platform
     role:
-      - Техлид
-      - Архитектура
-      - Инфраструктура
-    description: Проработав в компании долгое время как ведущий разработчик, я наконец
-      получил повышение. Так совпало, что начальник не мог найти кому доверить архитектуру
-      frontend-платформы. Новая задача, интересный вызов. Я взял тайм-аут, прошёл ряд
-      курсов для повышения квалификации, а позже, вместе с дизайнером собрали UI Kit,
-      внедрили Storybook. Далее была кропотливая работа с CICD и правилами PR-ревью.
-      Приходилось многое решать лично, но затем масштабировал на команду. В результате
-      разработка фич стала в 2 раза быстрее без потери качества.
+      - ru: Техлид
+        en: Tech lead
+      - ru: Архитектура
+        en: Architecture
+      - ru: Инфраструктура
+        en: Infrastructure
+    description:
+      ru: Проработав в компании долгое время как ведущий разработчик, я наконец
+        получил повышение. Так совпало, что начальник не мог найти кому доверить архитектуру
+        frontend-платформы. Новая задача, интересный вызов. Я взял тайм-аут, прошёл ряд
+        курсов для повышения квалификации, а позже, вместе с дизайнером собрали UI Kit,
+        внедрили Storybook. Далее была кропотливая работа с CICD и правилами PR-ревью.
+        Приходилось многое решать лично, но затем масштабировал на команду. В результате
+        разработка фич стала в 2 раза быстрее без потери качества.
+      en: "After working at the company for a long time as a senior developer, I was finally promoted. As it happened, my manager could not find anyone to trust with the architecture of the frontend platform. A new task, an interesting challenge. I took time out to complete a number of professional development courses, and later, together with a designer, we built a UI kit and introduced Storybook. Then came painstaking work on CI/CD and the rules for PR review. At first I had to make many decisions personally, but then I scaled the approach across the team. As a result, feature development became twice as fast without a loss of quality."
     skills:
       - React
       - Headless UI
       - CI/CD
       - UI Design
   - title: DevHub Platform
-    type: Внутренний портал
+    type:
+      ru: Внутренний портал
+      en: Internal portal
     role:
-      - Архитектура
+      - ru: Архитектура
+        en: Architecture
       - Backend
       - Frontend
-    description: 'В компании был хаос: метрики, код и документация разбросаны. Я предложил
-      архитектуру, в которой всё сводится в единый портал. Интеграции с Sentry, Git,
-      Grafana, карточки проектов, внутренний API. Это дало инженерам прозрачность и
-      экономию времени на рутине.'
+    description:
+      ru: 'В компании был хаос: метрики, код и документация разбросаны. Я предложил
+        архитектуру, в которой всё сводится в единый портал. Интеграции с Sentry, Git,
+        Grafana, карточки проектов, внутренний API. Это дало инженерам прозрачность и
+        экономию времени на рутине.'
+      en: "The company was in chaos: metrics, code and documentation were scattered. I proposed an architecture that brings everything together in a single portal. Integrations with Sentry, Git and Grafana, project cards, an internal API. This gave engineers transparency and saved them time on routine work."
     skills:
       - Clean Architecture
       - Monitoring
       - Frontend
       - API
   - title: Refactorium
-    type: Технический аудит
+    type:
+      ru: Технический аудит
+      en: Technical audit
     role:
-      - Аудит
-      - Архитектура
-      - Разработка
-    description: 'Проект застыл: баги, страх трогать код, бизнес в тупике. Я провёл
-      аудит, переписал архитектурное ядро и внедрил документацию. Провели воркшопы с
-      командой, убрали техдолг. Через 2 месяца проект ожил, а команда почувствовала
-      контроль и уверенность.'
+      - ru: Аудит
+        en: Audit
+      - ru: Архитектура
+        en: Architecture
+      - ru: Разработка
+        en: Development
+    description:
+      ru: 'Проект застыл: баги, страх трогать код, бизнес в тупике. Я провёл
+        аудит, переписал архитектурное ядро и внедрил документацию. Провели воркшопы с
+        командой, убрали техдолг. Через 2 месяца проект ожил, а команда почувствовала
+        контроль и уверенность.'
+      en: "The project had stalled: bugs, a fear of touching the code, the business at a dead end. I ran an audit, rewrote the architectural core and introduced documentation. We held workshops with the team and cleared the technical debt. After two months the project came back to life, and the team felt in control and confident."
     skills:
       - SOLID
       - KISS
@@ -133,54 +188,75 @@ projects:
   - title: Golang Tooling Contributions
     type: Open Source
     role:
-      - Контрибьютор
+      - ru: Контрибьютор
+        en: Contributor
       - Issue Hunter
-    description: Работая с разными Go-проектами, я начал делать pull request-ы в Golang,
-      Echo, TiDB и другие open-source. Писал утилиты, генераторы и обёртки. Это дало
-      мне понимание, как проектировать библиотеки и какую пользу приносит комьюнити.
-      До сих пор слежу за их развитием.
+    description:
+      ru: Работая с разными Go-проектами, я начал делать pull request-ы в Golang,
+        Echo, TiDB и другие open-source. Писал утилиты, генераторы и обёртки. Это дало
+        мне понимание, как проектировать библиотеки и какую пользу приносит комьюнити.
+        До сих пор слежу за их развитием.
+      en: "Working with various Go projects, I began sending pull requests to Golang, Echo, TiDB and other open-source projects. I wrote utilities, generators and wrappers. This gave me an understanding of how to design libraries and what value a community brings. I still follow their development."
     skills:
       - Open Source
       - Golang
       - Community
       - CLI Tools
   - title: NetBox Wrapper
-    type: Сетевые утилиты
+    type:
+      ru: Сетевые утилиты
+      en: Network utilities
     role:
-      - Системный разработчик
-    description: Пришлось интегрировать сетевую информацию из NetBox и других источников.
-      Я написал обёртку на Go с удобным API, асинхронной обработкой и логированием.
-      Проект быстро подхватили коллеги. Благодаря ему сетевые задачи стали воспроизводимыми
-      и масштабируемыми.
+      - ru: Системный разработчик
+        en: Systems developer
+    description:
+      ru: Пришлось интегрировать сетевую информацию из NetBox и других источников.
+        Я написал обёртку на Go с удобным API, асинхронной обработкой и логированием.
+        Проект быстро подхватили коллеги. Благодаря ему сетевые задачи стали воспроизводимыми
+        и масштабируемыми.
+      en: "I had to integrate network information from NetBox and other sources. I wrote a Go wrapper with a convenient API, asynchronous processing and logging. My colleagues quickly adopted the project. Thanks to it, network tasks became reproducible and scalable."
     skills:
       - Networking
       - Golang
       - Async
       - Integration
   - title: TeamRadar
-    type: Внутренние процессы
+    type:
+      ru: Внутренние процессы
+      en: Internal processes
     role:
-      - Тимлид
-      - Ментор
-      - Процессы
-    description: При масштабировании команды стал важен рост людей и процессов. Я ввёл
-      регулярные review, карьерные треки, стандарты документации и CI. Провёл десятки
-      1:1 и менторских сессий. Благодаря этому мы сократили текучесть и повысили вовлечённость
-      команды.
+      - ru: Тимлид
+        en: Team lead
+      - ru: Ментор
+        en: Mentor
+      - ru: Процессы
+        en: Processes
+    description:
+      ru: При масштабировании команды стал важен рост людей и процессов. Я ввёл
+        регулярные review, карьерные треки, стандарты документации и CI. Провёл десятки
+        1:1 и менторских сессий. Благодаря этому мы сократили текучесть и повысили вовлечённость
+        команды.
+      en: "As the team grew, developing people and processes became a priority. I introduced regular reviews, career tracks, documentation standards and CI. I held dozens of 1:1s and mentoring sessions. Thanks to this we reduced turnover and raised the team's engagement."
     skills:
       - Team Management
       - CI/CD
       - Docs-as-Code
       - Growth
   - title: FinchPay
-    type: Микросервисная платформа
+    type:
+      ru: Микросервисная платформа
+      en: Microservice platform
     role:
-      - Архитектор
-      - Разработчик
-    description: 'В рамках платформы платёжных микросервисов я создал архитектуру запуска:
-      Graceful shutdown, middleware, observability, стандартные модули. Это снизило
-      время старта новых команд в 3 раза и позволило поддерживать качество кода вне
-      зависимости от проекта.'
+      - ru: Архитектор
+        en: Architect
+      - ru: Разработчик
+        en: Developer
+    description:
+      ru: 'В рамках платформы платёжных микросервисов я создал архитектуру запуска:
+        Graceful shutdown, middleware, observability, стандартные модули. Это снизило
+        время старта новых команд в 3 раза и позволило поддерживать качество кода вне
+        зависимости от проекта.'
+      en: "As part of a payment microservices platform, I created a service bootstrap architecture: graceful shutdown, middleware, observability and standard modules. It cut the time for new teams to get started threefold and made it possible to maintain code quality regardless of the project."
     skills:
       - Platform Engineering
       - Golang
@@ -188,15 +264,20 @@ projects:
   - title: DevPortal Platform
     type: Internal Developer Platform
     role:
-      - Архитектура
-      - Разработка
-      - Интеграции
-    description: В компании не хватало единого источника правды о сервисах — информация
-      была разбросана между вики, дашбордами и устной памятью сотрудников. Я предложил
-      и реализовал внутренний портал для инженеров, объединивший поиск сервисов, документацию,
-      покрытия, контракты и e2e-тесты. Мы внедрили авторизацию через Keycloak, разработали
-      дашборды и карточки проектов. Это решение повысило прозрачность, ускорило онбординг
-      и снизило количество лишних вопросов в инженерной команде.
+      - ru: Архитектура
+        en: Architecture
+      - ru: Разработка
+        en: Development
+      - ru: Интеграции
+        en: Integrations
+    description:
+      ru: В компании не хватало единого источника правды о сервисах — информация
+        была разбросана между вики, дашбордами и устной памятью сотрудников. Я предложил
+        и реализовал внутренний портал для инженеров, объединивший поиск сервисов, документацию,
+        покрытия, контракты и e2e-тесты. Мы внедрили авторизацию через Keycloak, разработали
+        дашборды и карточки проектов. Это решение повысило прозрачность, ускорило онбординг
+        и снизило количество лишних вопросов в инженерной команде.
+      en: "The company lacked a single source of truth about its services: information was scattered across wikis, dashboards and employees' memory. I proposed and built an internal portal for engineers that brought together service search, documentation, test coverage, contracts and e2e tests. We introduced sign-in through Keycloak and built dashboards and project cards. The solution improved transparency, sped up onboarding and reduced the number of unnecessary questions in the engineering team."
     skills:
       - Docs
       - Golang

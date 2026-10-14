@@ -1,56 +1,102 @@
 ---
-- title: Предоставляемые услуги
+- title:
+    ru: Предоставляемые услуги
+    en: What I offer
   image: "/img/features-services.webp"
-  content: Мой опыт охватывает как коммерческую разработку в крупных и стартап-компаниях,
-    так и точечные проектные задачи, где нужно быстро разобраться и предложить решение.
+  content:
+    ru: Мой опыт охватывает как коммерческую разработку в крупных и стартап-компаниях,
+      так и точечные проектные задачи, где нужно быстро разобраться и предложить решение.
+    en: My experience covers commercial development in large companies and startups,
+      as well as one-off projects where you need to get up to speed fast and propose a solution.
   bullets:
-    - Реализация высоконагруженных и отказоустойчивых систем.
-    - Создание решений на основе микросервисной архитектуры.
-    - Работа с сетевыми протоколами, распределёнными системами и системным программированием.
-    - Формирование, развитие и менторство команд разработки.
-    - Проведение PerfReview и составление индивидуальных планов развития.
-    - Настройка продуктовой и инженерной прозрачности (планы, процессы, метрики).
-    - 'Внедрение и масштабирование процессов: Delivery on Date, Lead Time, SLO и др.'
-    - Проектирование архитектуры сервисов и платформенных решений.
-    - Внедрение DDD, Observability и стандартизация инженерных практик.
-    - Проведение технической экспертизы, аудит кода и инфраструктуры.
+    - ru: Реализация высоконагруженных и отказоустойчивых систем.
+      en: Building high-load, fault-tolerant systems.
+    - ru: Создание решений на основе микросервисной архитектуры.
+      en: "Building solutions based on a microservice architecture."
+    - ru: Работа с сетевыми протоколами, распределёнными системами и системным программированием.
+      en: "Working with network protocols, distributed systems and systems programming."
+    - ru: Формирование, развитие и менторство команд разработки.
+      en: Building, growing and mentoring development teams.
+    - ru: Проведение PerfReview и составление индивидуальных планов развития.
+      en: Running performance reviews and writing individual growth plans.
+    - ru: Настройка продуктовой и инженерной прозрачности (планы, процессы, метрики).
+      en: "Setting up product and engineering transparency (plans, processes, metrics)."
+    - ru: 'Внедрение и масштабирование процессов: Delivery on Date, Lead Time, SLO и др.'
+      en: 'Introducing and scaling processes: Delivery on Date, Lead Time, SLO and more.'
+    - ru: Проектирование архитектуры сервисов и платформенных решений.
+      en: "Designing the architecture of services and platform solutions."
+    - ru: Внедрение DDD, Observability и стандартизация инженерных практик.
+      en: "Introducing DDD and observability and standardising engineering practices."
+    - ru: Проведение технической экспертизы, аудит кода и инфраструктуры.
+      en: "Conducting technical expert reviews and auditing code and infrastructure."
   button:
     enable: true
-    label: Что я умею?
+    label:
+      ru: Что я умею?
+      en: What can I do?
     link: services
-- title: Почему стоит выбрать меня?
+- title:
+    ru: Почему стоит выбрать меня?
+    en: Why choose me?
   image: "/img/features-why.webp"
-  content: 'За годы работы я собрал обширный набор навыков и решений, которыми готов
-    поделиться. Вот почему вам стоит выбрать меня:'
+  content:
+    ru: 'За годы работы я собрал обширный набор навыков и решений, которыми готов
+      поделиться. Вот почему вам стоит выбрать меня:'
+    en: 'Over the years I have built up a broad set of skills and solutions that I am ready
+      to share. Here is why you should choose me:'
   bullets:
-    - Более 20 лет в разработке ПО, свыше 8 лет в роли тимлида и техлида, команды от 5 до 15 человек.
-    - Опыт в ведущих продуктовых и технологических компаниях (Wildberries, СберМаркет,
-      Coins.ph, Cryptopay и др.).
-    - Сократил time-to-market в 2–3 раза, от идеи до выпуска в продакшен.
-    - Сократил онбординг новых разработчиков с 2–3 недель до менее чем недели.
-    - Наладил кросс-ревью, которое начинается почти сразу после публикации изменений.
-    - Снизил затраты на найм и ротацию в командах за счёт обучения, наставничества и вовлечённости.
-    - Кризис-менеджмент и стабилизация проектов в сложных условиях.
-    - Помогаю быстро запустить проект, выбрав оптимальный стек для ваших задач.
+    - ru: Более 20 лет в разработке ПО, свыше 8 лет в роли тимлида и техлида, команды от 5 до 15 человек.
+      en: "20+ years in software development, 8+ years as a team lead and tech lead, teams of 5 to 15 people."
+    - ru: Опыт в ведущих продуктовых и технологических компаниях (Wildberries, СберМаркет,
+        Coins.ph, Cryptopay и др.).
+      en: "Experience at leading product and technology companies (Wildberries, SberMarket, Coins.ph, Cryptopay and others)."
+    - ru: Сократил time-to-market в 2–3 раза, от идеи до выпуска в продакшен.
+      en: "Cut time-to-market by a factor of two to three, from idea to production release."
+    - ru: Сократил онбординг новых разработчиков с 2–3 недель до менее чем недели.
+      en: "Cut onboarding time for new developers from 2–3 weeks to under a week."
+    - ru: Наладил кросс-ревью, которое начинается почти сразу после публикации изменений.
+      en: "Set up a cross-review process in which reviews start almost immediately after changes are published."
+    - ru: Снизил затраты на найм и ротацию в командах за счёт обучения, наставничества и вовлечённости.
+      en: Reduced hiring and turnover costs through training, mentoring and engagement.
+    - ru: Кризис-менеджмент и стабилизация проектов в сложных условиях.
+      en: "Crisis management and project stabilisation in difficult conditions."
+    - ru: Помогаю быстро запустить проект, выбрав оптимальный стек для ваших задач.
+      en: I help launch a project quickly by choosing the right stack for your needs.
   button:
     enable: true
-    label: Моё резюме на HeadHunter
+    label:
+      ru: Моё резюме на HeadHunter
+      en: My resume on HeadHunter
     link: https://spb.hh.ru/resume/fbe68504ff0948201a0039ed1f5a5443333573
-- title: Всё ещё сомневаетесь?
+- title:
+    ru: Всё ещё сомневаетесь?
+    en: Still not sure?
   image: "/img/features-talk.webp"
-  content: Выбрать специалиста, который поможет реализовать ваш план — непростое,
-    но важное решение.
+  content:
+    ru: Выбрать специалиста, который поможет реализовать ваш план — непростое,
+      но важное решение.
+    en: Choosing a specialist who will help you carry out your plan is a hard
+      but important decision.
   bullets:
-    - Развивал инженерные практики и инфраструктуру с прицелом на масштабирование.
-    - Выступаю за чистый, поддерживаемый код и придерживаюсь принципов DDD и Clean Architecture.
-    - Следую принципам DRY, KISS и SOLID, уделяя внимание деталям и читаемости.
-    - Проектировал платформенные решения с нуля и формировал команды под конкретные
-      задачи.
-    - Создаю понятную и полезную документацию, обучающие материалы. Считаю документацию
-      обязательной частью любого проекта.
-    - Развиваю собственные open source-проекты и участвую в крупных инициативах (Golang,
-      TiDB, Echo).
+    - ru: Развивал инженерные практики и инфраструктуру с прицелом на масштабирование.
+      en: Grew engineering practices and infrastructure with scaling in mind.
+    - ru: Выступаю за чистый, поддерживаемый код и придерживаюсь принципов DDD и Clean Architecture.
+      en: "I advocate clean, maintainable code and follow the principles of DDD and Clean Architecture."
+    - ru: Следую принципам DRY, KISS и SOLID, уделяя внимание деталям и читаемости.
+      en: I follow DRY, KISS and SOLID, paying attention to detail and readability.
+    - ru: Проектировал платформенные решения с нуля и формировал команды под конкретные
+        задачи.
+      en: Designed platform solutions from scratch and built teams for specific
+        tasks.
+    - ru: Создаю понятную и полезную документацию, обучающие материалы. Считаю документацию
+        обязательной частью любого проекта.
+      en: "I write clear, useful documentation and training materials. I consider documentation an essential part of any project."
+    - ru: Развиваю собственные open source-проекты и участвую в крупных инициативах (Golang,
+        TiDB, Echo).
+      en: "I maintain my own open-source projects and contribute to major initiatives (Golang, TiDB, Echo)."
   button:
     enable: true
-    label: Мой профиль на GitHub
+    label:
+      ru: Мой профиль на GitHub
+      en: My GitHub profile
     link: https://github.com/im-kulikov

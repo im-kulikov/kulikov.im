@@ -3,12 +3,12 @@
     <div class="container">
       <div class="mx-auto max-w-xl">
         <p class="font-secondary text-[7rem] font-bold leading-none md:text-[9rem]" style="color: var(--accent)" aria-hidden="true">404</p>
-        <h1 class="hero-title-sm mt-4">{{ T "page_not_found" | default "Страница не найдена" }}</h1>
+        <h1 class="hero-title-sm mt-4">{{ T "page_not_found" }}</h1>
         <p class="hero-lead mt-5">
-          {{ T "page_not_found_description" | default "Возможно, страница которую вы ищете, была удалена, у нее изменилось название или она временно недоступна." }}
+          {{ T "page_not_found_description" }}
         </p>
         <div class="mt-9 flex flex-wrap justify-center gap-3">
-          <a href="{{ site.BaseURL | relLangURL }}" class="btn btn-primary">{{ T "back_to_home" | default "На главную" }}</a>
+          <a href="{{ site.BaseURL | relLangURL }}" class="btn btn-primary">{{ T "back_to_home" }}</a>
         </div>
       </div>
     </div>

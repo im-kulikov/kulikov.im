@@ -1,4 +1,4 @@
-{{- $data := .Inner | transform.Unmarshal }}
+{{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ range $i, $e := $data }}
     <section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
         <div class="container">

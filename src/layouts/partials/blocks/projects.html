@@ -1,4 +1,4 @@
-{{- $data := .Inner | transform.Unmarshal }}
+{{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ with $data }}
     {{ if .enable }}
         <section class="section-sm">
@@ -11,7 +11,7 @@
                             <h3 class="h5">{{ .title }}</h3>
                             <p class="card-caption mb-1 mt-1">{{ .type }}</p>
                             {{ with .role }}
-                                <p class="card-caption mb-4"><strong>Роли:</strong> {{ delimit . ", " }}</p>
+                                <p class="card-caption mb-4"><strong>{{ T "roles" }}:</strong> {{ delimit . ", " }}</p>
                             {{ end }}
                             <p class="text-[0.95rem] leading-relaxed">{{ .description | markdownify }}</p>
                             {{ with .skills }}

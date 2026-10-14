@@ -1,0 +1,33 @@
+# Russian is the default (no URL prefix, texts live in config/_default/params.yml);
+# English overrides only what differs. Pages: index.md (ru) / index.en.md (en); long texts are {ru, en} pairs in the yml blocks.
+ru:
+  label: RU
+  locale: ru
+  weight: 1
+  title: "Персональный сайт Евгения Куликова"
+en:
+  label: EN
+  locale: en
+  weight: 2
+  title: "Evgeniy Kulikov — personal site"
+  params:
+    og_locale: en_US
+    language_name: English
+    contact:
+      label: Message me on Telegram
+    cta:
+      title: Tell me about your task
+      text: Describe the task or problem in a couple of words. I will reply on Telegram and tell you honestly whether I can help.
+    navigation_button:
+      label: Message me on Telegram
+    copyright:
+      - "A quality approach to solving your tasks"
+      - "&copy; 2004-{{< currentyear >}} Evgeniy Kulikov"
+      - "Saint Petersburg, Russian Federation"
+    cookies:
+      content: "This site uses cookies. By continuing to use it, you agree to their use."
+      button: "Agree"
+    metadata:
+      author: "Evgeniy Kulikov"
+      description: "Evgeniy Kulikov's personal site: Go development, architecture, tech lead. Audit, design, MVP launch."
+      keywords: ["software development", "Go", "tech lead", "architecture"]

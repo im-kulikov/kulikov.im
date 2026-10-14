@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { ALIASES, ALL_PAGES, BASE, PAGES, ROOT, SITE, exists, read, urlPath } from "./helpers/site.mjs";
+import { ALIASES, ALL_PAGES, BASE, EN_PAGES, PAGES, ROOT, SITE, enPath, exists, read, urlPath } from "./helpers/site.mjs";
 import { BUILD_LOG, STATS_COPY } from "./helpers/paths.mjs";
 import { HUGO } from "./helpers/hugo.mjs";
 
@@ -28,9 +28,11 @@ test("renamed pages keep their old URL: alias stubs redirect and point canonical
   }
 });
 
-test("sitemap.xml lists exactly the indexable pages, 404 and alias stubs excluded", () => {
-  const locs = [...read("sitemap.xml").matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]).sort();
-  assert.deepEqual(locs, PAGES.map((p) => `${BASE}${urlPath(p)}`).sort());
+test("sitemap.xml is an index of the per-language sitemaps that list exactly the indexable pages (404 and alias stubs excluded)", () => {
+  const locs = (f) => [...read(f).matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]).sort();
+  assert.deepEqual(locs("sitemap.xml"), [`${BASE}/en/sitemap.xml`, `${BASE}/ru/sitemap.xml`]);
+  assert.deepEqual(locs("ru/sitemap.xml"), PAGES.map((p) => `${BASE}${urlPath(p)}`).sort());
+  assert.deepEqual(locs("en/sitemap.xml"), EN_PAGES.map((p) => `${BASE}${enPath(p)}`).sort());
 });
 
 test("robots.txt points to the sitemap", () => {

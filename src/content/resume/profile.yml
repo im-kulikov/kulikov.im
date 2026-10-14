@@ -1,20 +1,37 @@
-- title: Профиль
+- title:
+    ru: Профиль
+    en: Profile
   icon: user
-  description: |
-    Инженер с более чем 20-летним опытом, специализирующийся на разработке, проектировании архитектур, автоматизации, 
-    системном программировании и управлении командами. Работаю на стыке инженерии и лидерства, развивая команды, 
-    устраняя хаос и создавая масштабируемые решения. Предпочитаю Go, Kubernetes, DDD, Clean Architecture, и подхожу 
-    к задачам с позиции системного мышления и прагматичного решения проблем.
+  description:
+    ru: |
+      Инженер с более чем 20-летним опытом, специализирующийся на разработке, проектировании архитектур, автоматизации, 
+      системном программировании и управлении командами. Работаю на стыке инженерии и лидерства, развивая команды, 
+      устраняя хаос и создавая масштабируемые решения. Предпочитаю Go, Kubernetes, DDD, Clean Architecture, и подхожу 
+      к задачам с позиции системного мышления и прагматичного решения проблем.
+    en: |
+      An engineer with 20+ years of experience, specialising in development, architecture design, automation,
+      systems programming and team management. I work at the intersection of engineering and leadership, growing teams,
+      clearing up chaos and building scalable solutions. I prefer Go, Kubernetes, DDD and Clean Architecture, and approach
+      problems with systems thinking and pragmatic problem solving.
   blocks:
-    - title: Ключевые компетенции
+    - title:
+        ru: Ключевые компетенции
+        en: Key competencies
       icon: colours
       list:
-        - Проектирование платформенных решений (PaaS, internal tooling)
-        - Управление командами, найм, менторинг
-        - DDD, микросервисы, CI/CD, Highload
-        - Observability, инфраструктура, автоматизация
-        - Аналитика и автоматизация процессов
-    - title: Технологии
+        - ru: Проектирование платформенных решений (PaaS, internal tooling)
+          en: Designing platform solutions (PaaS, internal tooling)
+        - ru: Управление командами, найм, менторинг
+          en: Team management, hiring, mentoring
+        - ru: DDD, микросервисы, CI/CD, Highload
+          en: DDD, microservices, CI/CD, high load
+        - ru: Observability, инфраструктура, автоматизация
+          en: Observability, infrastructure, automation
+        - ru: Аналитика и автоматизация процессов
+          en: Analytics and process automation
+    - title:
+        ru: Технологии
+        en: Technologies
       icon: tools
       items:
         - Golang
@@ -38,34 +55,59 @@
         - Prometheus
         - VictoriaMetrics
         - Grafana
-- title: Достижения
+- title:
+    ru: Достижения
+    en: Achievements
   icon: archive
-  subtitle: Чтобы не пересказывать всё, выделил ключевые места и чем занимался
+  subtitle:
+    ru: Чтобы не пересказывать всё, выделил ключевые места и чем занимался
+    en: "To avoid retelling everything, here are the key places I worked at and what I did there"
   blocks:
-    - title: Wildberries / СберМаркет
+    - title:
+        ru: Wildberries / СберМаркет
+        en: Wildberries / SberMarket
       list:
-        - "Настроил команду платформенной разработки: от хаоса к устойчивой delivery-машине."
-        - "Повысил автономность команд — 80% задач закрываются без моего участия."
-        - "Внедрил KPI и метрики: Lead Time, SLO, Delivery On Date."
-        - "Выстраивал продуктовую и тех-стратегию совместно с доменами."
-        - "Собрал платформенную команду, нанял недостающие позиции, выстроил процессы."
+        - ru: "Настроил команду платформенной разработки: от хаоса к устойчивой delivery-машине."
+          en: "Turned the platform development team from chaos into a steady delivery machine."
+        - ru: "Повысил автономность команд — 80% задач закрываются без моего участия."
+          en: "Increased team autonomy: 80% of tasks now close without my involvement."
+        - ru: "Внедрил KPI и метрики: Lead Time, SLO, Delivery On Date."
+          en: "Introduced KPIs and metrics: Lead Time, SLO, Delivery On Date."
+        - ru: "Выстраивал продуктовую и тех-стратегию совместно с доменами."
+          en: "Shaped product and tech strategy together with the business domains."
+        - ru: "Собрал платформенную команду, нанял недостающие позиции, выстроил процессы."
+          en: "Assembled the platform team, filled the missing roles and set up the processes."
     - title: Coins.ph / FinchPay
       list:
-        - "Выделил и выстроил отдельную команду PaaS: найм, OKR, процессы, метрики."
-        - "Внедрил DDD как основу архитектуры новых сервисов."
-        - "Создал сервис визуализации зависимости микросервисов: сократил время аудита и анализа."
-        - "Интегрировал observability решения на уровне всей компании."
-        - "Спроектировал и впоследствии реализовал мультитрейд платформу, которая выстояла кризис на рынке"
+        - ru: "Выделил и выстроил отдельную команду PaaS: найм, OKR, процессы, метрики."
+          en: "Spun out and built a dedicated PaaS team: hiring, OKRs, processes, metrics."
+        - ru: "Внедрил DDD как основу архитектуры новых сервисов."
+          en: "Introduced DDD as the architectural foundation for new services."
+        - ru: "Создал сервис визуализации зависимости микросервисов: сократил время аудита и анализа."
+          en: "Built a service that visualises microservice dependencies, which cut the time needed for audits and analysis."
+        - ru: "Интегрировал observability решения на уровне всей компании."
+          en: "Integrated observability solutions company-wide."
+        - ru: "Спроектировал и впоследствии реализовал мультитрейд платформу, которая выстояла кризис на рынке"
+          en: "Designed and later implemented a multi-trade platform that withstood a market crisis."
     - title: Neo Blockchain (RnD)
       list:
-        - "Руководил core-командой и командой интеграционных сервисов."
-        - "Построил с нуля процессы CI/CD, autotests, staging."
-        - "Реализовал интеграции с S3, WebDAV, FTP и другими протоколами."
-        - "Участвовал в Opensource-проектах сообщества CityOfZeon."
-        - "Перенял проект, а в последствии построил команду для сопровождения Go-ноды NeoBlockchain."
+        - ru: "Руководил core-командой и командой интеграционных сервисов."
+          en: "Led the core team and the integration services team."
+        - ru: "Построил с нуля процессы CI/CD, autotests, staging."
+          en: "Built CI/CD, automated testing and staging processes from scratch."
+        - ru: "Реализовал интеграции с S3, WebDAV, FTP и другими протоколами."
+          en: "Implemented integrations with S3, WebDAV, FTP and other protocols."
+        - ru: "Участвовал в Opensource-проектах сообщества City of Zion."
+          en: "Contributed to the open-source projects of the City of Zion community."
+        - ru: "Перенял проект, а в последствии построил команду для сопровождения Go-ноды NeoBlockchain."
+          en: "Took over the project and later built a team to maintain the NeoBlockchain Go node."
     - title: Cryptopay
       list:
-        - "Собрал core-команду: найм, OKR, процессы, метрики."
-        - "Реализовал и внедрил фреймворк-конструктор для быстрого запуска микросервисов."
-        - "Спроектировал, а позже запустил сервис взаимодействия межбиржевой торговли."
-        - "Совместно с DevOps командой спроектировали, а позже внедрили CICD практики на уровне компании."
+        - ru: "Собрал core-команду: найм, OKR, процессы, метрики."
+          en: "Assembled the core team: hiring, OKRs, processes, metrics."
+        - ru: "Реализовал и внедрил фреймворк-конструктор для быстрого запуска микросервисов."
+          en: "Built and rolled out a modular framework for launching microservices quickly."
+        - ru: "Спроектировал, а позже запустил сервис взаимодействия межбиржевой торговли."
+          en: "Designed and later launched an inter-exchange trading integration service."
+        - ru: "Совместно с DevOps командой спроектировали, а позже внедрили CICD практики на уровне компании."
+          en: "Together with the DevOps team, I designed and later rolled out company-wide CI/CD practices."

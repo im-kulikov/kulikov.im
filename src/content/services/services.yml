@@ -1,63 +1,133 @@
 enabled: true
-title: Что могу предложить?
-description: |
-  Помогаю командам и компаниям решать сложные инженерные задачи: от архитектуры и разработки систем до технического лидерства, 
-  аудита и поддержки процессов. Работаю с распределёнными системами, высоконагруженными сервисами и внутренними платформами. 
-  Мои подходы основаны на прагматизме, опыте и глубоком понимании технологий.
+title:
+  ru: Что могу предложить?
+  en: "What can I offer?"
+description:
+  ru: |
+    Помогаю командам и компаниям решать сложные инженерные задачи: от архитектуры и разработки систем до технического лидерства, 
+    аудита и поддержки процессов. Работаю с распределёнными системами, высоконагруженными сервисами и внутренними платформами. 
+    Мои подходы основаны на прагматизме, опыте и глубоком понимании технологий.
+  en: |
+    I help teams and companies solve complex engineering problems: from architecture and system development to technical leadership,
+    audits and process support. I work with distributed systems, high-load services and internal platforms.
+    My approach is grounded in pragmatism, experience and a deep understanding of technology.
 abilities:
-  - title: Аудит и рекомендации
+  - title:
+      ru: Аудит и рекомендации
+      en: Audit and recommendations
     icon: shield
-    description: |
-      Провожу технический аудит архитектуры, кода и процессов разработки. 
-      Помогаю выявить узкие места, технический долг и риски масштабирования.
-      Даю практичные рекомендации по улучшению стабильности, производительности и инженерной культуры. 
-      Всё — с учётом специфики команды и бизнес-целей.
-  - title: Проектирование
+    description:
+      ru: |
+        Провожу технический аудит архитектуры, кода и процессов разработки. 
+        Помогаю выявить узкие места, технический долг и риски масштабирования.
+        Даю практичные рекомендации по улучшению стабильности, производительности и инженерной культуры. 
+        Всё — с учётом специфики команды и бизнес-целей.
+      en: |
+        I run technical audits of architecture, code and development processes.
+        I help find bottlenecks, technical debt and scaling risks.
+        I give practical recommendations to improve stability, performance and engineering culture,
+        always taking the team's specifics and business goals into account.
+  - title:
+      ru: Проектирование
+      en: "System design"
     icon: layers
-    description: |
-      Проектирую архитектуру сервисов с упором на надёжность, масштабируемость и простоту сопровождения. 
-      Разрабатываю ядро систем, интерфейсы и внутренние платформы, придерживаясь принципов DDD, Clean Architecture и SOLID. 
-      Помогаю внедрять лучшие инженерные практики — от API-дизайна до отказоустойчивости в продакшене.
-  - title: Оптимизация команд
+    description:
+      ru: |
+        Проектирую архитектуру сервисов с упором на надёжность, масштабируемость и простоту сопровождения. 
+        Разрабатываю ядро систем, интерфейсы и внутренние платформы, придерживаясь принципов DDD, Clean Architecture и SOLID. 
+        Помогаю внедрять лучшие инженерные практики — от API-дизайна до отказоустойчивости в продакшене.
+      en: |
+        I design service architecture with a focus on reliability, scalability and ease of maintenance.
+        I develop system cores, interfaces and internal platforms in line with DDD, Clean Architecture and SOLID.
+        I help introduce engineering best practices, from API design to fault tolerance in production.
+  - title:
+      ru: Оптимизация команд
+      en: "Team development"
     icon: profile
-    description: |
-      Помогаю формировать сильные и автономные команды: от подбора разработчиков до выстраивания эффективных процессов. 
-      Включаюсь как тимлид или технический наставник, передаю опыт, развиваю инженерную культуру, повышаю качество решений и вовлечённость команды. 
-      Работаю с фокусом на рост, ответственность и результат.
-  - title: Исправление процессов
+    description:
+      ru: |
+        Помогаю формировать сильные и автономные команды: от подбора разработчиков до выстраивания эффективных процессов. 
+        Включаюсь как тимлид или технический наставник, передаю опыт, развиваю инженерную культуру, повышаю качество решений и вовлечённость команды. 
+        Работаю с фокусом на рост, ответственность и результат.
+      en: |
+        I help build strong, autonomous teams: from hiring developers to setting up effective processes.
+        I join as a team lead or technical mentor, share experience, nurture engineering culture and raise the quality of decisions and team engagement.
+        I work with a focus on growth, accountability and results.
+  - title:
+      ru: Исправление процессов
+      en: "Process improvement"
     icon: glass-clock
-    description: |
-      Выстраиваю прозрачные процессы разработки и планирования: от целей и дорожных карт до технических метрик и обратной связи. 
-      Помогаю командам видеть реальное состояние продукта, вовремя выявлять проблемы и принимать обоснованные решения. 
-      Внедряю практики, повышающие предсказуемость, управляемость и доверие между бизнесом и разработкой.
-  - title: Менеджмент проектов
+    description:
+      ru: |
+        Выстраиваю прозрачные процессы разработки и планирования: от целей и дорожных карт до технических метрик и обратной связи. 
+        Помогаю командам видеть реальное состояние продукта, вовремя выявлять проблемы и принимать обоснованные решения. 
+        Внедряю практики, повышающие предсказуемость, управляемость и доверие между бизнесом и разработкой.
+      en: |
+        I set up transparent development and planning processes: from goals and roadmaps to technical metrics and feedback.
+        I help teams see the real state of the product, spot problems in time and make well-informed decisions.
+        I introduce practices that improve predictability, control and trust between the business and engineering.
+  - title:
+      ru: Менеджмент проектов
+      en: Project management
     icon: calendar
-    description: |
-      Помогаю эффективно управлять проектами, обеспечивая чёткое распределение задач и контроль над их выполнением.
-      Организую работу команды, решаю возникающие конфликты и поддерживаю продуктивное взаимодействие.
-      Ориентирован на достижение бизнес-целей, своевременное решение задач и высокое качество результатов.
-  - title: Создание микросервисов
+    description:
+      ru: |
+        Помогаю эффективно управлять проектами, обеспечивая чёткое распределение задач и контроль над их выполнением.
+        Организую работу команды, решаю возникающие конфликты и поддерживаю продуктивное взаимодействие.
+        Ориентирован на достижение бизнес-целей, своевременное решение задач и высокое качество результатов.
+      en: |
+        I help manage projects effectively, with a clear allocation of tasks and control over their delivery.
+        I organise the team's work, resolve conflicts as they arise and keep collaboration productive.
+        I am focused on achieving business goals, delivering on time and maintaining high-quality results.
+  - title:
+      ru: Создание микросервисов
+      en: Building microservices
     icon: code
-    description: |
-      Разрабатываю и внедряю решения, учитывая особенности бизнес-домена, масштабируемость и отказоустойчивость. 
-      Помогаю разделить монолит на сервисы, настроить взаимодействие между ними, обеспечить консистентность данных и упростить сопровождение. 
-      Использую проверенные подходы: DDD, event-driven архитектуру и контрактное тестирование.
-  - title: Адаптивная и чистая вёрстка
+    description:
+      ru: |
+        Разрабатываю и внедряю решения, учитывая особенности бизнес-домена, масштабируемость и отказоустойчивость. 
+        Помогаю разделить монолит на сервисы, настроить взаимодействие между ними, обеспечить консистентность данных и упростить сопровождение. 
+        Использую проверенные подходы: DDD, event-driven архитектуру и контрактное тестирование.
+      en: |
+        I design and deliver solutions with the business domain, scalability and fault tolerance in mind.
+        I help split a monolith into services, set up their interaction, ensure data consistency across services and simplify maintenance.
+        I use proven approaches: DDD, event-driven architecture and contract testing.
+  - title:
+      ru: Адаптивная и чистая вёрстка
+      en: Responsive, clean markup
     icon: html
-    description: |
-      Разрабатываю адаптивную, доступную и семантически корректную вёрстку, готовую к интеграции с современными фреймворками.
-      Соблюдаю актуальные стандарты, обеспечиваю кросс-браузерную совместимость и быстрый рендер интерфейсов.
-      Особое внимание уделяю читаемости кода, структуре компонентов и удобству поддержки в долгосрочной перспективе.
-  - title: Вёрстка с Tailwind / Headless
+    description:
+      ru: |
+        Разрабатываю адаптивную, доступную и семантически корректную вёрстку, готовую к интеграции с современными фреймворками.
+        Соблюдаю актуальные стандарты, обеспечиваю кросс-браузерную совместимость и быстрый рендер интерфейсов.
+        Особое внимание уделяю читаемости кода, структуре компонентов и удобству поддержки в долгосрочной перспективе.
+      en: |
+        I build responsive, accessible and semantically correct markup that is ready to integrate with modern frameworks.
+        I follow current standards and ensure cross-browser compatibility and fast interface rendering.
+        I pay special attention to code readability, component structure and long-term maintainability.
+  - title:
+      ru: Вёрстка с Tailwind / Headless
+      en: "Markup with Tailwind / Headless UI"
     icon: css
-    description: |
-      Стилизую интерфейсы с помощью Tailwind CSS и Headless UI, обеспечивая модульность, масштабируемость и единый визуальный стиль.
-      Быстро создаю прототипы и production-ready интерфейсы без лишней сложности.
-      Следую принципам консистентности, адаптивности и лёгкости поддержки — от дизайн-системы до мелких UI-компонентов.
-  - title: Создание web-приложения
+    description:
+      ru: |
+        Стилизую интерфейсы с помощью Tailwind CSS и Headless UI, обеспечивая модульность, масштабируемость и единый визуальный стиль.
+        Быстро создаю прототипы и production-ready интерфейсы без лишней сложности.
+        Следую принципам консистентности, адаптивности и лёгкости поддержки — от дизайн-системы до мелких UI-компонентов.
+      en: |
+        I style interfaces with Tailwind CSS and Headless UI, keeping them modular, scalable and visually consistent.
+        I build prototypes and production-ready interfaces quickly and without unnecessary complexity.
+        I follow the principles of consistency, responsiveness and easy maintenance, from the design system down to small UI components.
+  - title:
+      ru: Создание web-приложения
+      en: Building web applications
     icon: js
-    description: |
-      Разрабатываю клиентские приложения на чистом JavaScript и с использованием современных подходов.
-      Создаю PWA, обеспечиваю офлайн-доступ, push-уведомления и высокую отзывчивость интерфейса.
-      Соблюдаю архитектурную дисциплину, обеспечиваю удобство сопровождения и оптимизирую производительность для разных устройств 
-
+    description:
+      ru: |
+        Разрабатываю клиентские приложения на чистом JavaScript и с использованием современных подходов.
+        Создаю PWA, обеспечиваю офлайн-доступ, push-уведомления и высокую отзывчивость интерфейса.
+        Соблюдаю архитектурную дисциплину, обеспечиваю удобство сопровождения и оптимизирую производительность для разных устройств 
+      en: |
+        I build client applications in vanilla JavaScript and with modern approaches.
+        I create progressive web apps (PWAs) with offline access, push notifications and a highly responsive interface.
+        I maintain architectural discipline, make the code easy to support and optimise performance for different devices.

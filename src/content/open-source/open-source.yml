@@ -2,119 +2,170 @@
   icon: github
   type: projects
   items:
-    - category: Github проекты
+    - category:
+        ru: Github проекты
+        en: GitHub projects
       items:
         - title: "gonfig"
           url: "https://github.com/im-kulikov/gonfig"
-          description: |
-            гибкая библиотека для упрощённого управления конфигурацией. Поддерживает загрузку настроек из переменных 
-            окружения, флагов командной строки и различных форматов файлов. Библиотека расширяема — можно добавлять 
-            новые форматы и заменять ключевые компоненты, например использовать spf13/pflag вместо 
-            стандартного пакета flag.
+          description:
+            ru: |
+              гибкая библиотека для упрощённого управления конфигурацией. Поддерживает загрузку настроек из переменных 
+              окружения, флагов командной строки и различных форматов файлов. Библиотека расширяема — можно добавлять 
+              новые форматы и заменять ключевые компоненты, например использовать spf13/pflag вместо 
+              стандартного пакета flag.
+            en: |
+              a flexible library for simple configuration management. It loads settings from environment variables,
+              command-line flags and various file formats. The library is extensible: you can add new formats
+              and replace key components, for example use spf13/pflag instead of the standard flag package.
         - title: "go-bones"
           url: "https://github.com/im-kulikov/go-bones"
-          description: |
-            Каркас (skeleton) с предварительно настроенными компонентами и конфигурацией, ориентированной на DevOps.
-            В личных проектах использую для быстрого прототипирования и старта большинства микросервисов.
-            Помогаю коллегам с переходом, а так же, в случае необходимости, осуществляю коммерческую поддержку.
+          description:
+            ru: |
+              Каркас (skeleton) с предварительно настроенными компонентами и конфигурацией, ориентированной на DevOps.
+              В личных проектах использую для быстрого прототипирования и старта большинства микросервисов.
+              Помогаю коллегам с переходом, а так же, в случае необходимости, осуществляю коммерческую поддержку.
+            en: |
+              A skeleton with pre-configured components and DevOps-oriented configuration.
+              In personal projects I use it for rapid prototyping and to bootstrap most of my microservices.
+              I help colleagues migrate to it and, when needed, provide commercial support.
         - title: "headers"
           url: "https://github.com/im-kulikov/headers"
-          description: |
-            Эта библиотека на Go предоставляет простой и гибкий способ десериализации HTTP-заголовков в поля структуры 
-            с использованием рефлексии Go и struct-тегов. Она создана для упрощения преобразования входящих 
-            HTTP-заголовков в типизированные значения внутри ваших Go-структур.
+          description:
+            ru: |
+              Эта библиотека на Go предоставляет простой и гибкий способ десериализации HTTP-заголовков в поля структуры 
+              с использованием рефлексии Go и struct-тегов. Она создана для упрощения преобразования входящих 
+              HTTP-заголовков в типизированные значения внутри ваших Go-структур.
+            en: |
+              This Go library gives a simple, flexible way to deserialise HTTP headers into struct fields
+              using Go reflection and struct tags. It is built to simplify turning incoming
+              HTTP headers into typed values inside your Go structs.
         - title: go-routeros
           url: "https://github.com/go-routeros/routeros"
-          description: |
-            Библиотека на Go для доступа к устройствам Mikrotik с использованием RouterOS API.
-            В своё время использовал и вносил правки, сейчас же с другом поддерживаем и развиваем функционал.
-            Моё текущее участие больше ориентировано на аудит, ревью и консультации.
+          description:
+            ru: |
+              Библиотека на Go для доступа к устройствам Mikrotik с использованием RouterOS API.
+              В своё время использовал и вносил правки, сейчас же с другом поддерживаем и развиваем функционал.
+              Моё текущее участие больше ориентировано на аудит, ревью и консультации.
+            en: |
+              A Go library for accessing MikroTik devices through the RouterOS API.
+              I used it and contributed fixes at the time; now a friend and I maintain it and develop its features.
+              My current involvement is mostly auditing, review and consulting.
         - title: resolvex
           url: "https://github.com/im-kulikov/resolvex"
-          description: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+          description:
+            ru: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+            en: "A service that combines BGP and DNS: manage domains and their IP addresses from an admin panel."
         - title: traefik-provider
           url: "https://github.com/im-kulikov/traefik-provider"
-          description: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+          description:
+            ru: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+            en: "A Traefik v3 plugin that configures routing based on the state of another Traefik instance."
         - title: docker-dns
           url: "https://github.com/im-kulikov/docker-dns"
-          description: "DNS-сервер для Docker-контейнеров."
+          description:
+            ru: "DNS-сервер для Docker-контейнеров."
+            en: "A DNS server for Docker containers."
         - title: helium
           url: "https://github.com/im-kulikov/helium"
-          description: "Модульный каркас для Go-сервисов (сервисы, логгер, NATS, PostgreSQL). Развитие остановлено в пользу go-bones."
+          description:
+            ru: "Модульный каркас для Go-сервисов (сервисы, логгер, NATS, PostgreSQL). Развитие остановлено в пользу go-bones."
+            en: "A modular framework for Go services (services, logger, NATS, PostgreSQL). No longer developed in favour of go-bones."
         - title: tz-hash
           url: "https://github.com/nspcc-dev/tzhash"
-          description: "Реализация хеширования Тиллиха-Земора (Tillich-Zemor) на Go."
+          description:
+            ru: "Реализация хеширования Тиллиха-Земора (Tillich-Zemor) на Go."
+            en: "An implementation of the Tillich-Zémor hash in Go."
         - title: gossip-model
           url: "https://github.com/nspcc-dev/gossip-model"
-          description: "Имитационная модель push-gossip для распространения данных."
+          description:
+            ru: "Имитационная модель push-gossip для распространения данных."
+            en: "A simulation model of push-gossip for data dissemination."
         - title: netmap-ql
           url: "https://github.com/nspcc-dev/netmap-ql"
-          description: "Язык запросов Netmap, реализованный на Go."
+          description:
+            ru: "Язык запросов Netmap, реализованный на Go."
+            en: "The Netmap query language, implemented in Go."
         - title: golang
           url: "https://github.com/golang/go"
-          description: "Нашёл и исправил ряд проблем связанных с эллиптическими кривыми, а так же с криптографией."
+          description:
+            ru: "Нашёл и исправил ряд проблем связанных с эллиптическими кривыми, а так же с криптографией."
+            en: "Found and fixed a number of problems related to elliptic curves and cryptography."
 
-
-- title: Домашняя лаборатория
+- title:
+    ru: Домашняя лаборатория
+    en: "Homelab"
   icon: tools
   type: projects
   items:
-    - category: Инфраструктура и автоматизация
+    - category:
+        ru: Инфраструктура и автоматизация
+        en: Infrastructure and automation
       items:
         - title: SpeechKit Proxy
           type: Streaming Gateway
-          description: 'Этот проект начался как эксперимент дома: мне хотелось соединить голосовое
-            управление и приватность. Я реализовал прокси-сервер на Go для локальной обработки
-            речи с протоколом Wyoming, внедрив кэширование и fallback-механизмы. Это позволило
-            Home Assistant работать без интернета. В процессе изучил особенности stream-аудио
-            и построил систему, которой пользуюсь каждый день.'
+          description:
+            ru: 'Этот проект начался как эксперимент дома: мне хотелось соединить голосовое
+              управление и приватность. Я реализовал прокси-сервер на Go для локальной обработки
+              речи с протоколом Wyoming, внедрив кэширование и fallback-механизмы. Это позволило
+              Home Assistant работать без интернета. В процессе изучил особенности stream-аудио
+              и построил систему, которой пользуюсь каждый день.'
+            en: "This project began as a home experiment: I wanted to combine voice control with privacy. I built a Go proxy server for local speech processing over the Wyoming protocol, with caching and fallback mechanisms. It lets Home Assistant work offline. Along the way I learned the intricacies of audio streaming and built a system I use every day."
           skills:
             - Home / Hobby
             - SpeachKit
             - Golang
         - title: HomeInfra
           type: Smart Home Stack
-          description: Умный дом — больше чем комфорт. Этот хобби-проект начался с одной розетки,
-            а превратился в распределённую систему из Zigbee, Matter и MQTT. Я настраивал
-            автоматизации, следил за стабильностью, изучал особенности Zigbee2MQTT и взаимодействие
-            устройств. Благодаря этому моя семья управляет домом голосом, а я — научился проектировать
-            IoT-инфраструктуру.
+          description:
+            ru: Умный дом — больше чем комфорт. Этот хобби-проект начался с одной розетки,
+              а превратился в распределённую систему из Zigbee, Matter и MQTT. Я настраивал
+              автоматизации, следил за стабильностью, изучал особенности Zigbee2MQTT и взаимодействие
+              устройств. Благодаря этому моя семья управляет домом голосом, а я — научился проектировать
+              IoT-инфраструктуру.
+            en: "A smart home is about more than comfort. This hobby project started with a single smart plug and grew into a distributed system built on Zigbee, Matter and MQTT. I set up automations, monitored stability, and studied Zigbee2MQTT and how devices interact. As a result my family controls the house by voice, and I learned how to design IoT infrastructure."
           skills:
             - Home / Hobby
-            - HomeAssistant
+            - Home Assistant
             - ESPHome
             - Zigbee2MQTT
             - Matter
             - Automation
         - title: AutoNAS
           type: Storage / Media Infrastructure
-          description: 'Меня не устраивали облачные решения и я решил собрать свой NAS на
-            базе TrueNAS. Проект стал настоящей школой DevOps: пришлось разобраться с ZFS,
-            Docker, автоматическим бэкапом и медиа-сервисами. Теперь моя медиатека обновляется
-            автоматически, а все данные под контролем. Этот проект многое дал мне в плане
-            понимания хранения и автоматизации.'
+          description:
+            ru: 'Меня не устраивали облачные решения и я решил собрать свой NAS на
+              базе TrueNAS. Проект стал настоящей школой DevOps: пришлось разобраться с ZFS,
+              Docker, автоматическим бэкапом и медиа-сервисами. Теперь моя медиатека обновляется
+              автоматически, а все данные под контролем. Этот проект многое дал мне в плане
+              понимания хранения и автоматизации.'
+            en: "Cloud solutions did not suit me, so I built my own NAS on TrueNAS. The project turned out to be a real DevOps education: I had to get to grips with ZFS, Docker, automated backups and media services. Now my media library updates automatically and I have full control of my data. The project taught me a lot about storage and automation."
           skills:
             - Home / Hobby
             - TrueNAS / Media Server
             - Ansible
         - title: VoiceAssistant Stack
           type: Local Voice Assistant
-          description: 'Я захотел голосового помощника, который работает без интернета. Начался
-            домашний проект: Whisper.cpp + TTS Wyoming + Home Assistant. Я собрал стек, настроил
-            локальное STT/TTS, добавил обработку команд и управляющие сценарии. Это был вызов
-            — real-time, низкие задержки, поддержка команд. Зато теперь у меня — автономный
-            помощник, не зависимый от облаков.'
+          description:
+            ru: 'Я захотел голосового помощника, который работает без интернета. Начался
+              домашний проект: Whisper.cpp + TTS Wyoming + Home Assistant. Я собрал стек, настроил
+              локальное STT/TTS, добавил обработку команд и управляющие сценарии. Это был вызов
+              — real-time, низкие задержки, поддержка команд. Зато теперь у меня — автономный
+              помощник, не зависимый от облаков.'
+            en: "I wanted a voice assistant that works without the internet, so I started a home project: Whisper.cpp + Wyoming TTS + Home Assistant. I put the stack together, set up local STT/TTS, and added command handling and automation scenarios. It was a challenge: real-time operation, low latency, command support. But now I have a standalone assistant that does not depend on the cloud."
           skills:
             - Home / Hobby
             - Wyoming
-            - HomeAssistant
+            - Home Assistant
         - title: Router Automation
           type: Networking / Infrastructure
-          description: Работая с Mikrotik и Keenetic, я устал вручную вносить настройки. Так
-            родился проект автоматизации домашней сети. Я внедрил DHCP, VPN, WireGuard, VLAN
-            через скрипты и шаблоны. Разобрался в RouterOS и API, научился устранять проблемы
-            удалённо. Теперь моя сеть самонастраивается при сбое — и всё это началось с желания
-            облегчить себе жизнь.
+          description:
+            ru: Работая с Mikrotik и Keenetic, я устал вручную вносить настройки. Так
+              родился проект автоматизации домашней сети. Я внедрил DHCP, VPN, WireGuard, VLAN
+              через скрипты и шаблоны. Разобрался в RouterOS и API, научился устранять проблемы
+              удалённо. Теперь моя сеть самонастраивается при сбое — и всё это началось с желания
+              облегчить себе жизнь.
+            en: "Working with MikroTik and Keenetic, I got tired of entering settings by hand, and that is how the home network automation project was born. I set up DHCP, VPN, WireGuard and VLANs through scripts and templates. I learned RouterOS and its API, and how to fix problems remotely. Now my network reconfigures itself after a failure, and it all began with a desire to make my life easier."
           skills:
             - Mikrotik / Keenetic
             - RouterOS
@@ -123,55 +174,110 @@
 
     - category: DIY / HomeAssistant
       items:
-        - title: "HomeAssistant: локальный умный дом"
-          description: |
-            Свой умный дом я давно пытался построить. Сначала это были устройства от Xiaomi / Aqara / Tuya.
-            Единственное большое "НО" было в том, что они все работали с облаком. То есть в случае каких-то проблем,
-            умный дом превращался в тыкву, а устройства представляли собой vendor-lock, без возможности использовать
-            разные бренды. В какой-то момент меня это сильно утомило и я начал изучать что есть для локального развёртывания.
-            Больше всего мне понравилась система HomeAssistant, которая позволяла не только совмещать разные бренды,
-            но и разные протоколы, а для "доработки напильником" достаточно было собрать свой адон.
+        - title:
+            ru: "HomeAssistant: локальный умный дом"
+            en: "Home Assistant: a local smart home"
+          description:
+            ru: |
+              Свой умный дом я давно пытался построить. Сначала это были устройства от Xiaomi / Aqara / Tuya.
+              Единственное большое "НО" было в том, что они все работали с облаком. То есть в случае каких-то проблем,
+              умный дом превращался в тыкву, а устройства представляли собой vendor-lock, без возможности использовать
+              разные бренды. В какой-то момент меня это сильно утомило и я начал изучать что есть для локального развёртывания.
+              Больше всего мне понравилась система HomeAssistant, которая позволяла не только совмещать разные бренды,
+              но и разные протоколы, а для "доработки напильником" достаточно было собрать свой адон.
+            en: |
+              I had been trying to build a smart home for a long time. At first it was Xiaomi / Aqara / Tuya devices.
+              The one big catch was that they all depended on the cloud. So whenever something went wrong,
+              the smart home became a brick, and the devices meant vendor lock-in, with no way to mix
+              different brands. At some point I'd had enough and started looking at what was available for local deployment.
+              I liked Home Assistant most: it let me combine not only different brands
+              but different protocols, and for tinkering to fit my needs it was enough to build my own add-on.
 
-        - title: "Автоматизация сбора показаний счётчика тепла на ESPHome"
-          description: |
-            В связи с тем, что счётчик находится в парадной, со временем стал забывать подавать показания.
-            А так как начал автоматизацию дома, решил разобраться и со счётчиком.
-            Изучил документацию, набросал пример, заработало. Настроил в HomeAssistant и работает до сих пор.
+        - title:
+            ru: "Автоматизация сбора показаний счётчика тепла на ESPHome"
+            en: "Automating heat meter readings with ESPHome"
+          description:
+            ru: |
+              В связи с тем, что счётчик находится в парадной, со временем стал забывать подавать показания.
+              А так как начал автоматизацию дома, решил разобраться и со счётчиком.
+              Изучил документацию, набросал пример, заработало. Настроил в HomeAssistant и работает до сих пор.
+            en: |
+              Because the meter is in the building's communal entrance hall, over time I started forgetting to submit readings.
+              Since I had begun automating my home, I decided to deal with the meter too.
+              I read the documentation, sketched out a config, and it worked. I set it up in Home Assistant and it is still running.
 
-        - title: "Автоматизация сборка показаний счётчика воды"
-          description: |
-            Имея уже небольшой опыт автоматизации сбора показаний, решил подойти и к показаниям воды.
-            Счётчик расположен в ванной, рядом с общим стояком. Провода не бросишь, поэтому решил использовать
-            Zigbee. Немного изучил что есть на рынке, ознакомился с DIY-устройствами, собрал простенькую схему для
-            двух каналов + канал для информации о протечки. Оказалось что девайс отлично вписался в общую схему.
-            Жаль, что лишь потом нашёл готовое устройство, но по крайней мере разобрался с протоколами.
+        - title:
+            ru: "Автоматизация сборка показаний счётчика воды"
+            en: "Automating water meter readings"
+          description:
+            ru: |
+              Имея уже небольшой опыт автоматизации сбора показаний, решил подойти и к показаниям воды.
+              Счётчик расположен в ванной, рядом с общим стояком. Провода не бросишь, поэтому решил использовать
+              Zigbee. Немного изучил что есть на рынке, ознакомился с DIY-устройствами, собрал простенькую схему для
+              двух каналов + канал для информации о протечки. Оказалось что девайс отлично вписался в общую схему.
+              Жаль, что лишь потом нашёл готовое устройство, но по крайней мере разобрался с протоколами.
+            en: |
+              Having some experience automating readings by then, I decided to take on the water meter too.
+              The meter is in the bathroom, next to the main riser. Running wires there is not an option, so I chose
+              Zigbee. I looked at what the market offers, studied DIY devices and put together a simple circuit with
+              two metering channels plus one for leak detection. The device fitted neatly into the overall setup.
+              A pity I only found a ready-made device afterwards, but at least I figured out the protocols.
 
-        - title: "Автоматизация сбора показаний электричества"
-          description: |
-            К данной теме подходил в последнюю очередь, поэтому сразу искал готовое решение. Много решений было на Wifi, 
-            ещё не нравилось, что ещё больше решений выступали как косвенные анализаторы, а не конкретный счётчик. В 
-            какой-то момент нашёл Tongou, который работал в сети Zigbee, действительно выступал как счётчик. Пришлось лишь
-            реализовать переключение тарифов (день / ночь), но это было уже не сложно.
+        - title:
+            ru: "Автоматизация сбора показаний электричества"
+            en: "Automating electricity meter readings"
+          description:
+            ru: |
+              К данной теме подходил в последнюю очередь, поэтому сразу искал готовое решение. Много решений было на Wifi, 
+              ещё не нравилось, что ещё больше решений выступали как косвенные анализаторы, а не конкретный счётчик. В 
+              какой-то момент нашёл Tongou, который работал в сети Zigbee, действительно выступал как счётчик. Пришлось лишь
+              реализовать переключение тарифов (день / ночь), но это было уже не сложно.
+            en: |
+              I came to this topic last, so I looked for a ready-made solution right away. Many options were Wi-Fi based,
+              and I also disliked that even more of them were indirect analysers rather than actual meters. At
+              some point I found Tongou, which worked on a Zigbee network and was a true meter. I only had to
+              implement tariff switching (day / night), which was not hard.
 
-        - title: "Локальное голосовое управление"
-          description: |
-            Это можно сказать история без конца. Я.Алиса тупеет из года в год, хоть в ней и появляются новые "фичи".
-            Другие игроки рынка, даже не пытаются в локальное управление. Есть разные поделки, которые либо работают
-            плохо, либо требуют непомерных ресурсов. Мне удалось найти пусть и не идеальную, но около "золотой середины".
-            Используя wyoming protocol + vosk + custom модель, пока решает часть моих задач. Далее планирую разобраться,
-            можно ли как-то перешить / переиспользовать железо от Я.Станций, чтобы совсем уйти в локальный умный дом.
+        - title:
+            ru: "Локальное голосовое управление"
+            en: "Local voice control"
+          description:
+            ru: |
+              Это можно сказать история без конца. Я.Алиса тупеет из года в год, хоть в ней и появляются новые "фичи".
+              Другие игроки рынка, даже не пытаются в локальное управление. Есть разные поделки, которые либо работают
+              плохо, либо требуют непомерных ресурсов. Мне удалось найти пусть и не идеальную, но около "золотой середины".
+              Используя wyoming protocol + vosk + custom модель, пока решает часть моих задач. Далее планирую разобраться,
+              можно ли как-то перешить / переиспользовать железо от Я.Станций, чтобы совсем уйти в локальный умный дом.
+            en: |
+              This is, you could say, a never-ending story. Yandex Alice gets dumber year after year, even as new "features" appear.
+              Other market players do not even try local control. There are various homebrew projects that either work
+              badly or need enormous resources. I managed to find something not perfect but close to a sweet spot.
+              Built on the Wyoming protocol + Vosk + a custom model, it covers some of my needs for now. Next I plan to find out
+              whether I can reflash or reuse the hardware from Yandex Stations to make my smart home fully local.
 
-        - title: "Локальный аналог Apple Music / Я.Музыки / Spotify"
-          description: |
-            В 2020-м году начал замечать, что не могу найти любимые треки. Например записи 90-х / 00-х годов. 
-            Они попросту стали исчезать с платформ. Дошло до того, что в 2022-м отключили в РФ ряд зарубежных сервисов,
-            после чего окончательно потерял часть любимых композиций. Да, на дисках они где-то есть, но так чтобы на 
-            прогулке послушать или в авто — уже проблема. В связи с чем нашёл Jellyfin, который можно развернуть и 
-            использовать при небольшой доработке, вот где пригодились познания в C#. Потратил кучу времени на оцифровку
-            моей коллекции, нашёл даже то, что давно забыл. Теперь постепенно формирую себе список артистов, которые 
-            впоследствии скачиваю и добавляю в свою коллекцию с помощью Lidarr + Jackett.
+        - title:
+            ru: "Локальный аналог Apple Music / Я.Музыки / Spotify"
+            en: "A local alternative to Apple Music / Yandex Music / Spotify"
+          description:
+            ru: |
+              В 2020-м году начал замечать, что не могу найти любимые треки. Например записи 90-х / 00-х годов. 
+              Они попросту стали исчезать с платформ. Дошло до того, что в 2022-м отключили в РФ ряд зарубежных сервисов,
+              после чего окончательно потерял часть любимых композиций. Да, на дисках они где-то есть, но так чтобы на 
+              прогулке послушать или в авто — уже проблема. В связи с чем нашёл Jellyfin, который можно развернуть и 
+              использовать при небольшой доработке, вот где пригодились познания в C#. Потратил кучу времени на оцифровку
+              моей коллекции, нашёл даже то, что давно забыл. Теперь постепенно формирую себе список артистов, которые 
+              впоследствии скачиваю и добавляю в свою коллекцию с помощью Lidarr + Jackett.
+            en: |
+              In 2020 I started noticing that I could not find my favourite tracks, for example recordings from the 1990s and 2000s.
+              They simply began to disappear from the platforms. It got worse in 2022, when a number of foreign services were switched off in Russia,
+              and I lost some of my favourite pieces for good. Yes, I have them on discs somewhere, but listening to them
+              on a walk or in the car became a problem. So I found Jellyfin, which can be deployed and
+              used with a little customisation, and that is where my knowledge of C# came in handy. I spent a lot of time digitising
+              my collection and even found things I had long forgotten. Now I am gradually building a list of artists
+              whose music I then download and add to my collection with Lidarr + Jackett.
 
 - title: Литература
+  only: [ru]  # the reading list is not translated: hidden on the English page
   icon: library
   type: books
   items:
