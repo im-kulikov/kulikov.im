@@ -11,10 +11,10 @@ const files = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.i
 const ymls = files(CONTENT).filter((f) => f.endsWith(".yml"));
 const load = (f) => YAML.parse(readFileSync(f, "utf8").replace(/^---\s*\n/, ""));
 const raw = Object.fromEntries(ymls.map((f) => [relative(CONTENT, f), load(f)]));
-// Same resolution as layouts/partials/i18n/resolve.html: {ru, en} pairs collapse to one language; `only: [langs]` list items are dropped elsewhere.
+// Same resolution as layouts/partials/i18n/resolve.html: {ru, en} pairs collapse to one language.
 const isPair = (v) => v && typeof v === "object" && !Array.isArray(v) && "ru" in v;
 const pick = (v, lang) =>
-  Array.isArray(v) ? v.filter((x) => !(x?.only && !x.only.includes(lang))).map((x) => pick(x, lang))
+  Array.isArray(v) ? v.map((x) => pick(x, lang))
   : isPair(v) ? pick(v[lang] || v.ru, lang)
   : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, pick(x, lang)]))
   : v;
@@ -31,10 +31,10 @@ test("every YAML data file was found and parsed", () => {
   assert.deepEqual(Object.keys(raw).sort(), ["about/about.yml", "features.yml", "open-source/open-source.yml", "projects/projects.yml", "proof.yml", "resume/profile.yml", "services/help.yml", "services/how.yml", "services/services.yml"]);
 });
 
-test("every {ru, en} pair has both languages, and `only: [ru]` items are Russian-only", () => {
+test("every {ru, en} pair has both languages", () => {
   let n = 0;
   for (const [f, d] of Object.entries(raw)) for (const [, v, p] of deep(d)) if (isPair(v)) { n++; assert.ok(str(v.ru) && str(v.en), `${f}${p}: both ru and en are required`); }
-  assert.ok(n > 100);
+  assert.ok(n > 300);
 });
 
 for (const lang of ["ru", "en"]) {

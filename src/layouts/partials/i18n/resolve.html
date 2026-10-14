@@ -1,5 +1,4 @@
-{{- /* Collapses {ru: .., en: ..} pairs to the current language (falls back to ru), recursively.
-       A list item with `only: [langs]` is dropped for the other languages. */ -}}
+{{- /* Collapses {ru: .., en: ..} pairs to the current language (falls back to ru), recursively. */ -}}
 {{- $lang := site.Language.Lang -}}
 {{- $v := . -}}
 {{- if reflect.IsMap $v -}}
@@ -13,11 +12,7 @@
   {{- end -}}
 {{- else if reflect.IsSlice $v -}}
   {{- $out := slice -}}
-  {{- range $v -}}
-    {{- if not (and (reflect.IsMap .) (isset . "only") (not (in .only $lang))) -}}
-      {{- $out = $out | append (slice (partial "i18n/resolve.html" .)) -}}
-    {{- end -}}
-  {{- end -}}
+  {{- range $v -}}{{- $out = $out | append (slice (partial "i18n/resolve.html" .)) -}}{{- end -}}
   {{- $v = $out -}}
 {{- end -}}
 {{- return $v -}}

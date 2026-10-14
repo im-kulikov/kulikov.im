@@ -34,8 +34,8 @@ section:
     - label: Message me on Telegram
       contact: true
       style: primary
-    - label: Read my resume
-      page: resume
+    - label: View projects
+      page: projects
       style: outline
   stats:
     - value: 20+

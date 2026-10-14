@@ -6,8 +6,8 @@ import { BASE, EN_PAGES, PAGES, all, attr, dom, enPath, exists, link, meta, read
 const en = (p) => dom(p === "index" ? "en/index" : `en/${p}`);
 const visibleText = (d) => [...walk(d)].filter((n) => n.nodeName === "#text" && !["script", "style"].includes(n.parentNode?.tagName)).map((n) => n.value).join(" ");
 
-test("English pages are exactly the translated ones; untranslated pages (projects) have no /en/ twin", () => {
-  assert.deepEqual(EN_PAGES, ["about", "index", "open-source", "resume", "services"]);
+test("every page has an English twin", () => {
+  assert.deepEqual(EN_PAGES, PAGES);
   for (const p of PAGES) assert.equal(exists(`en/${p === "index" ? "index" : p}.html`), EN_PAGES.includes(p), p);
 });
 
@@ -42,19 +42,20 @@ describe("English home page", () => {
   test("hero links only to pages that exist in English", () => {
     const hrefs = all(en("index"), (n) => n.tagName === "a").map((n) => attr(n, "href"));
     assert.ok(!hrefs.includes("/projects.html"));
-    assert.ok(hrefs.includes("/en/resume.html"));
+    assert.ok(hrefs.includes("/en/projects.html"));
   });
   test("main menu lists the English pages in the same order", () => {
     const d = en("index");
     const nav = all(d, (n) => n.tagName === "ul" && attr(n, "id") === "nav-menu")[0];
     const items = all(nav, (n) => n.tagName === "a" && attr(n, "class")?.includes("nav-link")).map((n) => [text(n).trim(), attr(n, "href")]);
-    assert.deepEqual(items, [["Services", "/en/services.html"], ["About me", "/en/about.html"], ["Resume", "/en/resume.html"], ["Open Source", "/en/open-source.html"]]);
+    assert.deepEqual(items, [["Services", "/en/services.html"], ["Projects", "/en/projects.html"], ["About me", "/en/about.html"], ["Resume", "/en/resume.html"], ["Open Source", "/en/open-source.html"]]);
   });
 });
 
-test("the reading list (Russian-only) is hidden on the English open-source page and kept on the Russian one", () => {
-  assert.doesNotMatch(visibleText(en("open-source")), /Designing Data-Intensive|Литература|Reading list/);
-  assert.match(visibleText(dom("open-source")), /Designing Data-Intensive/);
+test("the reading list is translated: English titles and authors on the English page, Russian ones on the Russian page", () => {
+  assert.match(visibleText(en("open-source")), /Designing Data-Intensive Applications[\s\S]*Reading list|Reading list[\s\S]*Designing Data-Intensive/);
+  assert.match(visibleText(en("open-source")), /Brave New World/);
+  assert.match(visibleText(dom("open-source")), /О дивный новый мир/);
 });
 
 test("manifest and 404 exist for English too", () => {

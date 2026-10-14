@@ -208,13 +208,6 @@ describe("language switch", () => {
     for (const l of links) assert.ok(l.h >= 44 && l.w >= 44, `${l.lang}: ${l.w}x${l.h}`);
   });
 
-  test("a page without a translation links to the other language's home", async () => {
-    const { page, context } = await open("projects");
-    const href = await sw(page).locator("a[lang=en]").getAttribute("href");
-    await context.close();
-    assert.equal(href, "/en/");
-  });
-
   test("the choice is remembered: only the home page redirects, once per session; deep links never do", async () => {
     const { page, context } = await open("index");
     await sw(page).locator("a[lang=en]").click();
