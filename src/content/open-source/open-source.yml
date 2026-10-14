@@ -296,943 +296,528 @@
               my collection and even found things I had long forgotten. Now I am gradually building a list of artists
               whom I then download and add to my collection with Lidarr + Jackett.
 
-- title:
-    ru: Литература
-    en: Reading list
+- title: Литература
+  only: [ru]  # the reading list is not translated: hidden on the English page
   icon: library
   type: books
   items:
-    - category:
-        ru: Технические
-        en: Technical
+    - category: "Технические"
       items:
-        - title: Designing Data-Intensive Applications
-          author: Martin Kleppmann
-          description:
-            ru: |
-              Книга посвящена проектированию приложений, которые обрабатывают большие объёмы данных.
-              Охватывает темы распределённых систем, устойчивости, масштабируемости, работы с
-              базами данных и потоками данных. Автор объясняет, как выбрать правильные технологии
-              для разных типов приложений и задач, в том числе для систем реального времени, аналитических
-              платформ и обработки потоков данных.
-            en: |
-              A book about designing applications that handle large volumes of data. It covers distributed systems, reliability, scalability, working with databases and data streams. The author explains how to choose the right technologies for different kinds of applications and tasks, including real-time systems, analytics platforms and stream processing.
-        - title: Clean Architecture
-          author: Robert C. Martin
-          description:
-            ru: |
-              Книга Роберта Мартина (Uncle Bob) об архитектурных паттернах в программировании.
-              Объясняет, как строить систему, которая будет легко поддерживаться и расширяться в будущем.
-              Особое внимание уделяется принципам SOLID, разделению бизнес-логики и инфраструктуры,
-              а также отделению кода от зависимостей от сторонних библиотек и фреймворков. Книга полезна
-              для архитекторов и разработчиков, желающих улучшить структуру своих проектов.
-            en: |
-              Robert Martin's (Uncle Bob's) book on architectural patterns in programming. It explains how to build a system that will be easy to maintain and extend in the future. Special attention is given to the SOLID principles, to separating business logic from infrastructure, and to keeping code independent of third-party libraries and frameworks. A useful book for architects and developers who want to improve the structure of their projects.
-        - title:
-            ru: Теоретический минимум по computer science
-            en: Computer Science Distilled
-          author:
-            ru: Владстон Феррейра Фило
-            en: Wladston Ferreira Filho
-          description:
-            ru: |
-              Концентрат фундаментальных знаний: от булевой алгебры до машинного обучения в одном томе.
-              Уникальный формат «максимум смысла на минимуме страниц» с визуализацией сложных концепций.
-              Идеальный стартовый набор для тех, кто хочет понять CS без академического занудства.
-            en: |
-              A concentrate of fundamental knowledge, from Boolean algebra to machine learning, in a single volume. A unique "maximum meaning in minimum pages" format with visualisations of complex concepts. An ideal starter kit for anyone who wants to understand CS without academic tedium.
-        - title:
-            ru: Computer Science для программиста-самоучки
-            en: The Self-Taught Computer Scientist
-          author:
-            ru: Кори Альтхофф
-            en: Cory Althoff
-          description:
-            ru: |
-              Автобиографическое руководство от разработчика без диплома, ставшего инженером в Tesla.
-              Живые примеры как применять алгоритмы и структуры данных в реальных проектах.
-              Разбор «подводных камней» карьеры в IT для тех, кто учится вне университетской системы.
-            en: |
-              An autobiographical guide from a developer without a degree who became an engineer at Tesla. Lively examples of how to apply algorithms and data structures in real projects. An account of the "pitfalls" of a career in IT for those who learn outside the university system.
-        - title:
-            ru: System Design
-            en: System Design Interview
-          author:
-            ru: Алекс Сюй
-            en: Alex Xu
-          description:
-            ru: |
-              Книга-тренажёр для подготовки к FAANG-интервью с разбором 16 реальных кейсов:
-              от TinyURL до проектирования YouTube. Чек-листы trade-offs при выборе архитектурных решений.
-              Методика «от требований к масштабируемости» через призму CAP-теоремы.
-            en: |
-              A workbook for preparing for FAANG interviews, with a walkthrough of 16 real cases, from TinyURL to designing YouTube. Checklists of trade-offs for choosing architectural solutions. A "from requirements to scalability" method through the lens of the CAP theorem.
-        - title:
-            ru: Компьютерные сети. 6-е издание
-            en: Computer Networks, 6th Edition
-          author:
-            ru: Эндрю Таненбаум, Дэвид Уэзеролл
-            en: Andrew S. Tanenbaum, David J. Wetherall
-          description:
-            ru: |
-              «Библия сетевого инженера» с глубоким dive-in в HTTP/3, QUIC и 5G-архитектуры.
-              Обновлённый раздел по кибербезопасности и квантовым сетевым угрозам.
-              Лабораторные работы на Packet Tracer для закрепления теории.
-            en: |
-              "The network engineer's bible" with a deep dive into HTTP/3, QUIC and 5G architectures. An updated section on cybersecurity and quantum threats to networks. Lab exercises in Packet Tracer to reinforce the theory.
-        - title:
-            ru: Прикладная криптография
-            en: Applied Cryptography
-          author:
-            ru: Брюс Шнайер
-            en: Bruce Schneier
-          description:
-            ru: |
-              Энциклопедия криптографических методов от AES до постквантовых алгоритмов.
-              Разбор реальных кейсов: почему взломали Telegram и уязвимости в Signal.
-              Практикум по написанию собственного VPN на Python с нуля.
-            en: |
-              An encyclopedia of cryptographic methods, from AES to post-quantum algorithms. Real cases examined: why Telegram was hacked and the vulnerabilities in Signal. A workshop on writing your own VPN in Python from scratch.
-        - title:
-            ru: Совершенный код
-            en: Code Complete
-          author:
-            ru: Стив Макконнелл
-            en: Steve McConnell
-          description:
-            ru: |
-              Канонический труд о software craftsmanship с метриками качества кода.
-              Антипаттерны рефакторинга и техники поддержки legacy-кода.
-              Сравнение 12 методологий тестирования на примере NASA и Google.
-            en: |
-              The canonical work on software craftsmanship, with code quality metrics. Refactoring anti-patterns and techniques for maintaining legacy code. A comparison of 12 testing methodologies using NASA and Google as examples.
-        - title:
-            ru: Программируй на Haskell
-            en: Get Programming with Haskell
-          author:
-            ru: Уилл Курт
-            en: Will Kurt
-          description:
-            ru: |
-              Функциональное программирование через создание roguelike-игры.
-              Нестандартный подход: монады объясняются через аналогии с кухней молекулярной гастрономии.
-              Кейсы применения в fintech и blockchain-разработке.
-            en: |
-              Functional programming through building a roguelike game. An unconventional approach: monads are explained through analogies with a molecular gastronomy kitchen. Use cases in fintech and blockchain development.
-        - title:
-            ru: 'Компьютерные сети: принципы, технологии, протоколы'
-            en: 'Computer Networks: Principles, Technologies, Protocols'
-          author:
-            ru: Владимир и Наталья Олифер
-            en: Vladimir and Natalia Olifer
-          description:
-            ru: |
-              Российский бестселлер с акцентом на ГОСТы и специфику телеком-рынка СНГ.
-              Эксклюзивные интервью с архитекторами Ростелекома и Яндекс.Облака.
-              Глава о перспективах IPv6 в условиях санкционных ограничений.
-            en: |
-              A Russian bestseller with an emphasis on GOST standards and the specifics of the CIS telecom market. Exclusive interviews with architects at Rostelecom and Yandex.Cloud. A chapter on the prospects of IPv6 under sanctions restrictions.
-        - title:
-            ru: Программирование на языке Rust
-            en: Programming Rust
-          author:
-            ru: Джим Блэнди
-            en: Jim Blandy
-          description:
-            ru: |
-              Официальное руководство от Mozilla Research с focus на безопасность памяти.
-              Параллельные вычисления без data races на примере high-frequency trading систем.
-              Сравнение производительности с C++ в бенчмарках AWS Lambda.
-            en: |
-              The official guide from Mozilla Research with a focus on memory safety. Parallel computing without data races, using high-frequency trading systems as an example. A performance comparison with C++ in AWS Lambda benchmarks.
-        - title:
-            ru: Язык программирования Go
-            en: The Go Programming Language
-          author:
-            ru: Алан Донован, Брайан Керниган
-            en: Alan Donovan, Brian Kernighan
-          description:
-            ru: |
-              Канон от создателя языка UNIX с deep-dive в горутины и interface{}.
-              Кейсы использования в Kubernetes и Cloud Native экосистеме.
-              Эксперименты с generics в Go 2.0 на реальных production-примерах.
-            en: |
-              The canon, from a co-creator of UNIX, with a deep dive into goroutines and interface{}. Use cases in Kubernetes and the Cloud Native ecosystem. Experiments with generics in Go 2.0 on real production examples.
-        - title:
-            ru: Программирование на C в примерах и задачах
-            en: C Programming in Examples and Exercises
-          author:
-            ru: Алексей Васильев
-            en: Alexey Vasiliev
-          description:
-            ru: |
-              Российская методика обучения через 300+ задач с автоматической проверкой на GitHub.
-              Разбор уязвимостей типа buffer overflow на примере взлома IoT-устройств.
-              Глава по портированию кода на микроконтроллеры ARM Cortex.
-            en: |
-              A Russian teaching method built on 300+ exercises with automatic checking on GitHub. An analysis of vulnerabilities such as buffer overflow, using the hacking of IoT devices as an example. A chapter on porting code to ARM Cortex microcontrollers.
-        - title:
-            ru: Go на практике
-            en: Go in Practice
-          author:
-            ru: Мэтт Батчер
-            en: Matt Butcher
-          description:
-            ru: |
-              Рецептурный справочник: от CRUD-API до highload-сервисов с gRPC.
-              Оптимизация Docker-образов для Go-приложений.
-              Техники дебаггинга race conditions в распределённых системах.
-            en: |
-              A recipe-style reference: from CRUD APIs to high-load services with gRPC. Optimising Docker images for Go applications. Techniques for debugging race conditions in distributed systems.
-        - title:
-            ru: КОД
-            en: 'Code: The Hidden Language of Computer Hardware and Software'
-          author:
-            ru: Чарльз Петцольд
-            en: Charles Petzold
-          description:
-            ru: |
-              Лирическое путешествие от азбуки Морзе до квантовых компьютеров.
-              Визуальные объяснения работы ALU через механические аналогии.
-              Культурологический анализ как код изменил человеческую коммуникацию.
-            en: |
-              A lyrical journey from Morse code to quantum computers. Visual explanations of how an ALU works through mechanical analogies. A cultural analysis of how code changed human communication.
-        - title:
-            ru: Программирование без дураков
-            en: Weniger schlecht programmieren (Programming Less Badly)
-          author:
-            ru: Карл Пассиг, Йонас Яндер
-            en: Kathrin Passig, Johannes Jander
-          description:
-            ru: |
-              Критический разбор Agile-токсичности и TDD-фанатизма.
-              Психологические ловушки когнитивных искажений при код-ревью.
-              Чек-лист «Как не стать обезьяной с гранатой» при работе с legacy.
-            en: |
-              A critical look at Agile toxicity and TDD fanaticism. The psychological traps of cognitive biases in code review. A checklist, "How not to become a monkey with a grenade", for working with legacy code.
-        - title:
-            ru: Алгоритмы для начинающих
-            en: 'Real-World Algorithms: A Beginner''s Guide'
-          author:
-            ru: Панайотис Луридас
-            en: Panos Louridas
-          description:
-            ru: |
-              Визуализация Big O через анимации сортировки танцорами.
-              Практикум по оптимизации SQL-запросов через B-деревья.
-              Разбор алгоритмов рекомендательных систем Netflix и TikTok.
-            en: |
-              Big O visualised through animations of dancers sorting. A workshop on optimising SQL queries with B-trees. A look at the algorithms behind the recommendation systems of Netflix and TikTok.
-        - title:
-            ru: 'Алгоритмы: теория и практическое применение'
-            en: Essential Algorithms
-          author:
-            ru: Род Стивенс
-            en: Rod Stephens
-          description:
-            ru: |
-              Кейс-стади: как алгоритмы PageRank и Collaborative Filtering строят цифровую экономику.
-              Реверс-инжиниринг паттернов в трейдинговых ботах.
-              Генетические алгоритмы в дизайне процессоров Apple M1.
-            en: |
-              Case studies: how the PageRank and Collaborative Filtering algorithms build the digital economy. Reverse-engineering patterns in trading bots. Genetic algorithms in the design of Apple M1 processors.
-        - title:
-            ru: Предисловие к математике
-            en: Preface to Mathematics
-          author:
-            ru: Владимир Успенский
-            en: Vladimir Uspensky
-          description:
-            ru: |
-              Философский диалог о природе математической красоты.
-              Анализ «теоремы о неполноте» Гёделя через призму лингвистики.
-              Полемика с Хофштадтером о сознании и формальных системах.
-            en: |
-              A philosophical dialogue on the nature of mathematical beauty. An analysis of Gödel's incompleteness theorem through the lens of linguistics. A polemic with Hofstadter about consciousness and formal systems.
-        - title:
-            ru: Теория графов
-            en: Graph Theory
-          author:
-            ru: А.В. Омельченко
-            en: A. V. Omelchenko
-          description:
-            ru: |
-              Прикладное применение в биоинформатике (сборка генома) и соцсетях (выявление ботов).
-              Алгоритмы анализа транспортных сетей Мегафона и Сбермаршрута.
-              Практикум на NetworkX с визуализацией в Gephi.
-            en: |
-              Applications in bioinformatics (genome assembly) and social networks (detecting bots). Algorithms for analysing the transport networks of Megafon and Sbermarshrut. A workshop on NetworkX with visualisation in Gephi.
-        - title:
-            ru: Практическая криптография
-            en: Practical Cryptography
-          author:
-            ru: Нильс Фергюсон, Брюс Шнайер
-            en: Niels Ferguson, Bruce Schneier
-          description:
-            ru: |
-              Разбор взлома российской системы «КриптоПро» китайскими хакерами.
-              Руководство по аудиту криптостойкости для fintech-стартапов.
-              Реализация MPC-протоколов для защиты от инсайдеров.
-            en: |
-              An analysis of the hacking of the Russian CryptoPro system by Chinese hackers. A guide to auditing cryptographic strength for fintech startups. Implementing MPC protocols to protect against insiders.
-        - title:
-            ru: Занимательная информатика. Криптография. Манга
-            en: The Manga Guide to Cryptography
-          author:
-            ru: Митани, Сато
-            en: Mitani, Sato
-          description:
-            ru: |
-              Сюжет о школьнице, расшифровывающей послания якудзы.
-              Обучение через мемы: объяснение RSA через историю любви двух простых чисел.
-              Квест по взлому шифра Цезаря в стиле visual novel.
-            en: |
-              A plot about a schoolgirl decrypting the yakuza's messages. Learning through memes: RSA explained through the love story of two prime numbers. A quest to break the Caesar cipher in the style of a visual novel.
-        - title:
-            ru: Элементарное введение в эллиптическую криптографию
-            en: An Elementary Introduction to Elliptic Curve Cryptography
-          author:
-            ru: А. А. Болотов, С. Б. Гашков, А. Б. Фролов
-            en: A. A. Bolotov, S. B. Gashkov, A. B. Frolov
-          description:
-            ru: |
-              Российская методика обучения через геометрические аналогии.
-              Сравнение ГОСТ Р 34.10-2021 с ECDSA NIST.
-              Кейсы применения в блокчейне Sberbank и системе «Мир».
-            en: |
-              A Russian teaching method built on geometric analogies. A comparison of GOST R 34.10-2021 with NIST ECDSA. Use cases in Sberbank's blockchain and the Mir system.
-        - title:
-            ru: Манифест криптоанархиста
-            en: The Crypto-Anarchist Manifesto
-          author:
-            ru: Ян Хеглер
-            en: Jan Hegler
-          description:
-            ru: |
-              Анализ Telegram vs Signal как инструментов революций.
-              Прогнозы о влиянии ZKP на приватность в Web3.
-              Этическая дискуссия: криптография как оружие в кибервойнах.
-            en: |
-              An analysis of Telegram vs Signal as tools of revolutions. Forecasts of the impact of ZKP on privacy in Web3. An ethical discussion: cryptography as a weapon in cyberwars.
-        - title:
-            ru: Децентрализованные приложения
-            en: Decentralized Applications
-          author:
-            ru: С. Равал
-            en: S. Raval
-          description:
-            ru: |
-              Пошаговый разбор архитектуры Uniswap и Aave.
-              Юридические ловушки при создании DAO в юрисдикции РФ.
-              Сравнение TON Blockchain и Ethereum 2.0.
-            en: |
-              A step-by-step analysis of the architecture of Uniswap and Aave. Legal traps when creating a DAO under Russian jurisdiction. A comparison of TON Blockchain and Ethereum 2.0.
-        - title:
-            ru: 'Remote: офис не обязателен'
-            en: 'Remote: Office Not Required'
-          author:
-            ru: Джейсон Фрайд, Дэвид Хайнемайер Хенссон
-            en: Jason Fried, David Heinemeier Hansson
-          description:
-            ru: |
-              Кейс Basecamp: как сократить офисные расходы на 80%.
-              Чек-лист по предотвращению выгорания в распределённых командах.
-              Инструментарий async-коммуникации для CTO.
-            en: |
-              The Basecamp case: how to cut office costs by 80%. A checklist for preventing burnout in distributed teams. A toolkit for async communication for CTOs.
-        - title:
-            ru: 'Rework: бизнес без предрассудков'
-            en: Rework
-          author:
-            ru: Джейсон Фрайд, Дэвид Хайнемайер Хенссон
-            en: Jason Fried, David Heinemeier Hansson
-          description:
-            ru: |
-              Манифест против VC-культуры и toxic productivity.
-              Кейс: запуск SaaS с $0 маркетингового бюджета.
-              Принцип «Достаточно хорошо» в продуктовой разработке.
-            en: |
-              A manifesto against VC culture and toxic productivity. A case: launching a SaaS with a $0 marketing budget. The "Good enough" principle in product development.
-        - title:
-            ru: Софт за 30 дней
-            en: Software in 30 Days
-          author:
-            ru: Кен Швабер, Джефф Сазерленд
-            en: Ken Schwaber, Jeff Sutherland
-          description:
-            ru: |
-              Разбор провала HealthCare.gov и успеха Spotify Model.
-              Антипаттерны Scrum в российских госкомпаниях.
-              Гибридные методики (Scrumban) для стартапов на стадии hypergrowth.
-            en: |
-              An analysis of the failure of HealthCare.gov and the success of the Spotify Model. Scrum anti-patterns in Russian state-owned companies. Hybrid methods (Scrumban) for startups at the hypergrowth stage.
-        - title:
-            ru: Сам себе программист
-            en: The Self-Taught Programmer
-          author:
-            ru: Кори Альхофф
-            en: Cory Althoff
-          description:
-            ru: |
-              Руководство для тех, кто хочет стать программистом без формального образования.
-              Практически охватывает Python, алгоритмы, базы данных, web-разработку и собеседования.
-            en: |
-              A guide for those who want to become a programmer without a formal education. It takes a hands-on look at Python, algorithms, databases, web development and job interviews.
-        - title:
-            ru: Мама, я тимлид! Практические советы по руководству IT-командой
-            en: Mom, I'm a Team Lead! Practical Advice on Leading an IT Team
-          author:
-            ru: Марина Перескокова
-            en: Marina Pereskokova
-          description:
-            ru: |
-              Книга для начинающих тимлидов, раскрывающая особенности перехода из разработчиков в лиды:
-              управление командой, коммуникации, мотивация, конфликты и делегирование.
-            en: |
-              A book for new team leads that describes the specifics of moving from developer to lead: managing a team, communication, motivation, conflicts and delegation.
-        - title:
-            ru: Невероятные числа профессора Стюарта
-            en: Professor Stewart's Incredible Numbers
-          author:
-            ru: Иэн Стюарт
-            en: Ian Stewart
-          description:
-            ru: |
-              Увлекательное путешествие по миру чисел: от простых до трансфинитных. Книга объясняет
-              математические концепции с юмором и простыми примерами, пробуждая интерес к математике.
-            en: |
-              A fascinating journey through the world of numbers, from simple to transfinite. The book explains mathematical concepts with humour and simple examples, awakening an interest in mathematics.
-        - title:
-            ru: Тренируй свой мозг
-            en: Train Your Brain
-          author:
-            ru: Рюта Кавашима
-            en: Ryuta Kawashima
-          description:
-            ru: |
-              Методика японского нейробиолога для улучшения работы мозга. Основана на ежедневных
-              упражнениях, активирующих префронтальную кору и поддерживающих когнитивное здоровье.
-            en: |
-              A method from a Japanese neuroscientist for improving brain function. It is based on daily exercises that activate the prefrontal cortex and support cognitive health.
-        - title:
-            ru: Тренируй свою память
-            en: Train Your Memory
-          author:
-            ru: Рюта Кавашима
-            en: Ryuta Kawashima
-          description:
-            ru: |
-              Продолжение книги по тренировке мозга, с упором на развитие краткосрочной и долговременной
-              памяти через специальные упражнения, арифметику и повторение.
-            en: |
-              A sequel to the brain-training book, focusing on developing short-term and long-term memory through special exercises, arithmetic and repetition.
-        - title:
-            ru: Память. Упражнения и задания
-            en: 'Memory: Exercises and Tasks'
-          author:
-            ru: Рюта Кавашима
-            en: Ryuta Kawashima
-          description:
-            ru: |
-              Практическое пособие с заданиями на развитие памяти. Основано на исследованиях
-              нейропластичности и активного старения. Подходит для всех возрастов.
-            en: |
-              A practical workbook with tasks for developing memory. Based on research into neuroplasticity and active ageing. Suitable for all ages.
-        - title:
-            ru: Паттерны объектно-ориентированного проектирования
-            en: 'Design Patterns: Elements of Reusable Object-Oriented Software'
-          author:
-            ru: Эрих Гамма, Ричард Хелм, Ральф Джонсон, Джон Влиссидес
-            en: Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides
-          description:
-            ru: |
-              Классический труд «Банды Четырёх» по 23 паттернам проектирования. Необходимая книга для
-              архитекторов и разработчиков, чтобы писать гибкий и поддерживаемый код.
-            en: |
-              The classic work by the "Gang of Four" on 23 design patterns. An essential book for architects and developers who want to write flexible, maintainable code.
-        - title:
-            ru: Электричество шаг за шагом
-            en: Electricity Step by Step
-          author:
-            ru: Рудольф Сворень
-            en: Rudolf Svoren
-          description:
-            ru: |
-              Учебник для начинающих, который поэтапно объясняет основы электричества и электроники.
-              Отличный выбор для тех, кто хочет разобраться в схемах, токе, напряжении и сборке устройств.
-            en: |
-              A textbook for beginners that explains the basics of electricity and electronics step by step. A great choice for anyone who wants to understand circuits, current, voltage and building devices.
-        - title:
-            ru: Думай как математик
-            en: A Mind for Numbers
-          author:
-            ru: Барбара Оакли
-            en: Barbara Oakley
-          description:
-            ru: |
-              Книга о том, как научиться мыслить, как инженер или математик. Автор делится личным
-              опытом перехода из гуманитарной сферы в техническую, включая советы по обучению.
-            en: |
-              A book about learning to think like an engineer or a mathematician. The author shares her personal experience of moving from the humanities into a technical field, including study tips.
-        - title:
-            ru: Удовольствие от Х
-            en: The Joy of x
-          author:
-            ru: Стивен Строгац
-            en: Steven Strogatz
-          description:
-            ru: |
-              Легкое и увлекательное введение в математику: от базовых понятий до сложных идей.
-              Написана в стиле научно-популярного рассказа, с примерами из жизни и истории науки.
-            en: |
-              An easy, engaging introduction to mathematics, from basic concepts to complex ideas. Written in the style of a popular-science story, with examples from life and the history of science.
-        - title:
-            ru: Курс математического анализа
-            en: A Course in Mathematical Analysis
-          author:
-            ru: Александр Тер-Крикоров, Михаил Шабунин
-            en: Alexander Ter-Krikorov, Mikhail Shabunin
-          description:
-            ru: |
-              Учебник для студентов технических вузов. Охватывает дифференциальное и интегральное
-              исчисление, ряды, пределы и функции с глубокими теоретическими пояснениями и задачами.
-            en: |
-              A textbook for students of technical universities. It covers differential and integral calculus, series, limits and functions, with in-depth theoretical explanations and exercises.
-        - title:
-            ru: Логика. Учебник, 9-е издание
-            en: 'Logic: A Textbook, 9th Edition'
-          author:
-            ru: Гетманова
-            en: Getmanova
-          description:
-            ru: |
-              Классический учебник по формальной логике. Содержит теорию с примерами, объясняет законы
-              логики, построение высказываний, логические следствия и методы доказательства.
-            en: |
-              A classic textbook on formal logic. It contains theory with examples and explains the laws of logic, the construction of statements, logical consequences and methods of proof.
-        - title:
-            ru: О памяти и мнемонике
-            en: On Memory and Mnemonics
-          author:
-            ru: Георгий Челпанов
-            en: Georgy Chelpanov
-          description:
-            ru: |
-              Психологический и философский труд о природе памяти. Рассматривает классические подходы
-              к мнемонике, роль ассоциаций и повторения в запоминании.
-            en: |
-              A psychological and philosophical work on the nature of memory. It examines classic approaches to mnemonics and the role of association and repetition in remembering.
-        - title:
-            ru: Запомнить всё. Усвоение знаний без скуки и зубрёжки
-            en: 'Make It Stick: The Science of Successful Learning'
-          author:
-            ru: Генри Рёдигер, Марк Макдэниэл, Питер Браун
-            en: Henry L. Roediger III, Mark A. McDaniel, Peter C. Brown
-          description:
-            ru: |
-              Книга на основе когнитивной науки о том, как эффективно учиться. Предлагаются методы
-              активного запоминания, интервального повторения и самооценки знаний.
-            en: |
-              A book based on cognitive science about how to learn effectively. It offers methods of active recall, spaced repetition and self-assessment of knowledge.
-        - title:
-            ru: 'Алгоритмы: построение и анализ'
-            en: Introduction to Algorithms
-          author:
-            ru: Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн
-            en: Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein
-          description:
-            ru: |
-              Академический стандарт по алгоритмам. Подходит для студентов и разработчиков,
-              охватывает сортировки, деревья, графы, динамическое программирование и сложность.
-            en: |
-              The academic standard on algorithms. Suitable for students and developers; it covers sorting, trees, graphs, dynamic programming and complexity.
-        - title:
-            ru: Блокчейн. Схема новой экономики
-            en: 'Blockchain: Blueprint for a New Economy'
-          author:
-            ru: Мелани Свон
-            en: Melanie Swan
-          description:
-            ru: |
-              Книга о концепции блокчейна за пределами криптовалют. Исследует децентрализованные модели
-              управления, контракты, DAO и влияние на экономику, медицину и политику.
-            en: |
-              A book about the concept of blockchain beyond cryptocurrencies. It explores decentralised governance models, contracts, DAOs and the impact on the economy, medicine and politics.
-        - title:
-            ru: Язык программирования С++
-            en: The C++ Programming Language
-          author:
-            ru: Бьёрн Страуструп
-            en: Bjarne Stroustrup
-          description:
-            ru: |
-              Авторитетный труд от создателя языка. Книга охватывает как основы, так и продвинутые
-              темы, включая шаблоны, объектно-ориентированное программирование и многопоточность.
-            en: |
-              An authoritative work from the language's creator. The book covers both the basics and advanced topics, including templates, object-oriented programming and multithreading.
-        - title:
-            ru: Алгоритмы и структуры данных
-            en: Algorithms and Data Structures
-          author:
-            ru: Никлаус Вирт
-            en: Niklaus Wirth
-          description:
-            ru: |
-              Классическая книга от создателя Паскаля. В краткой и ясной форме объясняет базовые
-              структуры данных и методы их обработки, с акцентом на простоту и ясность реализации.
-            en: |
-              A classic book from the creator of Pascal. In a concise, clear form it explains basic data structures and methods of processing them, with an emphasis on simple, clear implementations.
-        - title:
-            ru: Грокаем алгоритмы
-            en: Grokking Algorithms
-          author:
-            ru: Адитья Бхаргава
-            en: Aditya Bhargava
-          description:
-            ru: |
-              Иллюстрированное и доступное введение в алгоритмы. Пошаговые объяснения и визуализация
-              делают её отличной книгой для начинающих программистов.
-            en: |
-              An illustrated, accessible introduction to algorithms. Step-by-step explanations and visualisation make it an excellent book for novice programmers.
-        - title:
-            ru: Дискретная математика для программистов
-            en: Discrete Mathematics for Programmers
-          author:
-            ru: Ф.А. Новиков
-            en: F. A. Novikov
-          description:
-            ru: |
-              Учебник по теории множеств, логике, графам и булевой алгебре. Подходит для студентов и
-              тех, кто хочет глубже понимать формальные основы компьютерных наук.
-            en: |
-              A textbook on set theory, logic, graphs and Boolean algebra. Suitable for students and for those who want a deeper understanding of the formal foundations of computer science.
-        - title:
-            ru: Тестирование dot com
-            en: Testing dot com
-          author:
-            ru: Роман Савин
-            en: Roman Savin
-          description:
-            ru: |
-              Популярная российская книга по тестированию ПО. Освещает все этапы QA: тест-планы,
-              баг-репорты, автоматизацию и работу с документацией в реальных проектах.
-            en: |
-              A popular Russian book on software testing. It covers all stages of QA: test plans, bug reports, automation and working with documentation on real projects.
-        - title:
-            ru: Создание микросервисов
-            en: Building Microservices
-          author:
-            ru: Сэм Ньюмен
-            en: Sam Newman
-          description:
-            ru: |
-              Руководство по проектированию, развёртыванию и поддержке микросервисной архитектуры.
-              Рассматривает как технические, так и организационные аспекты.
-            en: |
-              A guide to designing, deploying and maintaining a microservice architecture. It covers both technical and organisational aspects.
-        - title:
-            ru: Погружение в паттерны проектирования
-            en: Dive Into Design Patterns
-          author:
-            ru: Алексей Швец
-            en: Alexander Shvets
-          description:
-            ru: |
-              Практический гид по паттернам проектирования с примерами на популярных языках.
-              Объясняет как и когда применять паттерны в реальной разработке.
-            en: |
-              A practical guide to design patterns with examples in popular languages. It explains how and when to apply patterns in real development.
-        - title:
-            ru: Go идиомы и паттерны проектирования
-            en: 'Learning Go: An Idiomatic Approach to Real-World Go Programming'
-          author:
-            ru: Джон Боднер
-            en: Jon Bodner
-          description:
-            ru: |
-              Практическое руководство по созданию устойчивого, читаемого и эффективного Go-кода.
-              Раскрывает идиоматичный стиль, принципы организации и паттерны архитектуры на Go.
-            en: |
-              A practical guide to writing robust, readable and efficient Go code. It covers idiomatic style, organisational principles and architecture patterns in Go.
-    - category:
-        ru: Художественные / Публицистика
-        en: Fiction / Non-fiction
+        - title: "Designing Data-Intensive Applications"
+          author: "Martin Kleppmann"
+          description: |
+            Книга посвящена проектированию приложений, которые обрабатывают большие объёмы данных.
+            Охватывает темы распределённых систем, устойчивости, масштабируемости, работы с
+            базами данных и потоками данных. Автор объясняет, как выбрать правильные технологии
+            для разных типов приложений и задач, в том числе для систем реального времени, аналитических
+            платформ и обработки потоков данных.
+
+        - title: "Clean Architecture"
+          author: "Robert C. Martin"
+          description: |
+            Книга Роберта Мартина (Uncle Bob) об архитектурных паттернах в программировании.
+            Объясняет, как строить систему, которая будет легко поддерживаться и расширяться в будущем.
+            Особое внимание уделяется принципам SOLID, разделению бизнес-логики и инфраструктуры,
+            а также отделению кода от зависимостей от сторонних библиотек и фреймворков. Книга полезна
+            для архитекторов и разработчиков, желающих улучшить структуру своих проектов.
+        - title: "Теоретический минимум по computer science"
+          author: "Владстон Феррейра Фило"
+          description: |
+            Концентрат фундаментальных знаний: от булевой алгебры до машинного обучения в одном томе.
+            Уникальный формат «максимум смысла на минимуме страниц» с визуализацией сложных концепций.
+            Идеальный стартовый набор для тех, кто хочет понять CS без академического занудства.
+
+        - title: "Computer Science для программиста-самоучки"
+          author: "Кори Альтхофф"
+          description: |
+            Автобиографическое руководство от разработчика без диплома, ставшего инженером в Tesla.
+            Живые примеры как применять алгоритмы и структуры данных в реальных проектах.
+            Разбор «подводных камней» карьеры в IT для тех, кто учится вне университетской системы.
+
+        - title: "System Design"
+          author: "Алекс Сюй"
+          description: |
+            Книга-тренажёр для подготовки к FAANG-интервью с разбором 16 реальных кейсов:
+            от TinyURL до проектирования YouTube. Чек-листы trade-offs при выборе архитектурных решений.
+            Методика «от требований к масштабируемости» через призму CAP-теоремы.
+
+        - title: "Компьютерные сети. 6-е издание"
+          author: "Эндрю Таненбаум, Дэвид Уэзеролл"
+          description: |
+            «Библия сетевого инженера» с глубоким dive-in в HTTP/3, QUIC и 5G-архитектуры.
+            Обновлённый раздел по кибербезопасности и квантовым сетевым угрозам.
+            Лабораторные работы на Packet Tracer для закрепления теории.
+
+        - title: "Прикладная криптография"
+          author: "Брюс Шнайер"
+          description: |
+            Энциклопедия криптографических методов от AES до постквантовых алгоритмов.
+            Разбор реальных кейсов: почему взломали Telegram и уязвимости в Signal.
+            Практикум по написанию собственного VPN на Python с нуля.
+
+        - title: "Совершенный код"
+          author: "Стив Макконнелл"
+          description: |
+            Канонический труд о software craftsmanship с метриками качества кода.
+            Антипаттерны рефакторинга и техники поддержки legacy-кода.
+            Сравнение 12 методологий тестирования на примере NASA и Google.
+
+        - title: "Программируй на Haskell"
+          author: "Уилл Курт"
+          description: |
+            Функциональное программирование через создание roguelike-игры.
+            Нестандартный подход: монады объясняются через аналогии с кухней молекулярной гастрономии.
+            Кейсы применения в fintech и blockchain-разработке.
+
+        - title: "Компьютерные сети: принципы, технологии, протоколы"
+          author: "Владимир и Наталья Олифер"
+          description: |
+            Российский бестселлер с акцентом на ГОСТы и специфику телеком-рынка СНГ.
+            Эксклюзивные интервью с архитекторами Ростелекома и Яндекс.Облака.
+            Глава о перспективах IPv6 в условиях санкционных ограничений.
+
+        - title: "Программирование на языке Rust"
+          author: "Джим Блэнди"
+          description: |
+            Официальное руководство от Mozilla Research с focus на безопасность памяти.
+            Параллельные вычисления без data races на примере high-frequency trading систем.
+            Сравнение производительности с C++ в бенчмарках AWS Lambda.
+
+        - title: "Язык программирования Go"
+          author: "Алан Донован, Брайан Керниган"
+          description: |
+            Канон от создателя языка UNIX с deep-dive в горутины и interface{}.
+            Кейсы использования в Kubernetes и Cloud Native экосистеме.
+            Эксперименты с generics в Go 2.0 на реальных production-примерах.
+
+        - title: "Программирование на C в примерах и задачах"
+          author: "Алексей Васильев"
+          description: |
+            Российская методика обучения через 300+ задач с автоматической проверкой на GitHub.
+            Разбор уязвимостей типа buffer overflow на примере взлома IoT-устройств.
+            Глава по портированию кода на микроконтроллеры ARM Cortex.
+
+        - title: "Go на практике"
+          author: "Мэтт Батчер"
+          description: |
+            Рецептурный справочник: от CRUD-API до highload-сервисов с gRPC.
+            Оптимизация Docker-образов для Go-приложений.
+            Техники дебаггинга race conditions в распределённых системах.
+
+        - title: "КОД"
+          author: "Чарльз Петцольд"
+          description: |
+            Лирическое путешествие от азбуки Морзе до квантовых компьютеров.
+            Визуальные объяснения работы ALU через механические аналогии.
+            Культурологический анализ как код изменил человеческую коммуникацию.
+
+        - title: "Программирование без дураков"
+          author: "Карл Пассиг, Йонас Яндер"
+          description: |
+            Критический разбор Agile-токсичности и TDD-фанатизма.
+            Психологические ловушки когнитивных искажений при код-ревью.
+            Чек-лист «Как не стать обезьяной с гранатой» при работе с legacy.
+
+        - title: "Алгоритмы для начинающих"
+          author: "Панайотис Луридас"
+          description: |
+            Визуализация Big O через анимации сортировки танцорами.
+            Практикум по оптимизации SQL-запросов через B-деревья.
+            Разбор алгоритмов рекомендательных систем Netflix и TikTok.
+
+        - title: "Алгоритмы: теория и практическое применение"
+          author: "Род Стивенс"
+          description: |
+            Кейс-стади: как алгоритмы PageRank и Collaborative Filtering строят цифровую экономику.
+            Реверс-инжиниринг паттернов в трейдинговых ботах.
+            Генетические алгоритмы в дизайне процессоров Apple M1.
+
+        - title: "Предисловие к математике"
+          author: "Владимир Успенский"
+          description: |
+            Философский диалог о природе математической красоты.
+            Анализ «теоремы о неполноте» Гёделя через призму лингвистики.
+            Полемика с Хофштадтером о сознании и формальных системах.
+
+        - title: "Теория графов"
+          author: "А.В. Омельченко"
+          description: |
+            Прикладное применение в биоинформатике (сборка генома) и соцсетях (выявление ботов).
+            Алгоритмы анализа транспортных сетей Мегафона и Сбермаршрута.
+            Практикум на NetworkX с визуализацией в Gephi.
+
+        - title: "Практическая криптография"
+          author: "Нильс Фергюсон, Брюс Шнайер"
+          description: |
+            Разбор взлома российской системы «КриптоПро» китайскими хакерами.
+            Руководство по аудиту криптостойкости для fintech-стартапов.
+            Реализация MPC-протоколов для защиты от инсайдеров.
+
+        - title: "Занимательная информатика. Криптография. Манга"
+          author: "Митани, Сато"
+          description: |
+            Сюжет о школьнице, расшифровывающей послания якудзы.
+            Обучение через мемы: объяснение RSA через историю любви двух простых чисел.
+            Квест по взлому шифра Цезаря в стиле visual novel.
+
+        - title: "Элементарное введение в эллиптическую криптографию"
+          author: "А. А. Болотов, С. Б. Гашков, А. Б. Фролов"
+          description: |
+            Российская методика обучения через геометрические аналогии.
+            Сравнение ГОСТ Р 34.10-2021 с ECDSA NIST.
+            Кейсы применения в блокчейне Sberbank и системе «Мир».
+
+        - title: "Манифест криптоанархиста"
+          author: "Ян Хеглер"
+          description: |
+            Анализ Telegram vs Signal как инструментов революций.
+            Прогнозы о влиянии ZKP на приватность в Web3.
+            Этическая дискуссия: криптография как оружие в кибервойнах.
+
+        - title: "Децентрализованные приложения"
+          author: "С. Равал"
+          description: |
+            Пошаговый разбор архитектуры Uniswap и Aave.
+            Юридические ловушки при создании DAO в юрисдикции РФ.
+            Сравнение TON Blockchain и Ethereum 2.0.
+
+        - title: "Remote: офис не обязателен"
+          author: "Джейсон Фрайд, Дэвид Хайнемайер Хенссон"
+          description: |
+            Кейс Basecamp: как сократить офисные расходы на 80%.
+            Чек-лист по предотвращению выгорания в распределённых командах.
+            Инструментарий async-коммуникации для CTO.
+
+        - title: "Rework: бизнес без предрассудков"
+          author: "Джейсон Фрайд, Дэвид Хайнемайер Хенссон"
+          description: |
+            Манифест против VC-культуры и toxic productivity.
+            Кейс: запуск SaaS с $0 маркетингового бюджета.
+            Принцип «Достаточно хорошо» в продуктовой разработке.
+
+        - title: "Софт за 30 дней"
+          author: "Кен Швабер, Джефф Сазерленд"
+          description: |
+            Разбор провала HealthCare.gov и успеха Spotify Model.
+            Антипаттерны Scrum в российских госкомпаниях.
+            Гибридные методики (Scrumban) для стартапов на стадии hypergrowth.
+        - title: "Сам себе программист"
+          author: "Кори Альхофф"
+          description: |
+            Руководство для тех, кто хочет стать программистом без формального образования.
+            Практически охватывает Python, алгоритмы, базы данных, web-разработку и собеседования.
+
+        - title: "Мама, я тимлид! Практические советы по руководству IT-командой"
+          author: "Марина Перескокова"
+          description: |
+            Книга для начинающих тимлидов, раскрывающая особенности перехода из разработчиков в лиды:
+            управление командой, коммуникации, мотивация, конфликты и делегирование.
+
+        - title: "Невероятные числа профессора Стюарта"
+          author: "Иэн Стюарт"
+          description: |
+            Увлекательное путешествие по миру чисел: от простых до трансфинитных. Книга объясняет
+            математические концепции с юмором и простыми примерами, пробуждая интерес к математике.
+
+        - title: "Тренируй свой мозг"
+          author: "Рюта Кавашима"
+          description: |
+            Методика японского нейробиолога для улучшения работы мозга. Основана на ежедневных
+            упражнениях, активирующих префронтальную кору и поддерживающих когнитивное здоровье.
+
+        - title: "Тренируй свою память"
+          author: "Рюта Кавашима"
+          description: |
+            Продолжение книги по тренировке мозга, с упором на развитие краткосрочной и долговременной
+            памяти через специальные упражнения, арифметику и повторение.
+
+        - title: "Память. Упражнения и задания"
+          author: "Рюта Кавашима"
+          description: |
+            Практическое пособие с заданиями на развитие памяти. Основано на исследованиях
+            нейропластичности и активного старения. Подходит для всех возрастов.
+
+        - title: "Паттерны объектно-ориентированного проектирования"
+          author: "Эрих Гамма, Ричард Хелм, Ральф Джонсон, Джон Влиссидес"
+          description: |
+            Классический труд «Банды Четырёх» по 23 паттернам проектирования. Необходимая книга для
+            архитекторов и разработчиков, чтобы писать гибкий и поддерживаемый код.
+
+        - title: "Электричество шаг за шагом"
+          author: "Рудольф Сворень"
+          description: |
+            Учебник для начинающих, который поэтапно объясняет основы электричества и электроники.
+            Отличный выбор для тех, кто хочет разобраться в схемах, токе, напряжении и сборке устройств.
+
+        - title: "Думай как математик"
+          author: "Барбара Оакли"
+          description: |
+            Книга о том, как научиться мыслить, как инженер или математик. Автор делится личным
+            опытом перехода из гуманитарной сферы в техническую, включая советы по обучению.
+
+        - title: "Удовольствие от Х"
+          author: "Стивен Строгац"
+          description: |
+            Легкое и увлекательное введение в математику: от базовых понятий до сложных идей.
+            Написана в стиле научно-популярного рассказа, с примерами из жизни и истории науки.
+
+        - title: "Курс математического анализа"
+          author: "Александр Тер-Крикоров, Михаил Шабунин"
+          description: |
+            Учебник для студентов технических вузов. Охватывает дифференциальное и интегральное
+            исчисление, ряды, пределы и функции с глубокими теоретическими пояснениями и задачами.
+
+        - title: "Логика. Учебник, 9-е издание"
+          author: "Гетманова"
+          description: |
+            Классический учебник по формальной логике. Содержит теорию с примерами, объясняет законы
+            логики, построение высказываний, логические следствия и методы доказательства.
+
+        - title: "О памяти и мнемонике"
+          author: "Георгий Челпанов"
+          description: |
+            Психологический и философский труд о природе памяти. Рассматривает классические подходы
+            к мнемонике, роль ассоциаций и повторения в запоминании.
+
+        - title: "Запомнить всё. Усвоение знаний без скуки и зубрёжки"
+          author: "Генри Рёдигер, Марк Макдэниэл, Питер Браун"
+          description: |
+            Книга на основе когнитивной науки о том, как эффективно учиться. Предлагаются методы
+            активного запоминания, интервального повторения и самооценки знаний.
+
+        - title: "Алгоритмы: построение и анализ"
+          author: "Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн"
+          description: |
+            Академический стандарт по алгоритмам. Подходит для студентов и разработчиков,
+            охватывает сортировки, деревья, графы, динамическое программирование и сложность.
+
+        - title: "Блокчейн. Схема новой экономики"
+          author: "Мелани Свон"
+          description: |
+            Книга о концепции блокчейна за пределами криптовалют. Исследует децентрализованные модели
+            управления, контракты, DAO и влияние на экономику, медицину и политику.
+
+        - title: "Язык программирования С++"
+          author: "Бьёрн Страуструп"
+          description: |
+            Авторитетный труд от создателя языка. Книга охватывает как основы, так и продвинутые
+            темы, включая шаблоны, объектно-ориентированное программирование и многопоточность.
+
+        - title: "Алгоритмы и структуры данных"
+          author: "Никлаус Вирт"
+          description: |
+            Классическая книга от создателя Паскаля. В краткой и ясной форме объясняет базовые
+            структуры данных и методы их обработки, с акцентом на простоту и ясность реализации.
+
+        - title: "Грокаем алгоритмы"
+          author: "Адитья Бхаргава"
+          description: |
+            Иллюстрированное и доступное введение в алгоритмы. Пошаговые объяснения и визуализация
+            делают её отличной книгой для начинающих программистов.
+
+        - title: "Дискретная математика для программистов"
+          author: "Ф.А. Новиков"
+          description: |
+            Учебник по теории множеств, логике, графам и булевой алгебре. Подходит для студентов и
+            тех, кто хочет глубже понимать формальные основы компьютерных наук.
+
+        - title: "Тестирование dot com"
+          author: "Роман Савин"
+          description: |
+            Популярная российская книга по тестированию ПО. Освещает все этапы QA: тест-планы,
+            баг-репорты, автоматизацию и работу с документацией в реальных проектах.
+
+        - title: "Создание микросервисов"
+          author: "Сэм Ньюмен"
+          description: |
+            Руководство по проектированию, развёртыванию и поддержке микросервисной архитектуры.
+            Рассматривает как технические, так и организационные аспекты.
+
+        - title: "Погружение в паттерны проектирования"
+          author: "Алексей Швец"
+          description: |
+            Практический гид по паттернам проектирования с примерами на популярных языках.
+            Объясняет как и когда применять паттерны в реальной разработке.
+
+        - title: "Go идиомы и паттерны проектирования"
+          author: "Джон Боднер"
+          description: |
+            Практическое руководство по созданию устойчивого, читаемого и эффективного Go-кода.
+            Раскрывает идиоматичный стиль, принципы организации и паттерны архитектуры на Go.
+
+    - category: "Художественные / Публицистика"
       items:
-        - title:
-            ru: Лабиринты Ехо
-            en: Labyrinths of Echo
-          author:
-            ru: Макс Фрай
-            en: Max Frei
-          description:
-            ru: "Это увлекательное погружение в волшебный, абсурдно-логичный мир сновидений и парадоксов, где за каждой дверью \nскрывается новое чудо, а за каждым поворотом — загадка. Герой рассказов, сэр Макс, бывший житель нашего мира, \nоказывается в волшебной стране Ехо, где вступает в Орден Следопытов и расследует странные и порой опасные дела. \nЭти истории наполнены мягким юмором, иронией, философскими размышлениями и яркими персонажами. Фрай соединяет \nсказку и реальность, создавая атмосферу уюта, тайны и бесконечного удивления.\n"
-            en: |
-              A captivating dive into a magical, absurdly logical world of dreams and paradoxes, where behind every door hides a new wonder, and around every turn a riddle. The hero of the stories, Sir Max, a former resident of our world, finds himself in the magical land of Echo, where he joins the Order of Pathfinders and investigates strange and sometimes dangerous cases. These stories are full of gentle humour, irony, philosophical reflection and vivid characters. Frei combines fairy tale and reality, creating an atmosphere of cosiness, mystery and endless wonder.
-        - title:
-            ru: 'Норвежский лес: скандинавский путь к силе и свободе'
-            en: 'Norwegian Wood: Chopping, Stacking and Drying Wood the Scandinavian Way'
-          author:
-            ru: Ларс Миттинг
-            en: Lars Mytting
-          description:
-            ru: "Философско-практическое произведение о глубокой связи человека с природой, деревом и ритмами северной жизни. \nАвтор исследует древние традиции заготовки, сушки и хранения дров, превращая обыденный труд в источник \nмедитативной силы и жизненной устойчивости. Через истории норвежцев, наблюдения за лесом и размышления о \nпростом бытии, книга открывает путь к внутреннему равновесию, свободе и уважению к естественному ходу вещей. \nЭто дань скандинавской культуре и философии устойчивой, созерцательной жизни.\n"
-            en: |
-              A philosophical and practical work about the deep bond between people, wood and the rhythms of northern life. The author explores the ancient traditions of cutting, drying and storing firewood, turning everyday labour into a source of meditative strength and resilience. Through the stories of Norwegians, observations of the forest and reflections on simple existence, the book opens a path to inner balance, freedom and respect for the natural order of things. It is a tribute to Scandinavian culture and the philosophy of a sustainable, contemplative life.
-        - title:
-            ru: Маленький принц
-            en: The Little Prince
-          author:
-            ru: Антуан де Сент-Экзюпери
-            en: Antoine de Saint-Exupéry
-          description:
-            ru: "Аллегорическая повесть «Маленький принц» Антуана де Сент-Экзюпери представлена с оригинальными авторскими \nиллюстрациями, которые не просто сопровождают текст, а являются его неотъемлемой частью, усиливая эмоциональное \nи смысловое восприятие. Знаменитые цитаты и проникновенные размышления о доброте, ответственности и внутренней \nмудрости героя выделены цветом, чтобы читатель мог особенно отметить их значимость.\n"
-            en: |
-              Antoine de Saint-Exupéry's allegorical tale, presented with the author's original illustrations, which do not merely accompany the text but are an integral part of it, strengthening its emotional and semantic impact. Famous quotations and heartfelt reflections on kindness, responsibility and the hero's inner wisdom are highlighted in colour so that the reader can mark their significance.
-        - title: '1984'
-          author:
-            ru: Джордж Оруэлл
-            en: George Orwell
-          description:
-            ru: "Мрачная антиутопия, описывающая тоталитарное общество, в котором государство контролирует не только действия, \nно и мысли своих граждан. Главный герой, Уинстон Смит, пытается сохранить свою индивидуальность и внутреннюю \nсвободу в мире, где правда искажается, а личная жизнь — под постоянным наблюдением. Это мощное и актуальное \nпроизведение о власти, манипуляции сознанием, подавлении личности и борьбе за истину. Книга продолжает \nоставаться предостережением против любых форм тоталитаризма и утраты человеческого достоинства.\n"
-            en: |
-              A grim dystopia describing a totalitarian society in which the state controls not only the actions but also the thoughts of its citizens. The protagonist, Winston Smith, tries to preserve his individuality and inner freedom in a world where truth is distorted and private life is under constant surveillance. A powerful and still relevant work about power, manipulation of consciousness, the suppression of the individual and the struggle for truth. The book remains a warning against every form of totalitarianism and the loss of human dignity.
-        - title:
-            ru: Искусство войны
-            en: The Art of War
-          author:
-            ru: Сунь-цзы
-            en: Sun Tzu
-          description:
-            ru: |
-              «Искусство войны» — древнейший трактат о стратегии, тактике и управлении конфликтами.
-              Сунь-цзы рассматривает войну как часть политики и предлагает побеждать без прямого столкновения.
-              Книга наполнена афоризмами, применимыми в военном деле, бизнесе и повседневной жизни.
-              Мудрость Востока, лаконичные формулы и глубокий смысл делают её вечным источником вдохновения.
-            en: |
-              "The Art of War" is the oldest treatise on strategy, tactics and the management of conflict. Sun Tzu treats war as part of politics and proposes winning without direct confrontation. The book is full of aphorisms that apply in warfare, business and everyday life. The wisdom of the East, laconic formulas and deep meaning make it an eternal source of inspiration.
-        - title:
-            ru: Лунь юй
-            en: The Analects
-          author:
-            ru: Конфуций
-            en: Confucius
-          description:
-            ru: |
-              «Лунь юй» — сборник изречений Конфуция и его учеников, отражающий основы китайской философии.
-              Центральные темы — нравственность, гармония в обществе, долг, уважение и самосовершенствование.
-              Эти короткие диалоги передают дух конфуцианской мудрости и жизненных ориентиров.
-              Книга учит думать, действовать осознанно и стремиться к благородству в повседневности.
-            en: |
-              "The Analects" is a collection of sayings of Confucius and his disciples that reflects the foundations of Chinese philosophy. The central themes are morality, harmony in society, duty, respect and self-improvement. These short dialogues convey the spirit of Confucian wisdom and its life guidelines. The book teaches us to think, to act consciously and to strive for nobility in everyday life.
-        - title:
-            ru: Капитал
-            en: Capital
-          author:
-            ru: Карл Маркс
-            en: Karl Marx
-          description:
-            ru: |
-              «Капитал» — фундаментальный труд Карла Маркса по критике политической экономии капитализма.
-              Автор анализирует природу товара, стоимость, прибавочную стоимость и эксплуатацию труда.
-              Сочинения закладывает основы марксистской теории и оказывает влияние на экономику и политику до сих пор.
-              Это сложное, но мощное исследование структуры общества и механизмов классовой борьбы.
-            en: |
-              "Capital" is Karl Marx's fundamental work on the critique of the political economy of capitalism. The author analyses the nature of the commodity, value, surplus value and the exploitation of labour. The work lays the foundations of Marxist theory and still influences economics and politics. It is a complex but powerful study of the structure of society and the mechanisms of class struggle.
-        - title:
-            ru: Полное собрание сочинений
-            en: Collected Works
-          author:
-            ru: Владимир Ленин
-            en: Vladimir Lenin
-          description:
-            ru: |
-              Полное собрание сочинений В. И. Ленина охватывает теорию, тактику и практику революционного движения.
-              Включает статьи, речи, письма и работы по философии, экономике, организации партии и государству.
-              Это основа марксистско-ленинской идеологии и руководство по построению социалистического общества.
-              Тексты показывают эволюцию мысли Ленина и отражают эпоху великих перемен и борьбы.
-            en: |
-              V. I. Lenin's Collected Works cover the theory, tactics and practice of the revolutionary movement. They include articles, speeches, letters and works on philosophy, economics, the organisation of the party and the state. This is the basis of Marxist-Leninist ideology and a guide to building a socialist society. The texts show the evolution of Lenin's thought and reflect an era of great change and struggle.
-        - title:
-            ru: Полное собрание сочинений
-            en: Collected Works
-          author:
-            ru: Иосиф Сталин
-            en: Joseph Stalin
-          description:
-            ru: |
-              Сочинения И. В. Сталина представляют собой корпус работ по марксизму-ленинизму и вопросам государства.
-              Включают теоретические труды, доклады, статьи и выступления по внутренней и внешней политике.
-              Сочинения отражают период индустриализации, коллективизации, войны и идеологического строительства.
-              Это ключ к пониманию советской модели управления и мировоззрения сталинской эпохи.
-            en: |
-              The works of I. V. Stalin are a body of writing on Marxism-Leninism and questions of the state. They include theoretical works, reports, articles and speeches on domestic and foreign policy. The works reflect the period of industrialisation, collectivisation, war and ideological construction. They are a key to understanding the Soviet model of governance and the worldview of the Stalin era.
-        - title:
-            ru: ПостУкраина
-            en: PostUkraine
-          author:
-            ru: Семён Уралов
-            en: Semyon Uralov
-          description:
-            ru: "Аналитический и публицистический взгляд на политические и социокультурные процессы, приведшие к распаду Украины \nкак единого государства. Семён Уралов исследует причины внутреннего кризиса, глубоко укоренённые в идентичности, \nуправлении и внешнем влиянии, а также предлагает концепцию «постукраинского» пространства — новой реальности, \nформирующейся на руинах прежней парадигмы. Это не просто описание событий, а попытка взглянуть на будущее региона \nс точки зрения исторической необходимости и геополитических интересов.\n"
-            en: |
-              An analytical and journalistic look at the political and sociocultural processes that led to the disintegration of Ukraine as a single state. Semyon Uralov examines the causes of the internal crisis, deeply rooted in identity, governance and outside influence, and proposes the concept of a "post-Ukrainian" space: a new reality forming on the ruins of the former paradigm. It is not just a description of events but an attempt to look at the region's future from the standpoint of historical necessity and geopolitical interests.
-        - title:
-            ru: Украинская трагедия
-            en: The Ukrainian Tragedy
-          author:
-            ru: Семён Уралов
-            en: Semyon Uralov
-          description:
-            ru: "Книга-рефлексия, в которой Семён Уралов рассматривает ключевые этапы разрушения украинской государственности, \nот Майдана до военного конфликта. Автор детально анализирует роли внешних акторов, внутренних элит и идеологических \nрасколов, приведших к гуманитарной и политической катастрофе. Это взгляд изнутри, где трагедия воспринимается \nне как случайность, а как результат системных ошибок и исторических заблуждений. Книга будет интересна тем, \nкто ищет не эмоциональные лозунги, а холодный, аналитический подход к украинскому вопросу.\n"
-            en: |
-              A book of reflection in which Semyon Uralov examines the key stages in the destruction of Ukrainian statehood, from the Maidan to the military conflict. The author analyses in detail the roles of external actors, internal elites and ideological divides that led to a humanitarian and political catastrophe. It is a view from the inside, where the tragedy is seen not as an accident but as the result of systemic mistakes and historical misconceptions. The book will interest those who look not for emotional slogans but for a cold, analytical approach to the Ukrainian question.
-        - title:
-            ru: Исповедь экономического убийцы
-            en: Confessions of an Economic Hit Man
-          author:
-            ru: Джон Перкинс
-            en: John Perkins
-          description:
-            ru: |
-              Откровенные мемуары экс-консультанта, раскрывающие технологию экономического порабощения стран.
-              Автор детализирует, как через кабальные кредиты создавалась зависимость государств от США.
-              Разоблачение системы неоколониализма, где финансовые инструменты становятся оружием подчинения.
-              Книга-сенсация, изменившая представление о глобальной экономике и международной политике.
-            en: |
-              The candid memoirs of a former consultant, revealing the technology of the economic subjugation of countries. The author details how, through debt-bondage loans, states' dependence on the USA was created. An exposé of the system of neo-colonialism, in which financial instruments become weapons of subjugation. A sensational book that changed ideas about the global economy and international politics.
-        - title:
-            ru: 'Думай как математик: Как решать любые задачи быстрее и эффективнее'
-            en: A Mind for Numbers
-          author:
-            ru: Барбара Оакли
-            en: Barbara Oakley
-          description:
-            ru: |
-              Практическое руководство по прокачке мышления через нейробиологию и когнитивные техники.
-              Автор синтезирует опыт точных наук и педагогики, предлагая инструменты для освоения сложных дисциплин.
-              Методы «фокусированного» и «рассеянного» мышления помогут преодолеть прокрастинацию.
-              Must-read для всех, кто хочет научиться учиться и раскрыть потенциал своего мозга.
-            en: |
-              A practical guide to upgrading your thinking through neurobiology and cognitive techniques. The author draws together experience from the exact sciences and pedagogy, offering tools for mastering difficult subjects. The methods of "focused" and "diffuse" thinking help overcome procrastination. A must-read for anyone who wants to learn how to learn and unlock the potential of their brain.
-        - title:
-            ru: Экономическая теория
-            en: Economic Theory
-          author:
-            ru: Григорий Вечканов
-            en: Grigory Vechkanov
-          description:
-            ru: |
-              Базовый учебник по экономике с акцентом на российскую специфику рыночных отношений.
-              Чёткая структура: от основ спроса/предложения до макроэкономического регулирования.
-              Практикумы с кейсами и инфографикой упрощают понимание абстрактных концепций.
-              Рекомендовано Минобразования РФ для студентов экономических специальностей.
-            en: |
-              A basic economics textbook with an emphasis on the Russian specifics of market relations. A clear structure: from the basics of supply and demand to macroeconomic regulation. Workshops with cases and infographics make abstract concepts easier to understand. Recommended by the Russian Ministry of Education for students of economic specialities.
-        - title:
-            ru: Общество потребления
-            en: The Consumer Society
-          author:
-            ru: Жан Бодрийяр
-            en: Jean Baudrillard
-          description:
-            ru: |
-              Культовая работа французского постмодерниста о гиперреальности товарного фетишизма.
-              Анализ общества, где знаки (бренды, статусы) заменяют подлинные человеческие отношения.
-              Философский манифест против диктатуры маркетинга, превращающего личность в «симулякр».
-              Ключевой текст для понимания современной культуры и её скрытых механизмов манипуляции.
-            en: |
-              A cult work by the French postmodernist on the hyperreality of commodity fetishism. An analysis of a society in which signs (brands, statuses) replace genuine human relationships. A philosophical manifesto against the dictatorship of marketing, which turns the individual into a "simulacrum". A key text for understanding modern culture and its hidden mechanisms of manipulation.
-        - title:
-            ru: О дивный новый мир
-            en: Brave New World
-          author:
-            ru: Олдос Хаксли
-            en: Aldous Huxley
-          description:
-            ru: |
-              Дистопия генетически запрограммированного общества с кастовой системой и наркотиком «сома».
-              Технократический рай, где искусственные удовольствия заменяют свободу воли и критическое мышление.
-              Столкновение «цивилизованного» человека с дикарём-нонконформистом ставит вопрос о цене стабильности.
-              Пророчество о будущем, где контроль осуществляется через удовольствие, а не насилие.
-            en: |
-              A dystopia of a genetically programmed society with a caste system and the drug "soma". A technocratic paradise where artificial pleasures replace free will and critical thinking. The collision of a "civilised" man with a nonconformist savage raises the question of the price of stability. A prophecy of a future in which control is exercised through pleasure rather than violence.
-        - title:
-            ru: Мартин Иден
-            en: Martin Eden
-          author:
-            ru: Джек Лондон
-            en: Jack London
-          description:
-            ru: |
-              История моряка-самоучки, бросившего вызов литературным снобам и буржуазным условностям.
-              Трагедия человека, достигшего вершин успеха, но разочаровавшегося в собственных идеалах.
-              Роман-автопортрет: Лондон вложил в героя свои юношеские амбиции и экзистенциальные кризисы.
-              Жёсткая критика общества, где талант значит меньше, чем происхождение и связи.
-            en: |
-              The story of a self-taught sailor who challenged literary snobs and bourgeois conventions. The tragedy of a man who reached the heights of success but became disillusioned with his own ideals. A self-portrait novel: London put his youthful ambitions and existential crises into the hero. A harsh critique of a society where talent matters less than origin and connections.
-        - title:
-            ru: Морской волк
-            en: The Sea-Wolf
-          author:
-            ru: Джек Лондон
-            en: Jack London
-          description:
-            ru: "Интеллектуал против тирана: в эпической битве на китобойном судне сталкиваются ницшеанский капитан \nВолк Ларсен и гуманист Хэмфри Ван-Вейден.\nИсследование природы власти — физической силы versus силы духа.\nМетафора человеческой цивилизации как утлого судна в океане хаоса.\nСамый философский роман Лондона с элементами психологического триллера.\n"
-            en: |
-              An intellectual against a tyrant: in an epic battle aboard a whaling ship, the Nietzschean captain Wolf Larsen and the humanist Humphrey Van Weyden clash. An exploration of the nature of power: physical strength versus strength of spirit. A metaphor for human civilisation as a frail ship in an ocean of chaos. London's most philosophical novel, with elements of a psychological thriller.
-        - title:
-            ru: Белый клык
-            en: White Fang
-          author:
-            ru: Джек Лондон
-            en: Jack London
-          description:
-            ru: |
-              Эпос выживания: путь полуволка-полусобаки от жестоких законов дикой природы к человеческой доброте.
-              Четыре ипостаси героя: вожак стаи, боец собачьих боёв, цирковой артист, преданный друг.
-              Параллель между животным и человеческим миром в условиях золотой лихорадки на Аляске.
-              Гимн милосердию, способному пробудить человеческое даже в свирепом хищнике.
-            en: |
-              An epic of survival: the path of a half-wolf, half-dog from the cruel laws of the wild to human kindness. The hero's four guises: pack leader, dog-fight fighter, circus performer, devoted friend. A parallel between the animal and human worlds in the conditions of the Alaskan gold rush. A hymn to mercy, which can awaken the human even in a fierce predator.
-        - title:
-            ru: Игра
-            en: The Game
-          author:
-            ru: Джек Лондон
-            en: Jack London
-          description:
-            ru: |
-              Рассказ о боксёре Джо, для которого ринг становится ловушкой между долгом и мечтой.
-              Жёсткий реализм в изображении спорта как бизнеса, калечащего тела и души.
-              Конфликт романтизма юности с цинизмом профессионального спорта.
-              Пронзительная зарисовка о цене амбиций в мире, где победителей определяют букмекеры.
-            en: |
-              A story about the boxer Joe, for whom the ring becomes a trap between duty and dream. Harsh realism in depicting sport as a business that cripples bodies and souls. The conflict between the romanticism of youth and the cynicism of professional sport. A piercing sketch of the price of ambition in a world where winners are decided by bookmakers.
-        - title:
-            ru: Джон Ячменное Зерно
-            en: John Barleycorn
-          author:
-            ru: Джек Лондон
-            en: Jack London
-          description:
-            ru: |
-              Полуавтобиографическая исповедь о двойной жизни: успешный писатель vs раб алкоголя.
-              Тотальное исследование зависимости — от первых рюмок до попыток суицида.
-              Лондон бросает вызов обществу, романтизирующему пьянство как признак богемности.
-              Текст-предсмертная записка: через 6 лет после публикации автор покончил с собой.
-            en: |
-              A semi-autobiographical confession about a double life: a successful writer vs a slave to alcohol. A thorough exploration of addiction, from the first drinks to suicide attempts. London challenges a society that romanticises drinking as a sign of bohemianism. A text that is a suicide note: six years after its publication the author took his own life.
-        - title:
-            ru: Великий Гэтсби
-            en: The Great Gatsby
-          author:
-            ru: Фрэнсис Скотт Фицджеральд
-            en: F. Scott Fitzgerald
-          description:
-            ru: |-
-              Икона «потерянного поколения»: джазовая симфония о мечте, разбитой о стену социальных предрассудков.
-              Миллионер-мистификатор Джей Гэтсби строит замок из иллюзий ради любви к легкомысленной Дэйзи.
-              Роман-разоблачение «американской мечты», где богатство становится позолотой на пустоте.
-              Эталон «эпохи джаза» с её блеском, декадансом и экзистенциальной тоской.
-            en: |
-              An icon of the "lost generation": a jazz symphony about a dream shattered against the wall of social prejudice. The millionaire and mystifier Jay Gatsby builds a castle of illusions for the love of the frivolous Daisy. A novel that exposes the "American dream", where wealth becomes gilding on emptiness. The benchmark of the "Jazz Age" with its glitter, decadence and existential longing.
+        - title: "Лабиринты Ехо"
+          author: "Макс Фрай"
+          description: |
+            Это увлекательное погружение в волшебный, абсурдно-логичный мир сновидений и парадоксов, где за каждой дверью 
+            скрывается новое чудо, а за каждым поворотом — загадка. Герой рассказов, сэр Макс, бывший житель нашего мира, 
+            оказывается в волшебной стране Ехо, где вступает в Орден Следопытов и расследует странные и порой опасные дела. 
+            Эти истории наполнены мягким юмором, иронией, философскими размышлениями и яркими персонажами. Фрай соединяет 
+            сказку и реальность, создавая атмосферу уюта, тайны и бесконечного удивления.
+        - title: "Норвежский лес: скандинавский путь к силе и свободе"
+          author: Ларс Миттинг
+          description: |
+            Философско-практическое произведение о глубокой связи человека с природой, деревом и ритмами северной жизни. 
+            Автор исследует древние традиции заготовки, сушки и хранения дров, превращая обыденный труд в источник 
+            медитативной силы и жизненной устойчивости. Через истории норвежцев, наблюдения за лесом и размышления о 
+            простом бытии, книга открывает путь к внутреннему равновесию, свободе и уважению к естественному ходу вещей. 
+            Это дань скандинавской культуре и философии устойчивой, созерцательной жизни.
+        - title: "Маленький принц"
+          author: "Антуан де Сент-Экзюпери"
+          description: | 
+            Аллегорическая повесть «Маленький принц» Антуана де Сент-Экзюпери представлена с оригинальными авторскими 
+            иллюстрациями, которые не просто сопровождают текст, а являются его неотъемлемой частью, усиливая эмоциональное 
+            и смысловое восприятие. Знаменитые цитаты и проникновенные размышления о доброте, ответственности и внутренней 
+            мудрости героя выделены цветом, чтобы читатель мог особенно отметить их значимость.
+        - title: "1984"
+          author: "Джордж Оруэлл"
+          description: |
+            Мрачная антиутопия, описывающая тоталитарное общество, в котором государство контролирует не только действия, 
+            но и мысли своих граждан. Главный герой, Уинстон Смит, пытается сохранить свою индивидуальность и внутреннюю 
+            свободу в мире, где правда искажается, а личная жизнь — под постоянным наблюдением. Это мощное и актуальное 
+            произведение о власти, манипуляции сознанием, подавлении личности и борьбе за истину. Книга продолжает 
+            оставаться предостережением против любых форм тоталитаризма и утраты человеческого достоинства.
+        - title: "Искусство войны"
+          author: "Сунь-цзы"
+          description: |
+            «Искусство войны» — древнейший трактат о стратегии, тактике и управлении конфликтами.
+            Сунь-цзы рассматривает войну как часть политики и предлагает побеждать без прямого столкновения.
+            Книга наполнена афоризмами, применимыми в военном деле, бизнесе и повседневной жизни.
+            Мудрость Востока, лаконичные формулы и глубокий смысл делают её вечным источником вдохновения.
+
+        - title: "Лунь юй"
+          author: "Конфуций"
+          description: |
+            «Лунь юй» — сборник изречений Конфуция и его учеников, отражающий основы китайской философии.
+            Центральные темы — нравственность, гармония в обществе, долг, уважение и самосовершенствование.
+            Эти короткие диалоги передают дух конфуцианской мудрости и жизненных ориентиров.
+            Книга учит думать, действовать осознанно и стремиться к благородству в повседневности.
+
+        - title: "Капитал"
+          author: "Карл Маркс"
+          description: |
+            «Капитал» — фундаментальный труд Карла Маркса по критике политической экономии капитализма.
+            Автор анализирует природу товара, стоимость, прибавочную стоимость и эксплуатацию труда.
+            Сочинения закладывает основы марксистской теории и оказывает влияние на экономику и политику до сих пор.
+            Это сложное, но мощное исследование структуры общества и механизмов классовой борьбы.
+
+        - title: "Полное собрание сочинений"
+          author: "Владимир Ленин"
+          description: |
+            Полное собрание сочинений В. И. Ленина охватывает теорию, тактику и практику революционного движения.
+            Включает статьи, речи, письма и работы по философии, экономике, организации партии и государству.
+            Это основа марксистско-ленинской идеологии и руководство по построению социалистического общества.
+            Тексты показывают эволюцию мысли Ленина и отражают эпоху великих перемен и борьбы.
+
+        - title: "Полное собрание сочинений"
+          author: "Иосиф Сталин"
+          description: |
+            Сочинения И. В. Сталина представляют собой корпус работ по марксизму-ленинизму и вопросам государства.
+            Включают теоретические труды, доклады, статьи и выступления по внутренней и внешней политике.
+            Сочинения отражают период индустриализации, коллективизации, войны и идеологического строительства.
+            Это ключ к пониманию советской модели управления и мировоззрения сталинской эпохи.
+        - title: "ПостУкраина"
+          author: "Семён Уралов"
+          description: |
+            Аналитический и публицистический взгляд на политические и социокультурные процессы, приведшие к распаду Украины 
+            как единого государства. Семён Уралов исследует причины внутреннего кризиса, глубоко укоренённые в идентичности, 
+            управлении и внешнем влиянии, а также предлагает концепцию «постукраинского» пространства — новой реальности, 
+            формирующейся на руинах прежней парадигмы. Это не просто описание событий, а попытка взглянуть на будущее региона 
+            с точки зрения исторической необходимости и геополитических интересов.
+        - title: "Украинская трагедия"
+          author: "Семён Уралов"
+          description: |
+            Книга-рефлексия, в которой Семён Уралов рассматривает ключевые этапы разрушения украинской государственности, 
+            от Майдана до военного конфликта. Автор детально анализирует роли внешних акторов, внутренних элит и идеологических 
+            расколов, приведших к гуманитарной и политической катастрофе. Это взгляд изнутри, где трагедия воспринимается 
+            не как случайность, а как результат системных ошибок и исторических заблуждений. Книга будет интересна тем, 
+            кто ищет не эмоциональные лозунги, а холодный, аналитический подход к украинскому вопросу.
+        - title: "Исповедь экономического убийцы"
+          author: "Джон Перкинс"
+          description: |
+            Откровенные мемуары экс-консультанта, раскрывающие технологию экономического порабощения стран.
+            Автор детализирует, как через кабальные кредиты создавалась зависимость государств от США.
+            Разоблачение системы неоколониализма, где финансовые инструменты становятся оружием подчинения.
+            Книга-сенсация, изменившая представление о глобальной экономике и международной политике.
+
+        - title: "Думай как математик: Как решать любые задачи быстрее и эффективнее"
+          author: "Барбара Оакли"
+          description: |
+            Практическое руководство по прокачке мышления через нейробиологию и когнитивные техники.
+            Автор синтезирует опыт точных наук и педагогики, предлагая инструменты для освоения сложных дисциплин.
+            Методы «фокусированного» и «рассеянного» мышления помогут преодолеть прокрастинацию.
+            Must-read для всех, кто хочет научиться учиться и раскрыть потенциал своего мозга.
+
+        - title: "Экономическая теория"
+          author: "Григорий Вечканов"
+          description: |
+            Базовый учебник по экономике с акцентом на российскую специфику рыночных отношений.
+            Чёткая структура: от основ спроса/предложения до макроэкономического регулирования.
+            Практикумы с кейсами и инфографикой упрощают понимание абстрактных концепций.
+            Рекомендовано Минобразования РФ для студентов экономических специальностей.
+
+        - title: "Общество потребления"
+          author: "Жан Бодрийяр"
+          description: |
+            Культовая работа французского постмодерниста о гиперреальности товарного фетишизма.
+            Анализ общества, где знаки (бренды, статусы) заменяют подлинные человеческие отношения.
+            Философский манифест против диктатуры маркетинга, превращающего личность в «симулякр».
+            Ключевой текст для понимания современной культуры и её скрытых механизмов манипуляции.
+
+        - title: "О дивный новый мир"
+          author: "Олдос Хаксли"
+          description: |
+            Дистопия генетически запрограммированного общества с кастовой системой и наркотиком «сома».
+            Технократический рай, где искусственные удовольствия заменяют свободу воли и критическое мышление.
+            Столкновение «цивилизованного» человека с дикарём-нонконформистом ставит вопрос о цене стабильности.
+            Пророчество о будущем, где контроль осуществляется через удовольствие, а не насилие.
+
+        - title: "Мартин Иден"
+          author: "Джек Лондон"
+          description: |
+            История моряка-самоучки, бросившего вызов литературным снобам и буржуазным условностям.
+            Трагедия человека, достигшего вершин успеха, но разочаровавшегося в собственных идеалах.
+            Роман-автопортрет: Лондон вложил в героя свои юношеские амбиции и экзистенциальные кризисы.
+            Жёсткая критика общества, где талант значит меньше, чем происхождение и связи.
+
+        - title: "Морской волк"
+          author: "Джек Лондон"
+          description: |
+            Интеллектуал против тирана: в эпической битве на китобойном судне сталкиваются ницшеанский капитан 
+            Волк Ларсен и гуманист Хэмфри Ван-Вейден.
+            Исследование природы власти — физической силы versus силы духа.
+            Метафора человеческой цивилизации как утлого судна в океане хаоса.
+            Самый философский роман Лондона с элементами психологического триллера.
+
+        - title: "Белый клык"
+          author: "Джек Лондон"
+          description: |
+            Эпос выживания: путь полуволка-полусобаки от жестоких законов дикой природы к человеческой доброте.
+            Четыре ипостаси героя: вожак стаи, боец собачьих боёв, цирковой артист, преданный друг.
+            Параллель между животным и человеческим миром в условиях золотой лихорадки на Аляске.
+            Гимн милосердию, способному пробудить человеческое даже в свирепом хищнике.
+
+        - title: "Игра"
+          author: "Джек Лондон"
+          description: |
+            Рассказ о боксёре Джо, для которого ринг становится ловушкой между долгом и мечтой.
+            Жёсткий реализм в изображении спорта как бизнеса, калечащего тела и души.
+            Конфликт романтизма юности с цинизмом профессионального спорта.
+            Пронзительная зарисовка о цене амбиций в мире, где победителей определяют букмекеры.
+
+        - title: "Джон Ячменное Зерно"
+          author: "Джек Лондон"
+          description: |
+            Полуавтобиографическая исповедь о двойной жизни: успешный писатель vs раб алкоголя.
+            Тотальное исследование зависимости — от первых рюмок до попыток суицида.
+            Лондон бросает вызов обществу, романтизирующему пьянство как признак богемности.
+            Текст-предсмертная записка: через 6 лет после публикации автор покончил с собой.
+
+        - title: "Великий Гэтсби"
+          author: "Фрэнсис Скотт Фицджеральд"
+          description: |
+            Икона «потерянного поколения»: джазовая симфония о мечте, разбитой о стену социальных предрассудков.
+            Миллионер-мистификатор Джей Гэтсби строит замок из иллюзий ради любви к легкомысленной Дэйзи.
+            Роман-разоблачение «американской мечты», где богатство становится позолотой на пустоте.
+            Эталон «эпохи джаза» с её блеском, декадансом и экзистенциальной тоской.

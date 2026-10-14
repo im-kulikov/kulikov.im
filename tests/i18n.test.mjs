@@ -52,10 +52,9 @@ describe("English home page", () => {
   });
 });
 
-test("the reading list is translated: English titles and authors on the English page, Russian ones on the Russian page", () => {
-  assert.match(visibleText(en("open-source")), /Designing Data-Intensive Applications[\s\S]*Reading list|Reading list[\s\S]*Designing Data-Intensive/);
-  assert.match(visibleText(en("open-source")), /Brave New World/);
-  assert.match(visibleText(dom("open-source")), /О дивный новый мир/);
+test("the reading list (Russian-only) is hidden on the English open-source page and kept on the Russian one", () => {
+  assert.doesNotMatch(visibleText(en("open-source")), /Designing Data-Intensive|Литература|Reading list|Brave New World/);
+  assert.match(visibleText(dom("open-source")), /Designing Data-Intensive/);
 });
 
 test("manifest and 404 exist for English too", () => {
