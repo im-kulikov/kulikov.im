@@ -54,6 +54,9 @@ describe("supply chain", () => {
     assert.ok(u.length > 5);
     for (const a of u.filter((x) => !x.startsWith("./"))) assert.match(a, /^[\w.-]+\/[\w./-]+@[0-9a-f]{40}$/, a);
   });
+  test("runners are pinned to an OS version, not a moving *-latest label", () => {
+    for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
+  });
   test("dependabot keeps actions and npm packages up to date", () => {
     const d = YAML.parse(readFileSync(join(ROOT, ".github/dependabot.yml"), "utf8"));
     assert.deepEqual(d.updates.map((u) => u["package-ecosystem"]).sort(), ["github-actions", "npm"]);
