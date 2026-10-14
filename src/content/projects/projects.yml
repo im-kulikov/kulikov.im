@@ -51,7 +51,7 @@ projects:
       - Observability
   - title:
       ru: Золотая Цифра
-      en: "Zolotaya Tsifra (Golden Digit)"
+      en: "Golden Digit"
     type: CRM (Custom)
     role:
       - ru: Аналитика
