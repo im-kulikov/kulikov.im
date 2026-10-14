@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          fetch-depth: 0 # full history: .GitInfo shows each page's own last commit
+          fetch-depth: 0 # full history: .GitInfo gives each page its own lastmod in the sitemap
       - uses: ./.github/actions/setup
       - name: Setup Pages
         id: pages
@@ -59,7 +59,10 @@ jobs:
       - name: Build
         env:
           HUGO_ENVIRONMENT: production
-        run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          HUGO_BUILD_SHA: ${{ github.sha }}
+        run: |
+          export HUGO_BUILD_DATE="$(git show -s --format=%cI HEAD)"
+          hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: build/public

@@ -58,6 +58,11 @@ describe("supply chain", () => {
     const co = ci.jobs.deploy.steps.find((x) => x.uses?.startsWith("actions/checkout@"));
     assert.equal(co.with?.["fetch-depth"], 0);
   });
+  test("the deploy build tells the footer which commit it was built from", () => {
+    const b = ci.jobs.deploy.steps.find((x) => x.name === "Build");
+    assert.equal(b.env.HUGO_BUILD_SHA, "${{ github.sha }}");
+    assert.match(b.run, /HUGO_BUILD_DATE/);
+  });
   test("runners are pinned to an OS version, not a moving *-latest label", () => {
     for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
   });

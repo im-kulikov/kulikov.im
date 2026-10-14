@@ -38,11 +38,10 @@
             </div>
         </div>
         <div class="hidden git-info py-5">
-            {{- with .GitInfo }}
-                <p class="git-user">{{ .AuthorName }}</p>
-                <p class="git-date">{{ .CommitDate }}</p>
-                <p class="git-hash">{{ .Hash }}</p>
-                <p class="git-subj">{{ .Subject }}</p>
+            {{- /* the commit this site was built from: set by the deploy job (HUGO_BUILD_SHA / HUGO_BUILD_DATE), empty in local builds */}}
+            {{- with getenv "HUGO_BUILD_SHA" }}
+                <p class="git-hash">{{ . }}</p>
+                {{- with getenv "HUGO_BUILD_DATE" }}<p class="git-date">{{ . }}</p>{{ end }}
             {{- end }}
         </div>
         <script>
