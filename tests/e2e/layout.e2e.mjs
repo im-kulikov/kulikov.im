@@ -233,3 +233,20 @@ describe("language switch", () => {
     await context.close();
   });
 });
+
+describe("project cards", () => {
+  for (const [width, cols] of [[390, 1], [800, 2], [1280, 3], [1600, 3]])
+    test(`@${width}px the last row is filled: the lone last card spans the free columns (${cols} column${cols > 1 ? "s" : ""})`, async () => {
+      for (const p of ["projects", "/en/projects.html"]) {
+        const { page, context } = await open(p, { width });
+        const r = await page.evaluate(() => {
+          const ul = [...document.querySelectorAll("ul")].find((u) => u.className.includes("grid-cols"));
+          const kids = [...ul.children];
+          return { cols: getComputedStyle(ul).gridTemplateColumns.split(" ").length, n: kids.length, span: +(getComputedStyle(kids.at(-1)).gridColumnEnd.match(/span (\d+)/)?.[1] ?? 1) };
+        });
+        await context.close();
+        assert.equal(r.cols, cols, p);
+        assert.equal(r.span, cols - ((r.n - 1) % cols), `${p}: ${r.n} cards in ${cols} columns, last spans ${r.span}`);
+      }
+    });
+});
