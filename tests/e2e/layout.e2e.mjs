@@ -8,11 +8,12 @@ import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
-import { ALIASES, ALL_PAGES, PAGES, SITE, urlPath } from "../helpers/site.mjs";
+import { ALIASES, ALL_PAGES, EN_PAGES, PAGES, SITE, enPath, urlPath } from "../helpers/site.mjs";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".xml": "application/xml", ".txt": "text/plain", ".webmanifest": "application/manifest+json" };
 let server, origin, browser;
-const url = (p) => origin + (p === "404" ? "/404.html" : urlPath(p));
+const url = (p) => origin + (p.startsWith("/") ? p : p === "404" ? "/404.html" : urlPath(p));
+const EVERY = [...ALL_PAGES, ...EN_PAGES.map(enPath)]; // Russian pages and their English translations
 
 async function open(p, { width = 1280, height = 900, ...ctx } = {}) {
   const context = await browser.newContext({ viewport: { width, height }, ...ctx });
@@ -46,7 +47,7 @@ after(async () => {
 describe("layout", () => {
   for (const width of [320, 390, 768, 1024, 1280])
     test(`no horizontal overflow at ${width}px on every page`, async () => {
-      for (const p of ALL_PAGES) {
+      for (const p of EVERY) {
         const { page, context, errors } = await open(p, { width });
         const o = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }));
         await context.close();
@@ -157,7 +158,7 @@ describe("accessibility", () => {
 
   // Real contrast: text colour is composited over every translucent background layer behind it.
   test("text contrast is at least 4.5:1 on every page in light and dark mode", async () => {
-    for (const p of ALL_PAGES) for (const colorScheme of ["light", "dark"]) {
+    for (const p of EVERY) for (const colorScheme of ["light", "dark"]) {
       const { page, context } = await open(p, { width: 390, colorScheme });
       const bad = await page.evaluate(() => {
         const px = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
@@ -192,5 +193,50 @@ describe("images", () => {
     await page.waitForLoadState("networkidle");
     await context.close();
     assert.equal(requests.filter((r) => /\/img\/home-hero/.test(r)).length, 1);
+  });
+});
+
+describe("language switch", () => {
+  const sw = (page) => page.locator(".lang-switch").first();
+
+  test("links go to the translation, current language is marked, touch targets are at least 44px", async () => {
+    const { page, context } = await open("about", { width: 390 });
+    await page.click("#nav-toggle");
+    const links = await sw(page).locator("a").evaluateAll((as) => as.map((a) => ({ lang: a.lang, href: a.getAttribute("href"), current: a.getAttribute("aria-current"), h: a.getBoundingClientRect().height, w: a.getBoundingClientRect().width })));
+    await context.close();
+    assert.deepEqual(links.map((l) => [l.lang, l.href, l.current]), [["ru", "/about.html", "true"], ["en", "/en/about.html", null]]);
+    for (const l of links) assert.ok(l.h >= 44 && l.w >= 44, `${l.lang}: ${l.w}x${l.h}`);
+  });
+
+  test("a page without a translation links to the other language's home", async () => {
+    const { page, context } = await open("projects");
+    const href = await sw(page).locator("a[lang=en]").getAttribute("href");
+    await context.close();
+    assert.equal(href, "/en/");
+  });
+
+  test("the choice is remembered: only the home page redirects, once per session; deep links never do", async () => {
+    const { page, context } = await open("index");
+    await sw(page).locator("a[lang=en]").click();
+    await page.waitForURL("**/en/");
+    assert.equal(await page.evaluate(() => localStorage.getItem("lang")), "en");
+    // a new visit to the Russian home page goes to the English one...
+    await page.evaluate(() => sessionStorage.clear());
+    await page.goto(url("index"));
+    await page.waitForURL("**/en/");
+    // ...but only once per session
+    await page.goto(url("index"));
+    assert.equal(new URL(page.url()).pathname, "/");
+    // deep links to the other language are not redirected
+    await page.evaluate(() => sessionStorage.clear());
+    await page.goto(url("about"));
+    assert.equal(new URL(page.url()).pathname, "/about.html");
+    await context.close();
+  });
+
+  test("without a saved choice nothing is redirected", async () => {
+    const { page, context } = await open("index");
+    assert.equal(new URL(page.url()).pathname, "/");
+    await context.close();
   });
 });

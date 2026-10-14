@@ -31,6 +31,9 @@ export function contentPages() {
 // Old URLs kept alive through `aliases` front matter: { from: "hobbies", to: "open-source" }
 export const ALIASES = Object.entries(FM).flatMap(([page, fm]) => (fm.aliases ?? []).map((a) => ({ from: a.replace(/^\/|\.html$/g, ""), to: page })));
 export const MENU_ORDER = Object.entries(FM).filter(([, fm]) => fm.menus?.main).sort((a, b) => a[1].menus.main.weight - b[1].menus.main.weight).map(([page]) => page);
+// English pages exist where the page has an index.en.md / _index.en.md next to the Russian one.
+export const EN_PAGES = Object.keys(FM).filter((p) => !FM[p].draft && ["index.en.md", "_index.en.md"].some((n) => existsSync(join(ROOT, "src/content", p === "index" ? "" : p, n)))).sort();
+export const enPath = (page) => (page === "index" ? "/en/" : `/en/${page}.html`);
 export const urlPath = (page) => (page === "index" ? "/" : `/${page}.html`);
 export const PAGES = contentPages(); // indexable pages (without 404)
 export const ALL_PAGES = [...PAGES, "404"].sort();

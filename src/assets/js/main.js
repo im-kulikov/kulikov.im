@@ -18,3 +18,12 @@ if (toggle && menu) {
   });
   window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => e.matches && set(false));
 }
+
+// Remember the language the visitor picked (read by the inline script in <head> on the home page).
+document.querySelectorAll(".lang-switch a").forEach((a) =>
+  a.addEventListener("click", () => {
+    try {
+      localStorage.setItem("lang", a.dataset.lang);
+    } catch {}
+  })
+);

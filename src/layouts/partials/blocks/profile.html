@@ -1,4 +1,4 @@
-{{- $data := .Inner | transform.Unmarshal }}
+{{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 <section class="section-sm">
     <div class="container space-y-20">
         {{ range $data }}

@@ -1,4 +1,4 @@
-{{- $data := .Inner | transform.Unmarshal }}
+{{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ with $data }}
     {{ if .enabled }}
         <section class="section-sm bg-gradient">

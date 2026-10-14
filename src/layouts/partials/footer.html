@@ -12,8 +12,8 @@
                     </div>
                 {{- end }}
             </div>
-            <nav aria-label="Разделы сайта">
-                <p class="mb-3 font-semibold" style="color: var(--ink)">Разделы</p>
+            <nav aria-label="{{ T "site_sections" }}">
+                <p class="mb-3 font-semibold" style="color: var(--ink)">{{ T "sections" }}</p>
                 <ul class="space-y-2">
                     {{ range site.Menus.main }}
                         <li><a class="footer-link" href="{{ .URL | relLangURL }}">{{ .Name }}</a></li>
@@ -21,7 +21,7 @@
                 </ul>
             </nav>
             <div>
-                <p class="mb-3 font-semibold" style="color: var(--ink)">Связаться</p>
+                <p class="mb-3 font-semibold" style="color: var(--ink)">{{ T "contact_heading" }}</p>
                 <ul class="flex flex-wrap gap-3">
                     {{ range hugo.Data.social.main }}
                         <li>
@@ -31,6 +31,7 @@
                         </li>
                     {{ end }}
                 </ul>
+                <div class="mt-5">{{ partial "components/lang-switch" . }}</div>
                 {{ with site.Params.contact }}
                     <p class="mt-4 text-sm"><a class="footer-link underline underline-offset-4" href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></p>
                 {{ end }}

@@ -3,11 +3,11 @@
         <a class="navbar-brand" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Title }}">
             {{ partialCached "components/logo" . }}
         </a>
-        <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Меню">
+        <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="{{ T "menu" }}">
             {{ partial "components/icon" (dict "name" "menu" "class" "icon-open h-5 w-5") }}
             {{ partial "components/icon" (dict "name" "close" "class" "icon-close h-5 w-5") }}
         </button>
-        <nav class="w-full lg:w-auto" aria-label="Основное меню">
+        <nav class="w-full lg:w-auto" aria-label="{{ T "main_menu" }}">
             <ul id="nav-menu" class="navbar-nav">
                 {{ $currentPage := . }}
                 {{ range site.Menus.main }}
@@ -25,6 +25,7 @@
                         </li>
                     {{ end }}
                 {{ end }}
+                <li class="mt-2 flex items-center lg:ml-1 lg:mt-0">{{ partial "components/lang-switch" . }}</li>
             </ul>
         </nav>
     </div>

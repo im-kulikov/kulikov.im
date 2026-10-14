@@ -1,19 +1,20 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { ALL_PAGES, BASE, PAGES, all, attr, dom, exists, link, meta, tags, text, urlPath } from "./helpers/site.mjs";
+import { ALL_PAGES, BASE, EN_PAGES, PAGES, enPath, all, attr, dom, exists, link, meta, tags, text, urlPath } from "./helpers/site.mjs";
 
 const title = (p) => text(tags(dom(p), "title")[0]);
 const desc = (p) => meta(dom(p), "description");
 
 describe("every page", () => {
   for (const p of ALL_PAGES) {
-    test(`${p}: lang, charset, viewport, no <base>, no hreflang (single language)`, () => {
+    test(`${p}: lang, charset, viewport, no <base>, hreflang only where an English translation exists`, () => {
       const d = dom(p);
       assert.equal(attr(tags(d, "html")[0], "lang"), "ru");
       assert.ok(all(d, (n) => n.tagName === "meta" && attr(n, "charset")?.toLowerCase() === "utf-8").length === 1);
       assert.match(meta(d, "viewport"), /width=device-width/);
       assert.equal(tags(d, "base").length, 0);
-      assert.equal(link(d, "alternate").length, 0);
+      const langs = link(d, "alternate").map((n) => attr(n, "hreflang")).sort();
+      assert.deepEqual(langs, EN_PAGES.includes(p) ? ["en", "ru", "x-default"] : [], p);
     });
     test(`${p}: description, og:*, twitter:* and verification tags`, () => {
       const d = dom(p);

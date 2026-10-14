@@ -441,3 +441,21 @@
         word-break: break-all;
     }
 }
+
+@layer components {
+    .lang-switch {
+        @apply inline-flex items-center gap-0.5 rounded-full border p-0.5 text-sm font-semibold;
+        border-color: var(--line);
+    }
+    .lang-switch a {
+        @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 no-underline transition-colors;
+        color: color-mix(in srgb, var(--ink) 72%, transparent);
+    }
+    .lang-switch a:hover {
+        color: var(--ink);
+    }
+    .lang-switch a[aria-current] {
+        background: var(--accent);
+        color: var(--accent-ink);
+    }
+}

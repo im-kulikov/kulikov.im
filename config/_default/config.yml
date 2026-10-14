@@ -9,11 +9,10 @@ i18nDir: src/i18n
 uglyURLs: true
 #minify: true
 baseURL: "https://kulikov.im/"
-title: "Персональный сайт Евгения Куликова"
 #theme: [  "github.com/luizdepra/hugo-coder" ]
 enableRobotsTXT: true
-locale: "ru"
 defaultContentLanguage: "ru"
+defaultContentLanguageInSubdir: false
 icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
 
 #paginate: 20

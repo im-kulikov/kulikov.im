@@ -1,23 +1,41 @@
-- title: Открытый код, который можно проверить
+- title:
+    ru: Открытый код, который можно проверить
+    en: Open source you can verify
   icon: github
   type: projects
   items:
-    - category: Библиотеки и инструменты
+    - category:
+        ru: Библиотеки и инструменты
+        en: Libraries and tools
       items:
         - title: go-bones
           url: "https://github.com/im-kulikov/go-bones"
-          description: "Каркас продакшен-сервисов на Go: health-пробы, graceful drain, OpenTelemetry и ops-эндпоинты. Только stdlib, без DI-контейнера."
+          description:
+            ru: "Каркас продакшен-сервисов на Go: health-пробы, graceful drain, OpenTelemetry и ops-эндпоинты. Только stdlib, без DI-контейнера."
+            en: "A skeleton for production Go services: health probes, graceful drain, OpenTelemetry and ops endpoints. Standard library only, no DI container."
         - title: gonfig
           url: "https://github.com/im-kulikov/gonfig"
-          description: "Конфигурация Go-программ одной структурой с тегами: значения по умолчанию, файлы (YAML, JSON, TOML), переменные окружения и флаги."
+          description:
+            ru: "Конфигурация Go-программ одной структурой с тегами: значения по умолчанию, файлы (YAML, JSON, TOML), переменные окружения и флаги."
+            en: "Configuration of Go programs with a single tagged struct: defaults, files (YAML, JSON, TOML), environment variables and flags."
         - title: resolvex
           url: "https://github.com/im-kulikov/resolvex"
-          description: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+          description:
+            ru: "Сервис, объединяющий BGP и DNS: управление доменами и их IP-адресами через админ-панель."
+            en: "A service that joins BGP and DNS: manage domains and their IP addresses from an admin panel."
         - title: traefik-provider
           url: "https://github.com/im-kulikov/traefik-provider"
-          description: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+          description:
+            ru: "Плагин для Traefik v3: настраивает маршрутизацию по состоянию другого экземпляра Traefik."
+            en: "A Traefik v3 plugin that configures routing from the state of another Traefik instance."
         - title: go-routeros
           url: "https://github.com/go-routeros/routeros"
-          description: "Клиент RouterOS API (Mikrotik) на Go. Поддерживаем и развиваем вместе с другом."
-        - title: Вклад в другие проекты
-          description: "Исправления и доработки (pull request) в Golang, Labstack Echo, TiDB и RouterOS."
+          description:
+            ru: "Клиент RouterOS API (Mikrotik) на Go. Поддерживаем и развиваем вместе с другом."
+            en: "A RouterOS (MikroTik) API client for Go. Maintained together with a friend."
+        - title:
+            ru: Вклад в другие проекты
+            en: Contributions to other projects
+          description:
+            ru: "Исправления и доработки (pull request) в Golang, Labstack Echo, TiDB и RouterOS."
+            en: "Fixes and improvements (pull requests) in Golang, Labstack Echo, TiDB and RouterOS."

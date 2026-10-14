@@ -1,11 +1,21 @@
-title: Как мы будем работать
+title:
+  ru: Как мы будем работать
+  en: How we will work
 class: section-md mb-20
 icon: briefcase
-description: |
-  Формат подбираем под задачу: аудит, проектирование, запуск MVP, усиление команды или ведение направления —
-  на контракте, по найму или как совместный проект.
+description:
+  ru: |
+    Формат подбираем под задачу: аудит, проектирование, запуск MVP, усиление команды или ведение направления —
+    на контракте, по найму или как совместный проект.
+  en: |
+    We pick the format to fit the task: an audit, design, an MVP launch, strengthening a team or leading a direction,
+    on a contract, as an employee or as a joint project.
 items:
-  - Короткий созвон. Вы описываете задачу и ограничения, я задаю вопросы и честно говорю, моя ли это задача.
-  - Фиксируем цель, объём и формат. Вы заранее знаете, что получите на выходе и как мы будем отслеживать прогресс.
-  - Работаю прозрачно. Регулярные короткие отчёты, решения и договорённости фиксируются письменно.
-  - Передаю результат так, чтобы команда могла жить без меня. Документация, обучение, понятные процессы.
+  - ru: Короткий созвон. Вы описываете задачу и ограничения, я задаю вопросы и честно говорю, моя ли это задача.
+    en: A short call. You describe the task and constraints, I ask questions and tell you honestly whether it is a task for me.
+  - ru: Фиксируем цель, объём и формат. Вы заранее знаете, что получите на выходе и как мы будем отслеживать прогресс.
+    en: We fix the goal, scope and format. You know in advance what you will get and how we will track progress.
+  - ru: Работаю прозрачно. Регулярные короткие отчёты, решения и договорённости фиксируются письменно.
+    en: I work transparently. Regular short reports, with decisions and agreements put in writing.
+  - ru: Передаю результат так, чтобы команда могла жить без меня. Документация, обучение, понятные процессы.
+    en: I hand over the result so the team can live without me. Documentation, training, clear processes.

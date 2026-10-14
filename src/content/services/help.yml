@@ -1,17 +1,33 @@
-title: С какими проблемами я помогаю
+title:
+  ru: С какими проблемами я помогаю
+  en: Problems I help with
 class: section-md mb-20
 icon: briefcase
-description: |
-  Помогаю командам наладить предсказуемую и стабильную разработку, в которую бизнес действительно верит.
-  Выстраиваю процессы, снижающие количество багов, ускоряю релизы и повышаю доверие к команде.
-  Устраняю хаос в коде, документации и взаимодействии между ролями — от Dev до Ops — чтобы команда могла сосредоточиться 
-  на создании ценности, а не тушении пожаров.
+description:
+  ru: |
+    Помогаю командам наладить предсказуемую и стабильную разработку, в которую бизнес действительно верит.
+    Выстраиваю процессы, снижающие количество багов, ускоряю релизы и повышаю доверие к команде.
+    Устраняю хаос в коде, документации и взаимодействии между ролями — от Dev до Ops — чтобы команда могла сосредоточиться 
+    на создании ценности, а не тушении пожаров.
+  en: |
+    I help teams build predictable, stable development that the business really trusts.
+    I set up processes that reduce the number of bugs, speed up releases and raise trust in the team.
+    I clear up the chaos in code, documentation and the interaction between roles, from Dev to Ops, so the team
+    can focus on creating value instead of firefighting.
 items:
-  - Нет актуальной технической документации, а знания о системе «живут» только в головах отдельных сотрудников.
-  - Релизы регулярно ломают функциональность, требуют восстановления данных и откатов.
-  - Код-ревью и тестирование занимают много времени, но не приносят нужного качества.
-  - Сервисы и приложения работают нестабильно, часто падают, а поиск причин занимает часы или дни.
-  - Между разработчиками, тестировщиками и DevOps-инженерами регулярно возникают конфликты.
-  - Релиз вызывает стресс, потому что никто не уверен, как поведёт себя система в продакшене.
-  - Хочется выпускать обновления ежедневно, но реальность этому мешает.
-  - Разработка и поставка ценности проходят непредсказуемо, бизнесу сложно доверять команде.
+  - ru: Нет актуальной технической документации, а знания о системе «живут» только в головах отдельных сотрудников.
+    en: There is no up-to-date technical documentation, and knowledge of the system lives only in the heads of a few people.
+  - ru: Релизы регулярно ломают функциональность, требуют восстановления данных и откатов.
+    en: Releases regularly break functionality and require data recovery and rollbacks.
+  - ru: Код-ревью и тестирование занимают много времени, но не приносят нужного качества.
+    en: Code review and testing take a lot of time but do not deliver the quality you need.
+  - ru: Сервисы и приложения работают нестабильно, часто падают, а поиск причин занимает часы или дни.
+    en: Services and applications are unstable, crash often, and finding the cause takes hours or days.
+  - ru: Между разработчиками, тестировщиками и DevOps-инженерами регулярно возникают конфликты.
+    en: Developers, testers and DevOps engineers regularly come into conflict.
+  - ru: Релиз вызывает стресс, потому что никто не уверен, как поведёт себя система в продакшене.
+    en: A release is stressful because nobody is sure how the system will behave in production.
+  - ru: Хочется выпускать обновления ежедневно, но реальность этому мешает.
+    en: You want to ship updates every day, but reality gets in the way.
+  - ru: Разработка и поставка ценности проходят непредсказуемо, бизнесу сложно доверять команде.
+    en: Development and delivery of value are unpredictable, and the business finds it hard to trust the team.

@@ -1,0 +1,23 @@
+{{- /* Collapses {ru: .., en: ..} pairs to the current language (falls back to ru), recursively.
+       A list item with `only: [langs]` is dropped for the other languages. */ -}}
+{{- $lang := site.Language.Lang -}}
+{{- $v := . -}}
+{{- if reflect.IsMap $v -}}
+  {{- if isset $v "ru" -}}
+    {{- $v = partial "i18n/resolve.html" (or (index $v $lang) (index $v "ru")) -}}
+  {{- else -}}
+    {{- $s := newScratch -}}
+    {{- $s.Set "m" dict -}}
+    {{- range $k, $x := $v -}}{{- $s.SetInMap "m" $k (partial "i18n/resolve.html" $x) -}}{{- end -}}
+    {{- $v = $s.Get "m" -}}
+  {{- end -}}
+{{- else if reflect.IsSlice $v -}}
+  {{- $out := slice -}}
+  {{- range $v -}}
+    {{- if not (and (reflect.IsMap .) (isset . "only") (not (in .only $lang))) -}}
+      {{- $out = $out | append (slice (partial "i18n/resolve.html" .)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $v = $out -}}
+{{- end -}}
+{{- return $v -}}

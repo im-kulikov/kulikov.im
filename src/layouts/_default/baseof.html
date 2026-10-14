@@ -16,7 +16,7 @@
     <!-- tailwind size indicator -->
     {{ partial "components/tw-size-indicator.html" . }}
 {{ end }}
-    <a class="skip-link" href="#main">Перейти к содержимому</a>
+    <a class="skip-link" href="#main">{{ T "skip_to_content" }}</a>
     {{ partialCached "cookie-consent.html" . }}
     {{ partial "header" . }}
     <main id="main" class="flex-1" tabindex="-1">

@@ -3,6 +3,11 @@
 <script>document.documentElement.classList.add("js")</script>
 <!-- responsive meta -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+{{- if .IsHome }}
+<!-- remembered language: only the home page redirects, once per session; deep links are never redirected -->
+{{- $homes := dict }}{{ range hugo.Sites }}{{ $homes = merge $homes (dict .Language.Lang .Home.RelPermalink) }}{{ end }}
+<script>try{var l=localStorage.getItem("lang"),h={{ $homes }};if(l&&h[l]&&l!=={{ site.Language.Lang }}&&!sessionStorage.getItem("langRedirect")){sessionStorage.setItem("langRedirect","1");location.replace(h[l])}}catch(e){}</script>
+{{- end }}
 <!-- favicon -->
 {{- partialCached "components/favicon" . }}
 <!-- web manifest -->
