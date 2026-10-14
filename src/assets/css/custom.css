@@ -459,3 +459,26 @@
         color: var(--accent-ink);
     }
 }
+
+@layer components {
+    /* logo: img/logo.svg is inlined; the mark takes the accent, the name the ink colour */
+    .logo {
+        display: block;
+    }
+    .logo-hex {
+        fill: var(--accent);
+        stroke: var(--accent);
+    }
+    .logo-prompt {
+        stroke: var(--accent-ink);
+    }
+    .logo-cursor {
+        fill: var(--accent-ink);
+    }
+    .logo-ink {
+        fill: var(--ink);
+    }
+    .logo-accent {
+        fill: var(--accent);
+    }
+}

@@ -1,18 +1,2 @@
-<picture>
-    {{ range $k, $v := site.Params.logos }}
-        {{ with resources.Get $v }}
-            {{ with .Resize site.Params.logos_resize }}
-                <source srcset="{{ .RelPermalink }}" media="(prefers-color-scheme: {{ $k }})">
-            {{ end }}
-        {{ end }}
-    {{ end }}
-    {{ with resources.Get site.Params.logos.light }}
-        {{ with .Resize site.Params.logos_resize }}
-            <img
-                    width="{{ site.Params.logo_width }}"
-                    height="{{ site.Params.logo_height }}"
-                    src="{{ .RelPermalink }}"
-                    alt="{{ site.Title }}" />
-        {{ end }}
-    {{ end }}
-</picture>
+{{- /* Inline SVG (img/logo.svg): the colours come from the theme variables, so one file serves both colour schemes. */ -}}
+{{ with resources.Get "img/logo.svg" }}{{ .Content | safeHTML }}{{ end }}
