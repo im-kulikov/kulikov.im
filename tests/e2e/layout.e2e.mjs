@@ -222,6 +222,15 @@ describe("language switch", () => {
     for (const l of links) assert.ok(l.h >= 44 && l.w >= 44, `${l.lang}: ${l.w}x${l.h}`);
   });
 
+  test("a click on a language link saves the choice (checked without leaving the page, so the coverage of the handler is not lost on unload)", async () => {
+    const { page, context } = await open("index");
+    await page.evaluate(() => document.querySelectorAll(".lang-switch a").forEach((x) => x.addEventListener("click", (e) => e.preventDefault())));
+    await sw(page).locator("a[lang=en]").click();
+    assert.equal(await page.evaluate(() => localStorage.getItem("lang")), "en");
+    assert.equal(new URL(page.url()).pathname, "/");
+    await context.close();
+  });
+
   test("the choice is remembered: only the home page redirects, once per session; deep links never do", async () => {
     const { page, context } = await open("index");
     await sw(page).locator("a[lang=en]").click();

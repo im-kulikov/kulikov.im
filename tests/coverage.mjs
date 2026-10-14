@@ -1,6 +1,6 @@
 // JS coverage of src/assets/js: builds the site unminified with an inline source map (Hugo environment "coverage"),
 // runs the browser tests against it with V8 coverage on, and writes build/coverage/lcov.info (uploaded to Codecov by CI).
-// Hugo templates, YAML and CSS have no line coverage; their checks are the tests in tests/*.test.mjs.
+// Fails if a line of the site JS is not run. Hugo templates, YAML and CSS have no line coverage; their checks are the tests in tests/*.test.mjs.
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -46,3 +46,4 @@ mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, "lcov.info"), lcov);
 const missed = lines.filter(([, n]) => n === 0).map(([l]) => l);
 console.log(`JS coverage ${SOURCE}: ${lines.length - missed.length}/${lines.length} lines${missed.length ? `, not run: ${missed.join(", ")}` : ""}`);
+if (missed.length) process.exit(1); // every line of the site JS must be exercised by the browser tests
