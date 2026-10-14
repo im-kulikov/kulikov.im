@@ -1,0 +1,8 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 100% # the whole site JS (src/assets/js) is exercised by the browser tests: any drop is a regression
+        threshold: 0%
+comment:
+  layout: "condensed_header, diff"

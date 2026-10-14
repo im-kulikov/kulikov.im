@@ -63,6 +63,14 @@ describe("supply chain", () => {
     assert.equal(b.env.HUGO_BUILD_SHA, "${{ github.sha }}");
     assert.match(b.run, /HUGO_BUILD_DATE/);
   });
+  test("coverage is generated in the check job and uploaded to Codecov with the repository secret (a failed upload does not block)", () => {
+    const steps = ci.jobs.check.steps;
+    assert.ok(steps.some((x) => x.run === "npm run test:coverage"));
+    const up = steps.find((x) => x.uses?.startsWith("codecov/codecov-action@"));
+    assert.equal(up.with.token, "${{ secrets.CODECOV_TOKEN }}");
+    assert.equal(up.with.files, "build/coverage/lcov.info");
+    assert.equal(up.with["fail_ci_if_error"], false);
+  });
   test("runners are pinned to an OS version, not a moving *-latest label", () => {
     for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
   });

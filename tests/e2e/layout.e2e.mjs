@@ -5,13 +5,15 @@
 import { after, before, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 import { ALIASES, ALL_PAGES, EN_PAGES, PAGES, SITE, enPath, urlPath } from "../helpers/site.mjs";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".xml": "application/xml", ".txt": "text/plain", ".webmanifest": "application/manifest+json" };
 let server, origin, browser;
+const COVERAGE = process.env.COVERAGE === "1"; // tests/coverage.mjs: V8 coverage of the (unminified, source-mapped) site bundle
+const scriptCoverage = [];
 const url = (p) => origin + (p.startsWith("/") ? p : p === "404" ? "/404.html" : urlPath(p));
 const EVERY = [...ALL_PAGES, ...EN_PAGES.map(enPath)]; // Russian pages and their English translations
 
@@ -23,6 +25,14 @@ async function open(p, { width = 1280, height = 900, ...ctx } = {}) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.route("**/*", (r) => (r.request().url().startsWith(origin) ? r.continue() : r.abort()));
+  if (COVERAGE) {
+    await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    const close = context.close.bind(context);
+    context.close = async () => {
+      scriptCoverage.push(...(await page.coverage.stopJSCoverage()).filter((e) => /\/js\/script\.js$/.test(e.url)));
+      return close();
+    };
+  }
   await page.goto(url(p), { waitUntil: "load" });
   return { page, context, requests, errors };
 }
@@ -40,6 +50,10 @@ before(async () => {
   browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
 });
 after(async () => {
+  if (COVERAGE) {
+    mkdirSync("build/coverage", { recursive: true });
+    writeFileSync("build/coverage/v8.json", JSON.stringify(scriptCoverage));
+  }
   await browser?.close();
   server?.close();
 });
@@ -206,6 +220,15 @@ describe("language switch", () => {
     await context.close();
     assert.deepEqual(links.map((l) => [l.lang, l.href, l.current]), [["ru", "/about.html", "true"], ["en", "/en/about.html", null]]);
     for (const l of links) assert.ok(l.h >= 44 && l.w >= 44, `${l.lang}: ${l.w}x${l.h}`);
+  });
+
+  test("a click on a language link saves the choice (checked without leaving the page, so the coverage of the handler is not lost on unload)", async () => {
+    const { page, context } = await open("index");
+    await page.evaluate(() => document.querySelectorAll(".lang-switch a").forEach((x) => x.addEventListener("click", (e) => e.preventDefault())));
+    await sw(page).locator("a[lang=en]").click();
+    assert.equal(await page.evaluate(() => localStorage.getItem("lang")), "en");
+    assert.equal(new URL(page.url()).pathname, "/");
+    await context.close();
   });
 
   test("the choice is remembered: only the home page redirects, once per session; deep links never do", async () => {

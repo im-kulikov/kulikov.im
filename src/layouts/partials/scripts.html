@@ -22,7 +22,8 @@
 {{- $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
 {{- end }}
 {{- if (($scripts | minify).Content | len) }}
-{{- $scripts = $scripts | js.Build }}
+{{- /* the coverage run (tests/coverage.mjs) maps the bundle back to src/assets/js */}}
+{{- $scripts = $scripts | js.Build (cond (eq hugo.Environment "coverage") (dict "sourceMap" "inline") (dict)) }}
 {{- end }}
 {{- if hugo.IsProduction }}
   {{- $scripts = $scripts | minify | fingerprint "sha256" }}

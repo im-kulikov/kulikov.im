@@ -11,13 +11,13 @@ const STATS = join(ROOT, "hugo_stats.json");
 
 // Production build exactly like CI. --panicOnWarning turns any template/config warning
 // (deprecations included) into a failed build. Returns the log and the generated hugo_stats.json.
-export function buildSite(dest) {
+export function buildSite(dest, environment = "production") {
   const before = readFileSync(STATS, "utf8");
   try {
     const r = spawnSync(HUGO, ["--gc", "--minify", "--panicOnWarning", "--baseURL", `${BASE}/`, "--destination", dest], {
       cwd: ROOT,
       encoding: "utf8",
-      env: { ...process.env, HUGO_ENVIRONMENT: "production", HUGO_BUILD_SHA: BUILD_SHA, HUGO_BUILD_DATE: git("show", "-s", "--format=%cI", "HEAD"), TZ: "Europe/Moscow" },
+      env: { ...process.env, HUGO_ENVIRONMENT: environment, HUGO_BUILD_SHA: BUILD_SHA, HUGO_BUILD_DATE: git("show", "-s", "--format=%cI", "HEAD"), TZ: "Europe/Moscow" },
     });
     return { status: r.status, error: r.error, log: `${r.stdout ?? ""}\n${r.stderr ?? ""}`, stats: readFileSync(STATS, "utf8") };
   } finally {

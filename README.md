@@ -8,6 +8,7 @@
 ![Hugo](https://img.shields.io/badge/Hugo-0.167-ff4088?logo=hugo&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8?logo=tailwindcss&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-97%20%2F%20100%20%2F%20100%20%2F%20100-0cce6b?logo=lighthouse&logoColor=white)
+[![codecov](https://codecov.io/gh/im-kulikov/kulikov.im/graph/badge.svg)](https://codecov.io/gh/im-kulikov/kulikov.im)
 
 [**kulikov.im**](https://kulikov.im) · [**kulikov.im/en**](https://kulikov.im/en/) · [Русская версия README](README.ru.md)
 
@@ -49,6 +50,8 @@ I am a tech lead and software architect (Go, platform engineering, 20+ years in 
 - **Images, icons, manifest**: budgets, valid ICO, maskable icon, correct PNG sizes.
 - **Pipeline**: workflow permissions, pinned actions and runners, verified Hugo download.
 - **Determinism**: two builds, identical bytes.
+
+`npm run test:coverage` runs the same browser tests against an unminified, source-mapped build and reports line coverage of the site's JavaScript to [Codecov](https://codecov.io/gh/im-kulikov/kulikov.im) (currently every line; Hugo templates, YAML and CSS have no line coverage, their checks are the tests above).
 
 `npm run test:e2e` drives Chromium (Playwright) through the built site: overflow at five widths, WCAG contrast in both themes, the language switch and the remembered choice, grid layout.
 

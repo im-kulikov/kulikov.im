@@ -32,6 +32,16 @@ jobs:
         run: npm test
       - name: Browser tests
         run: npm run test:e2e
+      # JS coverage of src/assets/js (browser tests against an unminified, source-mapped build); templates and CSS have no line coverage
+      - name: JS coverage
+        run: npm run test:coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: build/coverage/lcov.info
+          disable_search: true
+          fail_ci_if_error: false # a Codecov outage or a fork PR without the secret must not block the merge
 
   deploy:
     needs: check
