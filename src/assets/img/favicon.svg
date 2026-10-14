@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .tile { fill: #0369a1 }
+    .hex { fill: #fff; stroke: #fff }
+    .prompt { stroke: #0369a1 }
+    .cursor { fill: #0369a1 }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #0b0f14 }
+      .hex { fill: #38bdf8; stroke: #38bdf8 }
+      .prompt { stroke: #06121b }
+      .cursor { fill: #06121b }
+    }
+  </style>
+  <rect class="tile" width="64" height="64" rx="14"/>
+  <polygon class="hex" points="32.00,10.00 51.05,21.00 51.05,43.00 32.00,54.00 12.95,43.00 12.95,21.00" stroke-width="7" stroke-linejoin="round"/>
+  <path class="prompt" d="M24 23 L35 32 L24 41" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect class="cursor" x="37" y="38.5" width="9" height="5.5" rx="1"/>
+</svg>

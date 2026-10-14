@@ -16,7 +16,7 @@ const jpegSize = (f) => {
 
 test("only web-friendly formats are shipped", () => {
   assert.ok(imgs.length > 20);
-  for (const f of imgs) assert.ok([".webp", ".png", ".jpg"].includes(extname(f)), f);
+  for (const f of imgs) assert.ok([".webp", ".png", ".jpg", ".svg"].includes(extname(f)), f);
 });
 
 test("budgets: processed WebP <= 150 KB each and <= 3 MB in total", () => {

@@ -1,47 +1,9 @@
 {
-  {{ $icon:= site.Params.favicon }}
-  {{ if $icon }}
-  {{ $icon:= resources.Get $icon }}
-  {{ $icon_48:= $icon.Resize "48x48 png" }}
-  {{ $icon_72:= $icon.Resize "72x72 png" }}
-  {{ $icon_96:= $icon.Resize "96x96 png" }}
-  {{ $icon_144:= $icon.Resize "144x144 png" }}
-  {{ $icon_192:= $icon.Resize "192x192 png" }}
-  {{ $icon_512:= $icon.Resize "512x512 png" }}
   "icons": [
-    {
-      "src": "{{$icon_48.RelPermalink}}",
-      "sizes": "48x48",
-      "type": "image/png"
-    },
-    {
-      "src": "{{$icon_72.RelPermalink}}",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "{{$icon_96.RelPermalink}}",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "{{$icon_144.RelPermalink}}",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "{{$icon_192.RelPermalink}}",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "{{$icon_512.RelPermalink}}",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    {{ range $i, $e := slice (dict "file" "icon-192.png" "size" "192x192" "purpose" "any") (dict "file" "icon-512.png" "size" "512x512" "purpose" "any") (dict "file" "icon-maskable-512.png" "size" "512x512" "purpose" "maskable") }}
+    {{ if $i }},{{ end }}{ "src": "{{ (resources.Get (printf "img/%s" $e.file)).RelPermalink }}", "sizes": "{{ $e.size }}", "type": "image/png", "purpose": "{{ $e.purpose }}" }
+    {{ end }}
   ],
-  {{ end }}
   "name": "{{site.Title}}",
   "short_name": "{{site.Title}}",
   "lang": "{{ site.Language.Locale | default `en-us` }}",
