@@ -61,3 +61,11 @@ test("manifest and 404 exist for English too", () => {
   assert.equal(JSON.parse(read("en/manifest.webmanifest")).lang, "en");
   assert.ok(exists("en/404.html"));
 });
+
+test("language links: the accessible name starts with the visible text (WCAG 2.5.3, Lighthouse label-content-name-mismatch)", () => {
+  for (const p of [...EN_PAGES.map((x) => `en/${x === "index" ? "index" : x}`), ...EN_PAGES]) {
+    const links = all(dom(p), (n) => n.tagName === "a" && attr(n, "data-lang"));
+    assert.ok(links.length >= 4, `${p}: header and footer, two languages`);
+    for (const a of links) assert.ok(attr(a, "aria-label").startsWith(text(a).trim()), `${p}: "${attr(a, "aria-label")}" vs "${text(a).trim()}"`);
+  }
+});

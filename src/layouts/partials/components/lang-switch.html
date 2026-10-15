@@ -8,6 +8,6 @@
         {{- range $page.AllTranslations }}{{ if eq .Language.Lang $lang }}{{ $href = .RelPermalink }}{{ end }}{{ end }}
         {{- $current := eq $lang site.Language.Lang }}
         <a href="{{ $href }}" lang="{{ $lang }}" hreflang="{{ $lang }}" data-lang="{{ $lang }}"
-           aria-label="{{ .Params.language_name }} ({{ .Language.Label }})"{{ if $current }} aria-current="true"{{ end }}>{{ .Language.Label }}</a>
+           aria-label="{{ .Language.Label }}, {{ .Params.language_name }}"{{ if $current }} aria-current="true"{{ end }}>{{ .Language.Label }}</a>
     {{- end }}
 </nav>
