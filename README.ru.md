@@ -12,10 +12,7 @@
 
 [**kulikov.im**](https://kulikov.im) · [**kulikov.im/en**](https://kulikov.im/en/) · [English README](README.md)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/preview-ru-dark.webp">
-  <img src="docs/preview-ru-light.webp" alt="kulikov.im: главная страница" width="900">
-</picture>
+<img src="docs/preview-ru.webp" alt="kulikov.im: главная страница, тёмная и светлая тема" width="900">
 
 </div>
 
@@ -73,7 +70,7 @@ hugo --gc --minify     # боевая сборка в build/public
 npm test               # сборка и проверки (если hugo не в PATH, задайте HUGO_BIN)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # перерисовать растровые иконки после правки favicon.svg
-node tools/build-previews.mjs   # перерисовать docs/preview-*.webp (скриншоты для README) из собранного сайта
+node tools/build-previews.mjs   # перерисовать docs/preview-*.webp (скриншот для README: окно браузера, диагональ тёмная/светлая тема) из собранного сайта
 ```
 
 ## Карта репозитория
