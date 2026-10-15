@@ -2,16 +2,32 @@
 // One Chrome serves all runs, the site is served gzipped from a local server, throttling is Lighthouse's default simulation.
 // Fails when a score or a metric crosses its budget. Local numbers differ from the live site (no CDN, no HTTP/2), so the budgets keep a margin.
 import { createServer } from "node:http";
-import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs";
 import { readFile } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { basename, extname, join } from "node:path";
 import { gzipSync } from "node:zlib";
 import lighthouse from "lighthouse";
 import { launch } from "chrome-launcher";
 import { ROOT, SITE } from "./helpers/paths.mjs";
 
+const MARKER = "<!-- lighthouse-summary -->"; // finds our comment again on the next push
 const REPORTS = join(ROOT, "build", "lighthouse"); // full HTML reports, one per page (CI uploads the folder)
-const PAGES = ["/", "/en/", "/services.html", "/projects.html"];
+// every built page except the 404s and Hugo alias redirects (home pages as "/", "/en/"); a new page is covered without touching this file
+const PAGES = readdirSync(SITE, { recursive: true })
+  .filter(
+    (f) =>
+      f.endsWith(".html") &&
+      basename(f) !== "404.html" &&
+      !readFileSync(join(SITE, f), "utf8").includes("http-equiv=refresh"),
+  )
+  .map((f) => "/" + f.replace(/index\.html$/, ""))
+  .sort();
 const SCORES = {
   performance: 0.95,
   accessibility: 1,
@@ -95,7 +111,15 @@ try {
       if (v > max) failures.push(`${page}: ${label} ${v} > ${max}`);
     }
     writeFileSync(
-      join(REPORTS, `${page.replace(/\/|\.html$/g, "") || "home"}.html`),
+      join(
+        REPORTS,
+        `${
+          page
+            .replace(/^\/|\.html$/g, "")
+            .replace(/\/$/, "")
+            .replaceAll("/", "-") || "home"
+        }.html`,
+      ),
       report,
     );
     rows.push(
@@ -110,33 +134,44 @@ try {
 console.log(
   `${PAGES.length} pages in ${((Date.now() - started) / 1000).toFixed(1)} s`,
 );
-// the table shows on the job's summary page (GitHub sets GITHUB_STEP_SUMMARY)
-if (process.env.GITHUB_STEP_SUMMARY) {
-  const head = [
-    "Page",
-    ...Object.keys(SCORES),
-    ...Object.values(METRICS).map(([label]) => label),
-  ];
-  const budget = [
-    "budget",
-    ...Object.values(SCORES).map((v) => `≥ ${v * 100}`),
-    ...Object.values(METRICS).map(([, max]) => `≤ ${max}`),
-  ];
-  const md = [
-    `### Lighthouse`,
-    "",
-    `| ${head.join(" | ")} |`,
-    `|${head.map(() => " --- ").join("|")}|`,
-    ...rows,
-    `| ${budget.join(" | ")} |`,
-    "",
-    failures.length
-      ? `**Over budget:**\n${failures.map((f) => `- ${f}`).join("\n")}`
-      : "Within budget.",
-    "",
-  ];
-  appendFileSync(process.env.GITHUB_STEP_SUMMARY, md.join("\n"));
-}
+// the table: job summary page (GITHUB_STEP_SUMMARY) and build/lighthouse/summary.md (CI posts it as a pull request comment)
+const head = [
+  "Page",
+  ...Object.keys(SCORES),
+  ...Object.values(METRICS).map(([label]) => label),
+];
+const budget = [
+  "budget",
+  ...Object.values(SCORES).map((v) => `≥ ${v * 100}`),
+  ...Object.values(METRICS).map(([, max]) => `≤ ${max}`),
+];
+const {
+  GITHUB_SERVER_URL: host,
+  GITHUB_REPOSITORY: repo,
+  GITHUB_RUN_ID: run,
+  GITHUB_STEP_SUMMARY: summary,
+} = process.env;
+const md = [
+  "### Lighthouse",
+  "",
+  `| ${head.join(" | ")} |`,
+  `|${head.map(() => " --- ").join("|")}|`,
+  ...rows,
+  `| ${budget.join(" | ")} |`,
+  "",
+  failures.length
+    ? `**Over budget:**\n${failures.map((f) => `- ${f}`).join("\n")}`
+    : "Within budget.",
+  ...(run
+    ? [
+        "",
+        `Full reports: artifact \`lighthouse-reports\` of [this run](${host}/${repo}/actions/runs/${run}).`,
+      ]
+    : []),
+  "",
+].join("\n");
+writeFileSync(join(REPORTS, "summary.md"), MARKER + "\n" + md);
+if (summary) appendFileSync(summary, md);
 if (failures.length) {
   console.error(`\nLighthouse budgets exceeded:\n  ${failures.join("\n  ")}`);
   process.exit(1);

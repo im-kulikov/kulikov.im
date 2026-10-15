@@ -49,6 +49,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      pull-requests: write # only to post the results comment
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/setup
@@ -56,6 +57,19 @@ jobs:
         run: node tests/build.mjs
       - name: Lighthouse
         run: npm run lighthouse
+      # one comment per pull request, updated in place by each push; not for forks (their token is read-only)
+      - name: Comment on the pull request
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- lighthouse-summary -->")) | .id' | head -n 1)"
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@build/lighthouse/summary.md
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@build/lighthouse/summary.md
+          fi
       # full reports (what is slow and why), kept for a short time
       - name: Upload Lighthouse reports
         if: ${{ !cancelled() }}
