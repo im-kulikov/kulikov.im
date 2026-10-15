@@ -53,6 +53,8 @@ I am a tech lead and software architect (Go, platform engineering, 20+ years in 
 
 `npm run test:coverage` runs the same browser tests against an unminified, source-mapped build and reports line coverage of the site's JavaScript to [Codecov](https://codecov.io/gh/im-kulikov/kulikov.im) (currently every line; Hugo templates, YAML and CSS have no line coverage, their checks are the tests above).
 
+`npm run lighthouse` runs Lighthouse on every built page (both languages; 404s and redirects excluded) with one Chrome and fails when a score or a metric (LCP, TBT, CLS) crosses its budget; CI runs it in a separate job and posts the results to the job summary and as a pull request comment. Run `node tests/build.mjs` first.
+
 `npm run test:e2e` drives Chromium (Playwright) through the built site: overflow at five widths, WCAG contrast in both themes, the language switch and the remembered choice, grid layout.
 
 CI runs both on every pull request; a merge to `main` deploys to GitHub Pages, and a monthly rebuild keeps the footer year honest.

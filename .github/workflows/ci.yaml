@@ -43,6 +43,43 @@ jobs:
           disable_search: true
           fail_ci_if_error: false # a Codecov outage or a fork PR without the secret must not block the merge
 
+  # Runs next to `check` (own runner, so the timings are not disturbed by the tests). Not a deploy gate: a slow runner must not block a release.
+  lighthouse:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write # only to post the results comment
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/setup
+      - name: Build
+        run: node tests/build.mjs
+      - name: Lighthouse
+        run: npm run lighthouse
+      # one comment per pull request, updated in place by each push; not for forks (their token is read-only)
+      - name: Comment on the pull request
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- lighthouse-summary -->")) | .id' | head -n 1)"
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@build/lighthouse/summary.md
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@build/lighthouse/summary.md
+          fi
+      # full reports (what is slow and why), kept for a short time
+      - name: Upload Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-reports
+          path: build/lighthouse
+          retention-days: 14
+          if-no-files-found: ignore
+
   deploy:
     needs: check
     if: github.event_name != 'pull_request'

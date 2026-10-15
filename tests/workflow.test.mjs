@@ -35,9 +35,10 @@ describe("jobs", () => {
     assert.match(d.if, /github\.event_name != 'pull_request'/);
     assert.ok(d.permissions.pages === "write" && d.permissions["id-token"] === "write");
   });
-  test("write permissions exist only on the deploy job; workflow default is least privilege", () => {
+  test("write permissions: deploy (Pages) and the Lighthouse job (pull request comment only); workflow default is least privilege", () => {
     assert.ok(ci.permissions === undefined || JSON.stringify(ci.permissions) === "{}");
-    for (const [n, j] of Object.entries(ci.jobs)) if (n !== "deploy") assert.ok(!Object.values(j.permissions ?? {}).includes("write"), n);
+    assert.deepEqual(ci.jobs.lighthouse.permissions, { contents: "read", "pull-requests": "write" });
+    for (const [n, j] of Object.entries(ci.jobs)) if (n !== "deploy" && n !== "lighthouse") assert.ok(!Object.values(j.permissions ?? {}).includes("write"), n);
   });
   test("every job has a timeout", () => {
     for (const [n, j] of Object.entries(ci.jobs)) assert.ok(j["timeout-minutes"] > 0, n);
@@ -70,6 +71,16 @@ describe("supply chain", () => {
     assert.equal(up.with.token, "${{ secrets.CODECOV_TOKEN }}");
     assert.equal(up.with.files, "build/coverage/lcov.info");
     assert.equal(up.with["fail_ci_if_error"], false);
+  });
+  test("Lighthouse runs in its own read-only job next to check and does not gate the deploy", () => {
+    const l = ci.jobs.lighthouse;
+    assert.ok(steps(l).some((x) => x.run === "npm run lighthouse"));
+    const up = steps(l).find((x) => x.uses?.startsWith("actions/upload-artifact@"));
+    assert.equal(up.with.path, "build/lighthouse", "the HTML reports are kept as an artifact");
+    assert.ok(steps(l).some((x) => /lighthouse-summary/.test(x.run ?? "")), "the results comment is updated in place");
+    assert.match(steps(l).find((x) => x.name === "Comment on the pull request").if, /head\.repo\.full_name == github\.repository/, "not for forks: their token cannot write");
+    assert.equal(l.needs, undefined);
+    assert.deepEqual([ci.jobs.deploy.needs].flat(), ["check"]);
   });
   test("runners are pinned to an OS version, not a moving *-latest label", () => {
     for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
