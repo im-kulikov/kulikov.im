@@ -2,13 +2,15 @@
 // One Chrome serves all runs, the site is served gzipped from a local server, throttling is Lighthouse's default simulation.
 // Fails when a score or a metric crosses its budget. Local numbers differ from the live site (no CDN, no HTTP/2), so the budgets keep a margin.
 import { createServer } from "node:http";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { gzipSync } from "node:zlib";
 import lighthouse from "lighthouse";
 import { launch } from "chrome-launcher";
-import { SITE } from "./helpers/paths.mjs";
+import { ROOT, SITE } from "./helpers/paths.mjs";
 
+const REPORTS = join(ROOT, "build", "lighthouse"); // full HTML reports, one per page (CI uploads the folder)
 const PAGES = ["/", "/en/", "/services.html", "/projects.html"];
 const SCORES = {
   performance: 0.95,
@@ -70,11 +72,14 @@ const chrome = await launch({
   chromePath: process.env.CHROME_PATH,
 });
 const failures = [];
+const rows = [];
+mkdirSync(REPORTS, { recursive: true });
 try {
   for (const page of PAGES) {
-    const { lhr } = await lighthouse(origin + page, {
+    const { lhr, report } = await lighthouse(origin + page, {
       port: chrome.port,
       logLevel: "error",
+      output: "html",
       onlyCategories: Object.keys(SCORES),
       ...QUIET,
     });
@@ -89,6 +94,13 @@ try {
       line.push(`${label} ${Math.round(v * 1000) / 1000}`);
       if (v > max) failures.push(`${page}: ${label} ${v} > ${max}`);
     }
+    writeFileSync(
+      join(REPORTS, `${page.replace(/\/|\.html$/g, "") || "home"}.html`),
+      report,
+    );
+    rows.push(
+      `| ${page} | ${[...Object.keys(SCORES).map((c) => Math.round(lhr.categories[c].score * 100)), ...Object.keys(METRICS).map((id) => Math.round(lhr.audits[id].numericValue * 1000) / 1000)].join(" | ")} |`,
+    );
     console.log(`${page.padEnd(16)} ${line.join(" | ")}`);
   }
 } finally {
@@ -98,6 +110,33 @@ try {
 console.log(
   `${PAGES.length} pages in ${((Date.now() - started) / 1000).toFixed(1)} s`,
 );
+// the table shows on the job's summary page (GitHub sets GITHUB_STEP_SUMMARY)
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const head = [
+    "Page",
+    ...Object.keys(SCORES),
+    ...Object.values(METRICS).map(([label]) => label),
+  ];
+  const budget = [
+    "budget",
+    ...Object.values(SCORES).map((v) => `≥ ${v * 100}`),
+    ...Object.values(METRICS).map(([, max]) => `≤ ${max}`),
+  ];
+  const md = [
+    `### Lighthouse`,
+    "",
+    `| ${head.join(" | ")} |`,
+    `|${head.map(() => " --- ").join("|")}|`,
+    ...rows,
+    `| ${budget.join(" | ")} |`,
+    "",
+    failures.length
+      ? `**Over budget:**\n${failures.map((f) => `- ${f}`).join("\n")}`
+      : "Within budget.",
+    "",
+  ];
+  appendFileSync(process.env.GITHUB_STEP_SUMMARY, md.join("\n"));
+}
 if (failures.length) {
   console.error(`\nLighthouse budgets exceeded:\n  ${failures.join("\n  ")}`);
   process.exit(1);

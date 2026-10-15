@@ -56,6 +56,15 @@ jobs:
         run: node tests/build.mjs
       - name: Lighthouse
         run: npm run lighthouse
+      # full reports (what is slow and why), kept for a short time
+      - name: Upload Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-reports
+          path: build/lighthouse
+          retention-days: 14
+          if-no-files-found: ignore
 
   deploy:
     needs: check

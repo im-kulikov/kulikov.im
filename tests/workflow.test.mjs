@@ -74,6 +74,8 @@ describe("supply chain", () => {
   test("Lighthouse runs in its own read-only job next to check and does not gate the deploy", () => {
     const l = ci.jobs.lighthouse;
     assert.ok(steps(l).some((x) => x.run === "npm run lighthouse"));
+    const up = steps(l).find((x) => x.uses?.startsWith("actions/upload-artifact@"));
+    assert.equal(up.with.path, "build/lighthouse", "the HTML reports are kept as an artifact");
     assert.equal(l.needs, undefined);
     assert.deepEqual([ci.jobs.deploy.needs].flat(), ["check"]);
   });
