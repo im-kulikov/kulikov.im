@@ -12,7 +12,7 @@
 
 [**kulikov.im**](https://kulikov.im) · [**kulikov.im/en**](https://kulikov.im/en/) · [Русская версия README](README.ru.md)
 
-<img src="docs/preview-en.webp" alt="kulikov.im: home page, dark and light theme" width="900">
+<img src="docs/preview-en.webp" alt="kulikov.im home page on a MacBook and an iPhone, split between the dark and the light theme" width="900">
 
 </div>
 
@@ -70,7 +70,7 @@ hugo --gc --minify     # production build into build/public
 npm test               # builds, then checks (set HUGO_BIN if hugo is not on PATH)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # re-render the raster icons after editing favicon.svg
-node tools/build-previews.mjs   # re-render docs/preview-*.webp (README screenshot: browser window, dark/light diagonal split) from the built site
+node tools/build-previews.mjs   # re-render docs/preview-*.webp (README image: MacBook and iPhone, dark/light diagonal split) from the built site
 ```
 
 ## Repository map

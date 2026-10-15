@@ -1,5 +1,6 @@
-// Renders the README screenshots (docs/preview-{ru,en}.webp) from the built site: the home page in a macOS-style browser window,
-// dark theme on the left and light theme on the right of a diagonal seam, on a transparent background (it lies on any GitHub theme).
+// Renders the README screenshots (docs/preview-{ru,en}.webp) from the built site: the home page on a MacBook and an iPhone
+// (real screenshots at 1280x800 and a 390x844 mobile viewport, devices drawn in CSS), the dark theme on one side and the light theme
+// on the other side of a diagonal seam that runs through both screens. The background is transparent: it lies on any GitHub theme.
 // Run after changing how the home page looks:  node tests/build.mjs && CHROME_PATH=/path/to/chrome node tools/build-previews.mjs
 import { createServer } from "node:http";
 import { readFile, writeFile } from "node:fs/promises";
@@ -7,13 +8,11 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 import { SITE } from "../tests/helpers/paths.mjs";
 
-const W = 1280; // page width in CSS px; the window is W x (H + BAR)
-const H = 720;
-const BAR = 40;
-const PAD = 48; // room for the shadow
-const SCALE = 1.5;
-const SEAM = [1000, 380]; // x of the seam at the top and at the bottom of the window, "/" leaning right going up
-const PAGES = [["ru", "/", "kulikov.im"], ["en", "/en/", "kulikov.im/en"]];
+const SCALE = 1.5; // the output is 940x620 CSS px at this device scale factor
+const CANVAS = { w: 940, h: 620 };
+const SEAM_TOP = 369; // x of the seam at y = 0; it leans right going down: x = SEAM_TOP + SEAM_SLOPE * y (light theme on its left/bottom side)
+const SEAM_SLOPE = 0.857;
+const PAGES = [["ru", "/"], ["en", "/en/"]];
 
 const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".ico": "image/x-icon", ".webmanifest": "application/manifest+json" };
 const server = createServer(async (req, res) => {
@@ -34,8 +33,9 @@ const origin = `http://localhost:${server.address().port}`;
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
 const out = process.env.OUT_DIR ?? new URL("../docs/", import.meta.url).pathname;
 
-const shot = async (path, colorScheme) => {
-  const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: SCALE, colorScheme });
+const VIEWPORTS = { mac: { width: 1280, height: 800, scale: 1.5, mobile: false }, phone: { width: 390, height: 844, scale: 2, mobile: true } };
+const shot = async (path, colorScheme, { width, height, scale, mobile }) => {
+  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale, colorScheme, isMobile: mobile, hasTouch: mobile });
   await page.goto(origin + path, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   const png = await page.screenshot();
@@ -43,37 +43,53 @@ const shot = async (path, colorScheme) => {
   return `data:image/png;base64,${png.toString("base64")}`;
 };
 
-const LOCK = '<svg viewBox="0 0 12 12"><path d="M3 5V4a3 3 0 016 0v1h.5A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-7A1.5 1.5 0 011 9.5v-3A1.5 1.5 0 012.5 5H3zm1.5 0h3V4a1.5 1.5 0 00-3 0v1z"/></svg>';
-const layer = (cls, img, url) => `<div class="layer ${cls}"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">${LOCK}${url}</span></div><img src="${img}"></div>`;
-const compose = (dark, light, url) => `<style>
-*{box-sizing:border-box}html,body{margin:0;background:transparent}body{padding:${PAD}px;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
-.win{position:relative;width:${W}px;height:${H + BAR}px;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px rgba(128,128,128,.35),0 20px 50px rgba(0,0,0,.25),0 4px 12px rgba(0,0,0,.15)}
-.layer{position:absolute;inset:0}.light{clip-path:polygon(${SEAM[0]}px 0,${W}px 0,${W}px ${H + BAR}px,${SEAM[1]}px ${H + BAR}px)}
-.bar{height:${BAR}px;display:flex;align-items:center;padding:0 14px;position:relative}
-.dots{display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;display:block;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.2)}
-.dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
-.url{position:absolute;left:92px;top:7px;width:380px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px}
-.url svg{width:11px;height:11px}
-.dark .bar{background:linear-gradient(#3a3a3d,#2e2e31);border-bottom:1px solid #121214}
-.dark .url{background:#1c1c1e;color:#e5e5ea;box-shadow:0 0 0 .5px rgba(255,255,255,.12)}.dark svg{fill:#98989d}
-.light .bar{background:linear-gradient(#ebebeb,#d9d9d9);border-bottom:1px solid #bdbdbd}
-.light .url{background:#fff;color:#3c3c43;box-shadow:0 0 0 .5px rgba(0,0,0,.15)}.light svg{fill:#6e6e73}
-img{display:block;width:${W}px;height:${H}px}
-</style><div class="win">${layer("dark", dark, url)}${layer("light", light, url)}</div>`;
+// Each device is drawn twice, dark and light, and the light copy is clipped by the seam. The devices are stacked one after the other
+// (MacBook, then the iPhone on top) so the phone's ring and shadow are never covered by the light copy of the MacBook screen.
+const STATUS = '<div class="sb"><span>9:41</span><span>●●● ▮</span></div><div class="isl"></div>';
+const compose = (img) => {
+  const seam = `polygon(-400px -100px,${SEAM_TOP + SEAM_SLOPE * -100}px -100px,${SEAM_TOP + SEAM_SLOPE * 900}px 900px,-400px 900px)`;
+  const mac = (t, cls) => `<div class="layer ${cls}"><div class="dev mac"><div class="lid"><div class="scr"><img src="${img.mac[t]}"></div></div><div class="base"></div></div></div>`;
+  const phone = (t, cls) => `<div class="layer ${cls}"><div class="dev phone"><div class="body"><div class="scr">${STATUS}<img src="${img.phone[t]}"></div></div></div></div>`;
+  return `<style>
+*{box-sizing:border-box}html,body{margin:0;background:transparent}body{width:${CANVAS.w}px;height:${CANVAS.h}px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
+.layer{position:absolute;inset:0}.light{clip-path:${seam}}
+.dev{position:absolute}.scr{overflow:hidden;position:relative}.scr img{display:block;width:100%;object-fit:cover;object-position:top}
+.mac{left:60px;top:20px}
+.mac .lid{width:668px;height:424px;padding:12px;background:#0c0c0e;border-radius:18px 18px 4px 4px;box-shadow:0 0 0 1.5px #aeb2ba,0 0 0 2.5px rgba(0,0,0,.35);position:relative}
+.mac .lid::after{content:"";position:absolute;left:50%;top:0;width:90px;height:16px;transform:translateX(-50%);background:#0c0c0e;border-radius:0 0 10px 10px}
+.mac .scr{width:644px;height:400px;border-radius:6px}.mac .scr img{height:400px}
+.mac .base{width:780px;height:16px;margin:0 -56px;background:linear-gradient(#d9dce2,#a9adb5);border-radius:0 0 16px 16px;position:relative;box-shadow:0 18px 28px rgba(0,0,0,.28)}
+.mac .base::before{content:"";position:absolute;left:50%;top:0;width:120px;height:6px;transform:translateX(-50%);background:#8e929a;border-radius:0 0 8px 8px}
+.phone{left:650px;top:110px}
+.phone .body{width:206px;height:424px;padding:9px;background:#0c0c0e;border-radius:40px;box-shadow:0 0 0 1.5px #aeb2ba,0 0 0 2.5px rgba(0,0,0,.35),0 26px 40px rgba(0,0,0,.35);position:relative}
+.phone .body::after{content:"";position:absolute;left:50%;top:15px;width:54px;height:15px;transform:translateX(-50%);background:#000;border-radius:10px}
+.phone .scr{width:188px;height:406px;border-radius:32px}
+.sb{position:absolute;left:0;right:0;top:0;height:40px;font-size:10px;font-weight:600;display:flex;justify-content:space-between;align-items:center;padding:6px 18px 0}
+.isl{position:absolute;left:50%;top:9px;width:56px;height:16px;transform:translateX(-50%);background:#000;border-radius:10px}
+.phone .scr img{position:absolute;top:40px;height:auto;min-height:366px}
+.dark .scr{background:#0b0f14}.dark .sb{color:#f5f7fa}.light .scr{background:#fff}.light .sb{color:#0b0f14}
+.light .lid{background:transparent;box-shadow:none}.light .lid::after,.light .base{display:none}.light .phone .body{box-shadow:none}
+</style>${mac("dark", "dark")}${mac("light", "light")}${phone("dark", "dark")}${phone("light", "light")}`;
+};
 
-for (const [lang, path, url] of PAGES) {
-  const page = await browser.newPage({ viewport: { width: W + 2 * PAD, height: H + BAR + 2 * PAD }, deviceScaleFactor: SCALE });
-  await page.setContent(compose(await shot(path, "dark"), await shot(path, "light"), url));
+for (const [lang, path] of PAGES) {
+  const img = { mac: {}, phone: {} };
+  for (const t of ["dark", "light"]) {
+    img.mac[t] = await shot(path, t, VIEWPORTS.mac);
+    img.phone[t] = await shot(path, t, VIEWPORTS.phone);
+  }
+  const page = await browser.newPage({ viewport: { width: CANVAS.w, height: CANVAS.h }, deviceScaleFactor: SCALE });
+  await page.setContent(compose(img));
   await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode())));
   const png = await page.screenshot({ omitBackground: true });
   // Chromium encodes the WebP with its alpha channel (no image library needed)
   const webp = await page.evaluate(async (b64) => {
-    const img = new Image();
-    img.src = "data:image/png;base64," + b64;
-    await img.decode();
-    const c = Object.assign(document.createElement("canvas"), { width: img.width, height: img.height });
-    c.getContext("2d").drawImage(img, 0, 0);
-    return c.toDataURL("image/webp", 0.8).split(",")[1];
+    const el = new Image();
+    el.src = "data:image/png;base64," + b64;
+    await el.decode();
+    const c = Object.assign(document.createElement("canvas"), { width: el.width, height: el.height });
+    c.getContext("2d").drawImage(el, 0, 0);
+    return c.toDataURL("image/webp", 0.85).split(",")[1];
   }, png.toString("base64"));
   await writeFile(join(out, `preview-${lang}.webp`), Buffer.from(webp, "base64"));
   await page.close();
