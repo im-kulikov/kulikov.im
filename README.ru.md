@@ -73,6 +73,7 @@ hugo --gc --minify     # боевая сборка в build/public
 npm test               # сборка и проверки (если hugo не в PATH, задайте HUGO_BIN)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # перерисовать растровые иконки после правки favicon.svg
+node tools/build-previews.mjs   # перерисовать docs/preview-*.webp (скриншоты для README) из собранного сайта
 ```
 
 ## Карта репозитория
@@ -84,7 +85,7 @@ src/layouts/          шаблоны: partials/blocks, компоненты, i18
 src/assets/           CSS (Tailwind v4), картинки, шрифты, исходники логотипа и иконок
 src/i18n/             строки интерфейса (ru, en)
 tests/                наборы node:test; tests/e2e для проверок в браузере
-tools/                вспомогательные скрипты (отрисовка иконок)
+tools/                вспомогательные скрипты (иконки, скриншоты для README)
 .github/              CI, общий setup-action, Dependabot
 ```
 

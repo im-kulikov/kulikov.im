@@ -73,6 +73,7 @@ hugo --gc --minify     # production build into build/public
 npm test               # builds, then checks (set HUGO_BIN if hugo is not on PATH)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # re-render the raster icons after editing favicon.svg
+node tools/build-previews.mjs   # re-render docs/preview-*.webp (README screenshots) from the built site
 ```
 
 ## Repository map
@@ -84,7 +85,7 @@ src/layouts/          templates: partials/blocks, components, i18n resolver, SEO
 src/assets/           CSS (Tailwind v4), images, fonts, logo and icon sources
 src/i18n/             UI strings (ru, en)
 tests/                node:test suites; tests/e2e for the browser checks
-tools/                helper scripts (icon rendering)
+tools/                helper scripts (icons, README screenshots)
 .github/              CI workflow, shared setup action, Dependabot
 ```
 

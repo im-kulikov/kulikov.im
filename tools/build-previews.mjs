@@ -26,7 +26,7 @@ const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath
 const out = process.env.OUT_DIR ?? new URL("../docs/", import.meta.url).pathname;
 for (const [lang, path] of [["ru", "/"], ["en", "/en/"]]) {
   for (const scheme of ["light", "dark"]) {
-    const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: 1.5, colorScheme: scheme });
+    const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: 1, colorScheme: scheme });
     await page.goto(origin + path, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     const png = await page.screenshot();
@@ -37,7 +37,7 @@ for (const [lang, path] of [["ru", "/"], ["en", "/en/"]]) {
       await img.decode();
       const c = Object.assign(document.createElement("canvas"), { width: img.width, height: img.height });
       c.getContext("2d").drawImage(img, 0, 0);
-      return c.toDataURL("image/webp", 0.85).split(",")[1];
+      return c.toDataURL("image/webp", 0.8).split(",")[1];
     }, png.toString("base64"));
     await writeFile(join(out, `preview-${lang}-${scheme}.webp`), Buffer.from(webp, "base64"));
     await page.close();
