@@ -71,6 +71,12 @@ describe("supply chain", () => {
     assert.equal(up.with.files, "build/coverage/lcov.info");
     assert.equal(up.with["fail_ci_if_error"], false);
   });
+  test("Lighthouse runs in its own read-only job next to check and does not gate the deploy", () => {
+    const l = ci.jobs.lighthouse;
+    assert.ok(steps(l).some((x) => x.run === "npm run lighthouse"));
+    assert.equal(l.needs, undefined);
+    assert.deepEqual([ci.jobs.deploy.needs].flat(), ["check"]);
+  });
   test("runners are pinned to an OS version, not a moving *-latest label", () => {
     for (const [name, job] of Object.entries(ci.jobs)) assert.match(job["runs-on"], /^ubuntu-\d+\.\d+$/, name);
   });

@@ -12,7 +12,8 @@
     "test": "node --test tests/*.test.mjs",
     "test:e2e": "node --test tests/e2e/*.e2e.mjs",
     "build": "hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic",
-    "test:coverage": "node tests/coverage.mjs"
+    "test:coverage": "node tests/coverage.mjs",
+    "lighthouse": "node tests/lighthouse.mjs"
   },
   "type": "module",
   "engines": {
@@ -28,6 +29,8 @@
     "yaml": "^2.7.1"
   },
   "devDependencies": {
+    "chrome-launcher": "1.2.2",
+    "lighthouse": "12.6.1",
     "parse5": "^8.0.1",
     "playwright-core": "^1.64.0",
     "v8-to-istanbul": "^9.3.0"

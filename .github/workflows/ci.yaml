@@ -43,6 +43,20 @@ jobs:
           disable_search: true
           fail_ci_if_error: false # a Codecov outage or a fork PR without the secret must not block the merge
 
+  # Runs next to `check` (own runner, so the timings are not disturbed by the tests). Not a deploy gate: a slow runner must not block a release.
+  lighthouse:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/setup
+      - name: Build
+        run: node tests/build.mjs
+      - name: Lighthouse
+        run: npm run lighthouse
+
   deploy:
     needs: check
     if: github.event_name != 'pull_request'
