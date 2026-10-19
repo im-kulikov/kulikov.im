@@ -22,7 +22,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/language-server": "^0.14.16",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.10",
     "prettier-plugin-go-template": "^0.0.15",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
