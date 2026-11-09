@@ -1,0 +1,94 @@
+# Реестр «секретных букв» канала «Домашний прод».
+# Правило: термин объясняется один раз за всю историю публикаций.
+#
+# Поля:
+#   term                — каноническое написание
+#   definition          — утверждённое автором определение (расшифровка в скобках)
+#   aliases             — синонимы/расшифровки, которые тоже считаются «встречей» термина
+#   first_published_at  — дата публикации, где термин объяснен (ISO)
+#   first_article_id    — article-id той публикации
+#   first_telegram_url  — URL поста, где термин объяснен
+#   status              — candidate (обнаружен, ждёт определения автора)
+#                       | confirmed (определение утверждено, ждёт публикации)
+#                       | published (объяснён в вышедшем посте; повторно не объясняем)
+#
+# Исторические термины объяснялись до ведения реестра: status=published, first_* неизвестны.
+# Обновление реестра — только после фактической публикации (terms.mjs publish).
+terms:
+  - term: VPS
+    definition: "виртуальный частный сервер — арендуемый удалённый сервер с root-доступом"
+    aliases: [Virtual Private Server]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: SSH
+    definition: "Secure Shell — протокол безопасного удалённого доступа к серверу"
+    aliases: [Secure Shell]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: OTA
+    definition: "Over-The-Air — обновление прошивки «по воздуху», без кабеля"
+    aliases: [Over-The-Air]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: LLM
+    definition: "large language model — большая языковая модель"
+    aliases: [large language model]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: LoRA
+    definition: "Low-Rank Adaptation — дообучение модели малым числом дополнительных параметров"
+    aliases: [Low-Rank Adaptation]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: DKMS
+    definition: "Dynamic Kernel Module Support — фреймворк пересборки модулей ядра при обновлении"
+    aliases: [Dynamic Kernel Module Support]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: API
+    definition: "application programming interface — программный интерфейс взаимодействия систем"
+    aliases: [application programming interface]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: MTProto
+    definition: "протокол передачи данных Telegram (клиент ↔ сервер)"
+    aliases: []
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: ТСПУ
+    definition: "технические средства противодействия угрозам — оборудование оператора, фильтрующее трафик"
+    aliases: []
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: bug report
+    definition: "отчёт об ошибке: воспроизведение, ожидание, фактический результат"
+    aliases: [bugreport, баг-репорт]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: топик
+    definition: "тема (ветка обсуждения) в Telegram-чате с включёнными топиками"
+    aliases: [topic]
+    status: published
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
