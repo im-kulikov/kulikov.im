@@ -19,7 +19,7 @@ en:
       title: Tell me about your task
       text: Describe the task or problem in a couple of words. I will reply on Telegram and tell you honestly whether I can help.
     navigation_button:
-      label: Message me on Telegram
+      label: Message me
     copyright:
       - "A quality approach to solving your tasks"
       - "&copy; 2004-{{< currentyear >}} Evgeniy Kulikov"
