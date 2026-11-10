@@ -1,0 +1,84 @@
+{{- /* layouts/blog/list.html — section listing (Russian-only). */ -}}
+{{- define "main" }}
+    {{- /* hard gate (paired with blog/single.html): demo (mock) articles must never be
+           listed by a production build even if their own rendering was skipped */ -}}
+    {{- range .RegularPagesRecursive }}
+        {{- if and hugo.IsProduction .Params.mock }}
+            {{- errorf "blog/list: %s is marked `mock` — a production build must not publish demo content (drop the flag or keep draft: true)" .File.Path }}
+        {{- end }}
+    {{- end }}
+    {{- $paginator := .Paginate .RegularPagesRecursive }}
+    <header class="hero blog-hero">
+        <div class="container">
+            <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+                <div>
+                    {{- with .Params.section.eyebrow }}<p><span class="eyebrow">{{ . }}</span></p>{{ end }}
+                    <h1 class="hero-title-sm mt-5">{{ .Params.section.title | default .Title }}</h1>
+                    {{- with .Params.section.description }}
+                        <p class="hero-lead mt-5 max-w-xl">{{ . | markdownify }}</p>
+                    {{- end }}
+                </div>
+                {{- with .Params.section.image }}
+                    <div class="hero-art blog-hero-art">
+                        {{ partial "components/image" (dict
+                                "src" .
+                                "alt" "Иллюстрация: кот-инженер за домашним сервером"
+                                "preload" true
+                                "responsive" true
+                                "class" "mx-auto h-auto w-full"
+                                "sizes" (dict "xl" 280 "lg" 280 "md" 280 "sm" 280 "al" 560)) }}
+                    </div>
+                {{- end }}
+            </div>
+        </div>
+    </header>
+    <section class="section-sm pt-8 lg:pt-10">
+        <div class="container">
+            <ul class="post-list">
+                {{- range $paginator.Pages }}
+                    {{- $post := . }}
+                    <li class="card post-card">
+                        <a class="post-card-link" href="{{ $post.RelPermalink }}">
+                            <span class="post-card-media">{{ partial "blog/cover" (dict "page" $post "width" 800) }}</span>
+                            <span class="post-card-body">
+                                <span class="post-meta">
+                                    <time datetime="{{ $post.Date.Format "2006-01-02" }}">{{ $post.Date | time.Format ":date_long" }}</time>
+                                    {{- if $post.Params.mock }}<span class="chip">демо</span>{{ end }}
+                                </span>
+                                <h2 class="post-card-title">{{ $post.Title }}</h2>
+                                <p class="post-card-excerpt">{{ $post.Summary | plainify }}</p>
+                            </span>
+                        </a>
+                        {{- with $post.Params.tags }}
+                            <ul class="post-tag-list">
+                                {{- range . }}<li class="chip">{{ . }}</li>{{ end }}
+                            </ul>
+                        {{- end }}
+                    </li>
+                {{- end }}
+            </ul>
+            {{- if gt $paginator.TotalPages 1 }}
+                <nav class="mt-10 flex items-center justify-center gap-4" aria-label="Постраничная навигация">
+                    {{- if $paginator.HasPrev }}
+                        <a class="btn btn-outline-primary btn-sm" href="{{ $paginator.Prev.RelPermalink }}" rel="prev">← Новее</a>
+                    {{- end }}
+                    <span class="text-sm" aria-current="page">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+                    {{- if $paginator.HasNext }}
+                        <a class="btn btn-outline-primary btn-sm" href="{{ $paginator.Next.RelPermalink }}" rel="next">Старее →</a>
+                    {{- end }}
+                </nav>
+            {{- end }}
+        </div>
+    </section>
+    {{- with site.Params.cta }}
+        <section class="section-sm">
+            <div class="container">
+                <div class="cta">
+                    <h2 class="h3">{{ .title }}</h2>
+                    <p class="mx-auto mt-3 max-w-xl text-lg">{{ .text }}</p>
+                    <div class="mt-8">{{ partial "components/action" (dict "label" site.Params.contact.label "contact" true "style" "primary") }}</div>
+                </div>
+            </div>
+        </section>
+    {{- end }}
+{{- end }}

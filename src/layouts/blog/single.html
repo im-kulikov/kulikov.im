@@ -1,0 +1,86 @@
+{{- /* layouts/blog/single.html — article page (Russian-only).
+       Geometry: .post-wrap follows the site container width (px-5, max 1240px from xl);
+       .post-body is a grid with a readable middle column (~66ch) — code, tables and
+       images span the full container width (custom.css, .post-body). */ -}}
+{{- define "main" }}
+    {{- /* hard gate: demo (mock) articles must never reach a production build —
+           list, RSS, sitemap and searchindex all become clean by construction */ -}}
+    {{- if and hugo.IsProduction .Params.mock }}
+        {{- errorf "blog/single: %s is marked `mock` — a production build must not publish demo content (drop the flag or keep draft: true)" .File.Path }}
+    {{- end }}
+    <article class="post">
+        <header class="hero post-header">
+            <div class="container">
+                <div class="post-wrap">
+                    {{- with .Parent }}
+                        <p><a class="card-link text-sm" href="{{ .RelPermalink }}">← {{ .Params.section.title | default .Title }}</a></p>
+                    {{- end }}
+                    <h1 class="hero-title-sm mt-4">{{ .Title }}</h1>
+                    <p class="post-meta mt-4">
+                        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date | time.Format ":date_long" }}</time>
+                        {{- with .Params.tags }}
+                            <span class="post-tag-list">
+                                {{- range . }}<span class="chip">{{ . }}</span>{{ end }}
+                            </span>
+                        {{- end }}
+                    </p>
+                    {{- if .Params.mock }}
+                        <p class="post-mock-note">Демонстрационная статья: контент — mock data для локального мокапа раздела, ничего не публиковалось.</p>
+                    {{- end }}
+                </div>
+            </div>
+        </header>
+        {{- if .Params.image }}
+            <div class="container">
+                <div class="post-wrap">
+                    <div class="post-cover">{{ partial "blog/cover" (dict "page" . "width" 1280 "quality" 70 "preload" true "alt" .Title) }}</div>
+                </div>
+            </div>
+        {{- end }}
+        <section class="section-sm pt-10 lg:pt-12">
+            <div class="container">
+                <div class="post-wrap">
+                    <div class="post-body">
+                        {{ .Content }}
+                        {{- /* the Telegram link is rendered only when the post is published; the field stays empty until then */ -}}
+                        {{- with .Params.telegram }}
+                            <p class="mt-10">
+                                <a class="btn btn-outline-primary" href="{{ . }}" target="_blank" rel="noopener">Обсудить в Telegram <span class="arrow" aria-hidden="true">→</span></a>
+                            </p>
+                        {{- end }}
+                    </div>
+                    {{- $newer := .PrevInSection }}{{ $older := .NextInSection }}
+                    {{- if or $newer $older }}
+                        <nav class="post-nav mt-12" aria-label="Другие материалы">
+                            {{- with $newer }}
+                                <a class="card post-nav-link" href="{{ .RelPermalink }}">
+                                    <span class="card-caption">← Новее</span>
+                                    <span class="font-semibold">{{ .Title }}</span>
+                                </a>
+                            {{- else }}
+                                <span></span>
+                            {{- end }}
+                            {{- with $older }}
+                                <a class="card post-nav-link" href="{{ .RelPermalink }}">
+                                    <span class="card-caption">Старее →</span>
+                                    <span class="font-semibold">{{ .Title }}</span>
+                                </a>
+                            {{- end }}
+                        </nav>
+                    {{- end }}
+                </div>
+            </div>
+        </section>
+    </article>
+    {{- with site.Params.cta }}
+        <section class="section-sm">
+            <div class="container">
+                <div class="cta">
+                    <h2 class="h3">{{ .title }}</h2>
+                    <p class="mx-auto mt-3 max-w-xl text-lg">{{ .text }}</p>
+                    <div class="mt-8">{{ partial "components/action" (dict "label" site.Params.contact.label "contact" true "style" "primary") }}</div>
+                </div>
+            </div>
+        </section>
+    {{- end }}
+{{- end }}
