@@ -1,0 +1,31 @@
+{{- /* Home SearchIndex output (/searchindex.json): the internal index of blog articles.
+       Scope: regular pages of the blog section only — structural pages (about,
+       contacts, …) are not article entries, and nothing outside kulikov.im ever
+       becomes an entry.
+       Cleanliness, structurally:
+       - drafts are not built in production at all;
+       - mock pages fail a production build outright (blog/single.html guard);
+       - sections marked data-search-exclude (shortcode "sources" — external
+         citations) are stripped from the searchable text while staying visible
+         in the rendered page, so external sources never leak into the index
+         text and never become entries of their own. */ -}}
+{{- $entries := slice -}}
+{{- range where site.RegularPages "Section" "blog" }}
+    {{- $text := .Content
+        | replaceRE `(?s)<section[^>]*data-search-exclude[^>]*>.*?</section>` ""
+        | plainify
+        | htmlUnescape
+        | replaceRE `\s+` " "
+        | strings.TrimSpace
+    -}}
+    {{- $entries = $entries | append (dict
+        "uri" .Permalink
+        "title" .Title
+        "description" (.Description | plainify)
+        "keywords" (.Keywords | default (slice))
+        "tags" (.Params.tags | default (slice))
+        "date" (.Date.Format "2006-01-02")
+        "text" $text
+    ) -}}
+{{- end -}}
+{{- jsonify (dict "indent" "  ") $entries -}}

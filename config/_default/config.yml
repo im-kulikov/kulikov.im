@@ -33,6 +33,9 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+  # code blocks use CSS classes (styled in custom.css for light+dark); existing pages have no code blocks
+  highlight:
+    noClasses: false
 ############################# Build ##############################
 build:
   buildStats:
@@ -58,7 +61,7 @@ outputs:
     - HomeHTML
 #    - RSS
     - WebAppManifest
-#    - SearchIndex
+    - SearchIndex # /searchindex.json — internal article index (layouts/index.searchindex.json)
 ########################### Output Format ##########################
 outputFormats:
   # With uglyURLs Hugo >= 0.15x links the home page as /index.html; keep it as /
