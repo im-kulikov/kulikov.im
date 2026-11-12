@@ -1,4 +1,4 @@
-// Renders the README screenshots (docs/preview-{ru,en}.webp) from the built site: the home page on a MacBook and an iPhone
+// Renders the README screenshots (.github/imgs/preview-{ru,en}.webp) from the built site: the home page on a MacBook and an iPhone
 // (real screenshots at 1280x800 and a 390x844 mobile viewport, devices drawn in CSS), the dark theme on one side and the light theme
 // on the other side of a diagonal seam that runs through both screens. The background is transparent: it lies on any GitHub theme.
 // Run after changing how the home page looks:  node tests/build.mjs && CHROME_PATH=/path/to/chrome node tools/build-previews.mjs
@@ -31,7 +31,7 @@ await new Promise((ok) => server.listen(0, ok));
 const origin = `http://localhost:${server.address().port}`;
 
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
-const out = process.env.OUT_DIR ?? new URL("../docs/", import.meta.url).pathname;
+const out = process.env.OUT_DIR ?? new URL("../.github/imgs/", import.meta.url).pathname;
 
 const VIEWPORTS = { mac: { width: 1280, height: 800, scale: 1.5, mobile: false }, phone: { width: 390, height: 844, scale: 2, mobile: true } };
 const shot = async (path, colorScheme, { width, height, scale, mobile }) => {

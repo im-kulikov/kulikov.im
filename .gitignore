@@ -5,3 +5,4 @@ node_modules
 
 # local editorial workspace: per-publication materials only (inbox/working/drafts/done + local Hugo bin) — never published
 /tmp/
+.rumdl_cache

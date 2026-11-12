@@ -228,6 +228,7 @@ NTP на фиксированные серверы. И главный урок �
 не факт архитектуры, а диагноз, который надо перепроверять по первоисточнику.
 
 {{< sources >}}
+
 - [Unattended-upgrades на вики Debian](https://wiki.debian.org/UnattendedUpgrades)
 - [Документация AmneziaWG](https://docs.amnezia.org/)
 - [systemd-timesyncd](https://www.freedesktop.org/software/systemd/man/latest/systemd-timesyncd.service.html)

@@ -12,7 +12,7 @@
 
 [**kulikov.im**](https://kulikov.im) · [**kulikov.im/en**](https://kulikov.im/en/) · [Русская версия README](README.ru.md)
 
-<img src="docs/preview-en.webp" alt="kulikov.im home page on a MacBook and an iPhone, split between the dark and the light theme" width="900">
+<img src=".github/imgs/preview-en.webp" alt="kulikov.im home page on a MacBook and an iPhone, split between the dark and the light theme" width="900">
 
 </div>
 
@@ -20,14 +20,14 @@
 
 I am a tech lead and software architect (Go, platform engineering, 20+ years in software). This is my own site, and I built it the way I ask teams to build production services: small surface, no magic, every promise backed by a check that runs in CI.
 
-| | |
-|---|---|
-| **Fast** | Lighthouse (mobile, lab): **97** performance, **100** accessibility, best practices and SEO. Layout shift **0**, ~9 KB of CSS over the wire, JS under 1 KB, no framework. |
-| **Self-hosted** | Fonts (Roboto Slab, subset to latin + cyrillic, ~33 KB), icons and logo all ship from the site. No CDN, no analytics, no trackers, no cookie banner. |
-| **Bilingual** | Russian and English from one set of pages. Language switch with a remembered choice, `hreflang` + `x-default`, a sitemap per language. |
-| **Accessible** | Contrast is verified in a real browser on every page in light and dark theme, 44 px touch targets, skip link, no horizontal overflow from 320 px up. |
-| **Reproducible** | Two builds of the same sources are byte-identical; the build fails on any template warning. |
-| **Safe pipeline** | Pull requests can only test, never deploy. Actions are pinned to commit SHAs, the Hugo binary is checksum-verified, runners are pinned, Dependabot is on. |
+|                   |                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fast**          | Lighthouse (mobile, lab): **97** performance, **100** accessibility, best practices and SEO. Layout shift **0**, ~9 KB of CSS over the wire, JS under 1 KB, no framework. |
+| **Self-hosted**   | Fonts (Roboto Slab, subset to latin + cyrillic, ~33 KB), icons and logo all ship from the site. No CDN, no analytics, no trackers, no cookie banner.                      |
+| **Bilingual**     | Russian and English from one set of pages. Language switch with a remembered choice, `hreflang` + `x-default`, a sitemap per language.                                    |
+| **Accessible**    | Contrast is verified in a real browser on every page in light and dark theme, 44 px touch targets, skip link, no horizontal overflow from 320 px up.                      |
+| **Reproducible**  | Two builds of the same sources are byte-identical; the build fails on any template warning.                                                                               |
+| **Safe pipeline** | Pull requests can only test, never deploy. Actions are pinned to commit SHAs, the Hugo binary is checksum-verified, runners are pinned, Dependabot is on.                 |
 
 ## What is inside
 
@@ -70,7 +70,7 @@ hugo --gc --minify     # production build into build/public
 npm test               # builds, then checks (set HUGO_BIN if hugo is not on PATH)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # re-render the raster icons after editing favicon.svg
-node tools/build-previews.mjs   # re-render docs/preview-*.webp (README image: MacBook and iPhone, dark/light diagonal split) from the built site
+node tools/build-previews.mjs   # re-render .github/imgs/preview-*.webp (README image: MacBook and iPhone, dark/light diagonal split) from the built site
 ```
 
 ## Repository map
