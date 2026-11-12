@@ -24,6 +24,12 @@ if (!file) {
 
 const LIMIT = +opt("limit", 1024);
 const TARGET = +opt("target", 950);
+for (const [name, value] of [["limit", LIMIT], ["target", TARGET]]) {
+  if (!Number.isInteger(value) || value <= 0) {
+    console.error(`--${name} ожидает положительное целое (получено «${opt(name, "")}»); NaN-лимит не проверяет ничего`);
+    process.exit(2);
+  }
+}
 const FORMAT = opt("format", ""); // empty = take from meta, fallback html
 const metaFile = resolve(opt("meta", file === "-" ? join(TMP, "telegram.json") : join(dirname(resolve(file)), "telegram.json")));
 

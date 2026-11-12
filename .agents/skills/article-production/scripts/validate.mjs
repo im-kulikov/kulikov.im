@@ -48,11 +48,13 @@ else {
 let body = "";
 const articlePath = join(drafts, "article.md");
 let fm = null;
+let fmBlockFound = false;
 if (!existsSync(articlePath)) add("article.md", false, "файл отсутствует");
 else {
   const m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(readFileSync(articlePath, "utf8"));
   if (!m) add("article.md: front matter", false, "блок «--- … ---» не найден");
   else {
+    fmBlockFound = true;
     body = m[2];
     try {
       fm = YAML.parse(m[1]);
@@ -63,7 +65,7 @@ else {
 }
 // блок «--- … ---» есть, но YAML пуст или не отображение: молча пропустить проверки —
 // значит пропустить статью без title/slug/draft через гейт
-if (fm === null || typeof fm !== "object" || Array.isArray(fm)) {
+if (fmBlockFound && (fm === null || typeof fm !== "object" || Array.isArray(fm))) {
   add("article.md: front matter", false, "блок найден, но не является YAML-отображением (пустой или сломанный)");
 }
 if (fm) {
@@ -82,9 +84,11 @@ if (fm) {
   // (внутри {{< sources >}} секция видна читателю, но исключена из searchindex сайта)
   const sourcesShortcode = /\{\{<\s*sources[^>]*>[\s\S]*\{\{<\s*\/sources\s*>}}/.test(body);
   // кодовые блоки не считаются (упоминание заголовка в примере — не заголовок);
+  // заголовком считается и h1, и заголовок внутри цитаты (> ## …) — оба рендерятся
+  // заголовком и утекут в индекс, если не в shortcode;
   // NB: \b после кириллицы в JS-regex не работает (ASCII-граница) — поэтому явный lookahead
   const bodyNoFences = body.replace(/```[\s\S]*?```/g, "");
-  const legacySourcesHeading = /^#{2,}\s*\**\s*Источники(?=\s|[:;,.)\]}»*]*\s*$).*$/m.test(bodyNoFences);
+  const legacySourcesHeading = /^ {0,3}(?:>\s*)*#{1,6}\s*\**\s*Источники(?=\s|[:;,.)\]}»*]*\s*$).*$/m.test(bodyNoFences);
   add(
     "article.md: источники через {{< sources >}}",
     !legacySourcesHeading,

@@ -150,10 +150,11 @@ try {
       console.log(`${id}: ссылка на статью уже есть в тексте поста (${finalText ? "снимок telegram-final.md" : "черновик telegram.md"}) — дополнение не требуется (дубликаты не добавляем).`);
       process.exit(0);
     }
-    // строка дополнения обязана нести ссылку: если в --text её нет — добавляем в конец
+    // строка дополнения обязана нести ссылку: проверяем точным совпадением (hasUrl),
+    // чтобы «Разбор: …/x.html-v2» не считался уже несущим проверенный «…/x.html»
     const line = !custom
       ? crossPromoLine(state.article_url)
-      : custom.includes(state.article_url)
+      : hasUrl(custom, state.article_url)
         ? custom
         : `${custom.trimEnd()} ${state.article_url}`;
     const anchor = line.replaceAll(state.article_url, "").replace(/\s+/g, " ").trim().replace(/[:\s]+$/, "") || crossPromoAnchor;
@@ -189,15 +190,17 @@ try {
       "- Повторный запуск идемпотентен: ссылка уже в telegram(-final).md → команда сообщает и не дублирует.",
       "",
     ].join("\n");
-    writeFileSync(join(drafts, "crosspromo.md"), proposal);
-    console.log(`${id}: предложение записано в tmp/drafts/${id}/crosspromo.md`);
     if (asText > 1024 && asHtml > 1024 && asText <= 4096 && asHtml <= 4096) {
       console.log(`⚠ caption с медией не влезает (1024) — варианты: текстовое сообщение до 4096 или сократить текст.`);
     }
     if (asText > 4096 && asHtml > 4096) {
-      console.error(`${id}: дополнение не влезает даже в текстовое сообщение (4096) — сократи текст поста.`);
+      console.error(`${id}: дополнение не влезает даже в текстовое сообщение (4096) — сократи текст поста; применимое предложение не записано.`);
       process.exit(1);
     }
+    // файл-предложение пишем только пригодным к применению: «готовый текст для ручного
+    // обновления» сверх лимита вводил бы владельца в заблуждение
+    writeFileSync(join(drafts, "crosspromo.md"), proposal);
+    console.log(`${id}: предложение записано в tmp/drafts/${id}/crosspromo.md`);
     process.exit(0);
   }
 

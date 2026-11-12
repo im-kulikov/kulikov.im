@@ -81,7 +81,8 @@ const entries = list.stdout
   .filter((e) => e && !e.name.endsWith("/"));
 
 // zip-slip / absolute / traversal / дубликаты / лимиты
-const dangerous = entries.filter((e) => e.name.includes("..") || e.name.startsWith("/"));
+// «..» ловим только как цельный сегмент пути: файлы вида «a..b.txt» безобидны
+const dangerous = entries.filter((e) => e.name.startsWith("/") || /(^|\/)\.\.(\/|$)/.test(e.name));
 if (dangerous.length) {
   console.error("Архив содержит небезопасные пути (zip-slip / абсолютные пути), распаковка отменена:");
   dangerous.forEach((e) => console.error("  " + e.name));
@@ -149,8 +150,9 @@ if (symEntries.length) {
 // через unzip нельзя. Единственный превентивный контроль исчерпания диска: свободного места
 // в целевой ФС должно хватать на максимально допустимый объём (256 МиБ), иначе отказ до записи
 const target = join(work, "archive");
+mkdirSync(TMP, { recursive: true }); // statfs падает ENOENT, если рабочего каталога нет (fresh checkout + архив извне tmp/)
 const st = statfsSync(TMP);
-const freeBytes = Number(st.bavail) * Number(st.bsize); // statfs возвращает BigInt
+const freeBytes = st.bavail * st.bsize; // поля statfs — числа; переполнение исключено порядком лимитов
 if (freeBytes < MAX_TOTAL) {
   rmSync(target, { recursive: true, force: true });
   console.error(`Свободно ${(freeBytes / 1024 / 1024).toFixed(0)} МБ < лимита распакованного объёма ${MAX_TOTAL / 1024 / 1024} МБ — отказ до распаковки.`);

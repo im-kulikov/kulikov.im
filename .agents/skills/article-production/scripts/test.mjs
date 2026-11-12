@@ -14,7 +14,16 @@ const SKILL_DIR = resolve(SCRIPTS, "..");
 const ROOT = resolve(SKILL_DIR, "..", "..", ".."); // корень репозитория kulikov.im
 
 // ---------- helpers ----------
-const box = () => mkdtempSync(join(tmpdir(), "editorial-"));
+// песочницы чистим по завершении процесса: до этого 13 каталогов за прогон оставались в $TMPDIR
+const SANDBOXES = [];
+process.on("exit", () => {
+  for (const d of SANDBOXES) rmSync(d, { recursive: true, force: true });
+});
+const box = () => {
+  const d = mkdtempSync(join(tmpdir(), "editorial-"));
+  SANDBOXES.push(d);
+  return d;
+};
 const run = (script, args, sandbox, opts = {}) => {
   const r = spawnSync("node", [join(SCRIPTS, script), ...args], {
     encoding: "utf8",
@@ -189,7 +198,9 @@ describe("terminology registry (terms.mjs)", () => {
     const r = run("terms.mjs", ["list", "--status", "published", "--registry", reg], sb);
     assert.equal(r.status, 0);
     assert.match(r.out, /VPS/);
-    assert.doesNotMatch(r.out, /status=confirmed/);
+    // NAT в песочнице подтверждён и затем опубликован предыдущими тестами:
+    // фильтр published обязан исключать записи со статусом confirmed
+    assert.doesNotMatch(r.out, /\[confirmed\]/, "фильтр published не должен показывать confirmed");
   });
 });
 
@@ -838,7 +849,7 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     const d = join(sb, "drafts", "emptyfm");
     mkdirSync(d, { recursive: true });
     writeFileSync(join(d, "brief.md"), "# Brief\n\n## Тема\n\nx\n"); // brief неполный — не важно, fm-фолт главный
-    writeFileSync(join(d, "article.md"), "---\n---\n\nТекст без фронта.\n");
+    writeFileSync(join(d, "article.md"), "---\n\n---\n\nТекст без фронта.\n"); // блок найдён, внутри пусто
     writeFileSync(join(d, "telegram.md"), "Текст.");
     const r = run("validate.mjs", ["emptyfm"], sb);
     assert.equal(r.status, 1);
@@ -963,5 +974,85 @@ describe("hardening: повторное ревью PR #31 (3 замечания)
     for (const s of ["article_url_verified", "telegram_published", "telegram_url_verified", "site_redeployed", "links_checked"]) run("state.mjs", ["cp7", "step", s], sb);
     assert.equal(run("state.mjs", ["cp7", "done"], sb).status, 0);
     assert.ok(!existsSync(join(sb, "inbox/cp7.zip")));
+  });
+});
+
+// =====================================================================
+describe("hardening: собственное ревью PR #31 (3 домена)", () => {
+  const sb = box();
+
+  test("intake: «a..b.txt» — не zip-slip (двоеточие-точки внутри имени допустимы)", () => {
+    const r = run("intake.mjs", [makeZip(sb, "dots.zip", { "a..b.txt": "x" })], sb);
+    assert.equal(r.status, 0, r.err);
+    assert.match(r.out, /Готово: tmp\/working\/dots/);
+  });
+
+  test("hasUrl: кириллица, приклеенная к URL, — не точное совпадение", async () => {
+    const { hasUrl } = await import(join(SCRIPTS, "lib.mjs"));
+    assert.equal(hasUrl("https://kulikov.im/blog/x.htmlсмотрите", "https://kulikov.im/blog/x.html"), false);
+    assert.equal(hasUrl("<https://t.me/homeinprod/5>", "https://t.me/homeinprod/5"), true, "закрывающая «>» завершает URL — после неё текст допустим");
+    assert.equal(hasUrl("смотри https://t.me/homeinprod/5), ок", "https://t.me/homeinprod/5"), true);
+  });
+
+  test("terms: «CRUD-операция» даёт кандидата CRUD; «XML-хвост» — XML без дефиса", () => {
+    const reg = registry(sb);
+    const res = spawnSync("node", [join(SCRIPTS, "terms.mjs"), "check", "-", "--registry", reg], {
+      input: "Тут CRUD-операция и XML-хвост, а MTProto известен.",
+      encoding: "utf8", env: { ...process.env, EDITORIAL_TMP: sb },
+    });
+    assert.equal(res.status, 0, res.stderr);
+    const j = JSON.parse(res.stdout);
+    assert.ok(j.candidates.includes("CRUD"), `CRUD должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
+    assert.ok(j.candidates.includes("XML"), `XML без хвостового дефиса: ${JSON.stringify(j.candidates)}`);
+    assert.ok(!j.candidates.some((c) => c === "XML-" || c === "MT" || c === "CRUD-"), JSON.stringify(j.candidates));
+  });
+
+  test("validate: h1 «# Источники» и заголовок в цитате тоже проваливают гейт; отсутствие article.md — один FAIL, не два", () => {
+    const mk = (id, body) => {
+      const d = join(sb, "drafts", id);
+      mkdirSync(d, { recursive: true });
+      writeFileSync(join(d, "brief.md"), "# Brief\n\n## Тема\n\nx\n");
+      writeFileSync(join(d, "article.md"), `---\ntitle: "t"\ndescription: "${"x".repeat(55)}"\ndate: 2026-11-11\ntags: [a]\ndraft: true\nslug: s\nimage: c.webp\n---\n\n${body}`);
+      writeFileSync(join(d, "telegram.md"), "Текст.");
+    };
+    mk("srch1", "Текст.\n\n# Источники\n\n- [Д](https://example.com)\n");
+    const h1 = run("validate.mjs", ["srch1"], sb);
+    assert.equal(h1.status, 1);
+    assert.match(h1.out, /FAIL\s+article\.md: источники через/);
+    mk("srcq", "Текст.\n\n> ## Источники\n\n- [Д](https://example.com)\n");
+    const quote = run("validate.mjs", ["srcq"], sb);
+    assert.equal(quote.status, 1);
+    assert.match(quote.out, /FAIL\s+article\.md: источники через/);
+    const noArticle = join(sb, "drafts/noarticle");
+    mkdirSync(noArticle, { recursive: true });
+    writeFileSync(join(noArticle, "brief.md"), "# Brief\n\n## Тема\n\nx\n");
+    writeFileSync(join(noArticle, "telegram.md"), "Текст.");
+    const none = run("validate.mjs", ["noarticle"], sb);
+    assert.equal(none.status, 1);
+    assert.equal((none.out.match(/FAIL/g) ?? []).length, 2, "brief + отсутствие файла, без фантомного front matter FAIL");
+    assert.doesNotMatch(none.out, /не является YAML-отображением/);
+  });
+
+  test("crosspromo: --text с чужим URL-префиксом получает проверенную ссылку; сверх 4096 файл не пишется", () => {
+    run("intake.mjs", [makeZip(sb, "cp8.zip", { "n.txt": "x" })], sb);
+    const sp = join(sb, "working/cp8/state.json");
+    const st = JSON.parse(readFileSync(sp, "utf8"));
+    st.article_url = "https://kulikov.im/blog/leg.html";
+    st.checklist.article_url_verified = true;
+    st.telegram_url = "https://t.me/homeinprod/5";
+    writeFileSync(sp, JSON.stringify(st));
+    const dr = join(sb, "drafts/cp8");
+    mkdirSync(dr, { recursive: true });
+    writeFileSync(join(dr, "telegram.md"), "Короткий пост.");
+    const wrong = run("state.mjs", ["cp8", "crosspromo", "--text", "Разбор: https://kulikov.im/blog/leg.html-v2"], sb);
+    assert.equal(wrong.status, 0, wrong.err);
+    const out = readFileSync(join(dr, "crosspromo.md"), "utf8");
+    assert.match(out, /Разбор: https:\/\/kulikov\.im\/blog\/leg\.html-v2 https:\/\/kulikov\.im\/blog\/leg\.html/, "проверенный URL добавлен к тексту с чужим префиксом");
+    // сверх 4096: выхода 1 и файла-предложения нет
+    writeFileSync(join(dr, "telegram.md"), "Ж".repeat(4200));
+    const over = run("state.mjs", ["cp8", "crosspromo"], sb);
+    assert.equal(over.status, 1);
+    assert.match(over.err, /4096/);
+    assert.ok(!existsSync(join(dr, "crosspromo.md")) || readFileSync(join(dr, "crosspromo.md"), "utf8") === out, "новый непригодный файл не записан");
   });
 });
