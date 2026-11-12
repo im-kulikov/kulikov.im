@@ -33,7 +33,8 @@
         {{- if .Params.image }}
             <div class="container">
                 <div class="post-wrap">
-                    <div class="post-cover">{{ partial "blog/cover" (dict "page" . "width" 1280 "quality" 70 "preload" true "alt" .Title) }}</div>
+                    {{- /* no explicit alt: the partial falls back to the image_alt front matter, then the title */ -}}
+                    <div class="post-cover">{{ partial "blog/cover" (dict "page" . "width" 1280 "quality" 70 "preload" true) }}</div>
                 </div>
             </div>
         {{- end }}
@@ -49,7 +50,10 @@
                             </p>
                         {{- end }}
                     </div>
-                    {{- $newer := .PrevInSection }}{{ $older := .NextInSection }}
+                    {{- /* Hugo: .NextInSection points to the NEWER page, .PrevInSection to the older one
+                           (verified on the built site: the oldest article's only neighbour arrives via
+                           .NextInSection); the labels must follow the dates, not the variable names */ -}}
+                    {{- $newer := .NextInSection }}{{ $older := .PrevInSection }}
                     {{- if or $newer $older }}
                         <nav class="post-nav mt-12" aria-label="Другие материалы">
                             {{- with $newer }}
