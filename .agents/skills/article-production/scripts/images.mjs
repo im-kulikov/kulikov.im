@@ -157,7 +157,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       const [dir] = pos();
       if (!dir) throw new Error("usage: images.mjs check <images-dir> [--json]");
       const res = checkImages(resolve(dir));
-      if (opt("json", false)) console.log(JSON.stringify(res, null, 2));
+      if (rest.includes("--json")) console.log(JSON.stringify(res, null, 2)); // документированный булев флаг, а не опция со значением
       else {
         for (const [c, files] of Object.entries(res.concepts))
           for (const [name, r] of Object.entries(files))

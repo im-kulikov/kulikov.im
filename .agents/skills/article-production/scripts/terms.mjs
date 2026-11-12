@@ -80,8 +80,10 @@ if (cmd === "check") {
     if (hits || aliasHit) known.push({ term: t.term, status: t.status, hits, alias: aliasHit });
   }
   // эвристика кандидатов: ВСЕ-КАПС токены (латиница/кириллица/цифры/дефис) вне реестра и стоп-слов.
-  // (?![\p{Ll}]) отсекает капс-префиксы смешанных слов («MTP» из «MTProto»).
-  const tokens = new Set((raw.match(/(?<![\p{L}\p{Nd}])[\p{Lu}][\p{Lu}\p{Nd}-]{1,11}(?![\p{Ll}])/gu) ?? []));
+  // (?![\p{L}\p{Nd}-]) требует, чтобы за токеном НЕ шла буква/цифра/дефис: квантификер не может
+  // откатиться и отрезать кусок капс-префикса («MT» из «MTProto» не извлекается: за «MTP» идёт
+  // строчная, за «MT» — заглавная «P», оба варианта запрещены lookahead)
+  const tokens = new Set((raw.match(/(?<![\p{L}\p{Nd}])[\p{Lu}][\p{Lu}\p{Nd}-]{1,11}(?![\p{L}\p{Nd}-])/gu) ?? []));
   const candidates = [...tokens]
     .filter((tok) => !STOPWORDS.has(tok) && !exists(terms, tok) && !terms.some((t) => termRe(t.term).test(tok)))
     .sort();
@@ -103,10 +105,23 @@ if (cmd === "confirm") {
     console.error(`«${term}» уже есть в реестре (term или alias). Дубликаты запрещены.`);
     process.exit(1);
   }
+  const aliases = opt("aliases")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+  // алиасы — полноправные имена: коллизии с реестром и повторы внутри записи недопустимы,
+  // иначе один и тот же термин получит два разных определения
+  if (new Set([term, ...aliases].map((s) => s.toLowerCase())).size !== 1 + aliases.length) {
+    console.error(`В confirm передан термин/алиасы с повторами: ${[term, ...aliases].join(", ")}.`);
+    process.exit(1);
+  }
+  for (const a of aliases) {
+    if (exists(terms, a)) {
+      console.error(`Алиас «${a}» уже есть в реестре (term или alias). Дубликаты запрещены.`);
+      process.exit(1);
+    }
+  }
   terms.push({
     term,
     definition,
-    aliases: opt("aliases")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [],
+    aliases,
     status: "confirmed",
     first_published_at: null,
     first_article_id: null,

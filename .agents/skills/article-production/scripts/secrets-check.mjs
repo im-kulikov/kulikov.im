@@ -24,7 +24,11 @@ const RULES = [
   { id: "google-api-key", sev: "high", re: /\bAIza[0-9A-Za-z_-]{30,}\b/ },
   { id: "openai/slack/gitlab-token", sev: "high", re: /\bsk-[A-Za-z0-9_-]{20,}\b|\bxox[baprs]-[\w-]{10,}\b|\bglpat-[\w-]{15,}\b/ },
   { id: "bearer-token", sev: "high", re: /\b[Bb]earer\s+[A-Za-z0-9._-]{20,}\b/ },
-  { id: "password-assign", sev: "high", re: /\b(pass(word)?|passwd|pwd|secret|api[_-]?key|apikey|access[_-]?token|auth[_-]?token|client[_-]?secret)\b\s*[:=]\s*["']?[^\s"'#]{6,}/ },
+  // Telegram Bot API: «<bot_id>:<35-символьный секрет>» — ловит и TELEGRAM_BOT_TOKEN=…,
+  // и api.telegram.org/bot<id>:<secret>/… (в URL цифры прилегают к «bot», \b там нет)
+  { id: "telegram-bot-token", sev: "high", re: /(?<!\d)\d{8,10}:[A-Za-z0-9_-]{35}(?![\w-])/ },
+  // ключ регистронезависим (PASSWORD=, ApiKey=) и может закрываться кавычкой JSON ("password": "…")
+  { id: "password-assign", sev: "high", re: /\b(pass(word)?|passwd|pwd|secret|api[_-]?key|apikey|access[_-]?token|auth[_-]?token|client[_-]?secret)\b["']?\s*[:=]\s*["']?[^\s"'#]{6,}/i },
   { id: "url-with-credentials", sev: "high", re: /https?:\/\/[^\s\/@:]+:[^\s@\/]+@[^\s]+/ },
   { id: "session-cookie", sev: "warn", re: /\b(sessionid|session_id|phpsessid|jsessionid|csrf[_-]?token|set-cookie)\b\s*[=:]/i },
   { id: "private-ipv4", sev: "warn", re: /\b(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3})\b/ },

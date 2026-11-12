@@ -99,8 +99,14 @@ export function visibleCaption(raw, format = "html") {
       .replace(/<br\s*\/?>/gi, "\n")
       .replace(/<\/(p|div|li)>/gi, "\n")
       .replace(/<[^>]*>/g, "");
-    for (const [ent, ch] of Object.entries(ENTITIES)) text = text.split(ent).join(ch);
-    text = text.replace(/&#\d+;/g, "?");
+    // сущности — одним проходом: именованные из таблицы, числовые/hex декодируются в символ
+    // (суррогатная пара честно занимает 2 UTF-16 unit при .length), незнакомые остаются как есть.
+    // Последовательные замены запрещены: «&amp;lt;» не должно превращаться в «<» двойным декодом
+    text = text.replace(/&(?:#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);/g, (ent) => {
+      if (ENTITIES[ent] !== undefined) return ENTITIES[ent];
+      const code = /^&#x/i.test(ent) ? parseInt(ent.slice(3, -1), 16) : /^&#/.test(ent) ? parseInt(ent.slice(2, -1), 10) : NaN;
+      return Number.isInteger(code) && code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : ent;
+    });
   } else if (format === "markdownv2") {
     text = text
       .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // [text](url) → text
@@ -108,7 +114,8 @@ export function visibleCaption(raw, format = "html") {
       .replace(/[*_~]{1,2}/g, "")
       .replace(/\\([^\w\s])/g, "$1"); // escaped punctuation \. → .
   }
-  return text.replace(/\n{3,}/g, "\n\n").trim();
+  // внутренние переносы НЕ схлопываем: Telegram считает их как есть, нормализация занижала бы длину
+  return text.trim();
 }
 
 // ---------- cross-promotion (Telegram ↔ blog) ----------
@@ -119,13 +126,14 @@ export const crossPromoAnchor = "📖 Подробный разбор — в б�
 
 // Двусторонняя проверка ссылок по телам уже загруженных страниц:
 // статья содержит ссылку на пост («Обсудить в Telegram»), пост — ссылку на статью.
+// Пустое тело = ссылки нет (HTTP 200 с пустым ответом — не доказательство).
 // Возвращает список человекочитаемых проблем (пусто = всё на месте).
 export function checkCrossLinks({ articleHtml, telegramHtml, articleUrl, telegramUrl }) {
   const problems = [];
-  if (telegramUrl && articleHtml && !articleHtml.includes(telegramUrl)) {
+  if (telegramUrl && (!articleHtml || !articleHtml.includes(telegramUrl))) {
     problems.push(`на странице статьи нет ссылки на Telegram-пост (${telegramUrl}); обнови front matter telegram: и передеплой`);
   }
-  if (articleUrl && telegramHtml && !telegramHtml.includes(articleUrl)) {
+  if (articleUrl && (!telegramHtml || !telegramHtml.includes(articleUrl))) {
     problems.push(`в Telegram-посте нет ссылки на статью (${articleUrl}); примени дополнение из crosspromo (с approval владельца)`);
   }
   return problems;

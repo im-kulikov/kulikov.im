@@ -782,3 +782,125 @@ describe("validate.mjs: источники через shortcode", () => {
     assert.equal(r2.status, 0, r2.out);
   });
 });
+
+// =====================================================================
+describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
+  const sb = box();
+
+  test("visibleCaption: сущности одним проходом, астральные — по UTF-16, переносы сохраняются", async () => {
+    const { visibleCaption } = await import(join(SCRIPTS, "lib.mjs"));
+    assert.equal(visibleCaption("<b>&#128512;</b>", "html"), "😀"); // у вызывающего .length = 2 unit
+    assert.equal(visibleCaption("&amp;lt;", "html"), "&lt;"); // двойной декод исключён
+    assert.equal(visibleCaption("a\n\n\n\nb", "html"), "a\n\n\n\nb"); // внутренние переносы Telegram считает как есть
+    assert.equal(visibleCaption("a<br>b", "html"), "a\nb");
+  });
+
+  test("checkCrossLinks: пустое тело ответа = отсутствующая ссылка, не успех", async () => {
+    const { checkCrossLinks } = await import(join(SCRIPTS, "lib.mjs"));
+    assert.equal(checkCrossLinks({ articleHtml: "", telegramHtml: "", articleUrl: "https://kulikov.im/blog/x.html", telegramUrl: "https://t.me/c/5" }).length, 2);
+    assert.equal(
+      checkCrossLinks({ articleHtml: `<a href="https://t.me/c/5">x</a>`, telegramHtml: `смотри https://kulikov.im/blog/x.html подробнее`, articleUrl: "https://kulikov.im/blog/x.html", telegramUrl: "https://t.me/c/5" }).length,
+      0,
+    );
+  });
+
+  test("secrets: Telegram Bot API токен (env и URL) и регистронезависимые/JSON-пароли — high", () => {
+    const token = `1234567890:AAE${"x".repeat(32)}`; // id + ровно 35 символов секрета
+    const d = join(sb, "sec2");
+    mkdirSync(d, { recursive: true });
+    writeFileSync(join(d, "t.md"), `TELEGRAM_BOT_TOKEN=${token}\ncurl https://api.telegram.org/bot${token}/sendMessage\nPASSWORD=hunter2secret\n"password": "hunter2secret"\n`);
+    const r = run("secrets-check.mjs", [d], sb);
+    assert.equal(r.status, 1);
+    const tg = (r.out.match(/telegram-bot-token/g) ?? []).length;
+    const pw = (r.out.match(/password-assign/g) ?? []).length;
+    assert.equal(tg, 2, "токен найден в обеих формах: env и URL");
+    assert.equal(pw, 2, "PASSWORD= и \"password\": обе формы");
+  });
+
+  test("terms: «MTProto» не порождает кандидата MT (нет отката квантификера); коллизия алиаса отклоняется", () => {
+    const reg = registry(sb);
+    const res = spawnSync("node", [join(SCRIPTS, "terms.mjs"), "check", "-", "--registry", reg], {
+      input: "Поднял MTProto и VPS, потом NAT.",
+      encoding: "utf8", env: { ...process.env, EDITORIAL_TMP: sb },
+    });
+    assert.equal(res.status, 0, res.stderr);
+    const j = JSON.parse(res.stdout);
+    assert.ok(j.known.some((k) => k.term === "MTProto"));
+    assert.ok(j.candidates.includes("NAT"));
+    assert.ok(!j.candidates.includes("MT"), `MT не должен извлекаться из MTProto: ${JSON.stringify(j.candidates)}`);
+    const dup = run("terms.mjs", ["confirm", "NAT", "--definition", "x", "--aliases", "SSH", "--registry", reg], sb);
+    assert.equal(dup.status, 1);
+    assert.match(dup.err, /уже есть в реестре/);
+  });
+
+  test("validate: пустой front matter проваливает гейт, а не пропускается молча", () => {
+    const d = join(sb, "drafts", "emptyfm");
+    mkdirSync(d, { recursive: true });
+    writeFileSync(join(d, "brief.md"), "# Brief\n\n## Тема\n\nx\n"); // brief неполный — не важно, fm-фолт главный
+    writeFileSync(join(d, "article.md"), "---\n---\n\nТекст без фронта.\n");
+    writeFileSync(join(d, "telegram.md"), "Текст.");
+    const r = run("validate.mjs", ["emptyfm"], sb);
+    assert.equal(r.status, 1);
+    assert.match(r.out, /FAIL\s+article\.md: front matter/);
+    assert.match(r.out, /YAML-отображени/);
+  });
+
+  test("intake: отказ чистит за собой — повтор запуска обрабатывает архив; «./a.txt» == «a.txt» — дубль", () => {
+    const dir = join(sb, "inbox");
+    mkdirSync(dir, { recursive: true });
+    // ./a.txt и a.txt распакуются в один файл — молчаливый overwrite недопустим
+    py(`import zipfile; zf=zipfile.ZipFile(${JSON.stringify(join(dir, "dupdot.zip"))},"w"); zf.writestr("./a.txt","1"); zf.writestr("a.txt","2"); zf.close()`);
+    const bad = run("intake.mjs", [join(dir, "dupdot.zip")], sb);
+    assert.equal(bad.status, 1);
+    assert.match(bad.err, /Дублирующиеся пути/);
+    assert.ok(!existsSync(join(sb, "working/dupdot/archive")), "после отказа рабочего каталога распаковки быть не должно");
+    // тот же id, хороший архив: повторный запуск обязан обработать, а не «пропустить»
+    makeZip(sb, "dupdot.zip", { "note.txt": "факт" });
+    const good = run("intake.mjs", [join(dir, "dupdot.zip")], sb);
+    assert.equal(good.status, 0, good.err);
+    assert.match(good.out, /Готово: tmp\/working\/dupdot/);
+    assert.doesNotMatch(good.out, /пропуск/);
+  });
+
+  test("state: смена telegram_url сбрасывает подтверждения; crosspromo дедуп по опубликованному снимку", () => {
+    run("intake.mjs", [makeZip(sb, "cp4.zip", { "n.txt": "x" })], sb);
+    const sp = join(sb, "working/cp4/state.json");
+    const st = JSON.parse(readFileSync(sp, "utf8"));
+    st.article_url = "https://kulikov.im/blog/cp4.html";
+    st.telegram_url = "https://t.me/homeinprod/5";
+    st.checklist = { article_url_verified: true, telegram_url_verified: true, links_checked: true };
+    writeFileSync(sp, JSON.stringify(st));
+    const r = run("state.mjs", ["cp4", "set", "telegram_url=https://t.me/homeinprod/9"], sb);
+    assert.equal(r.status, 0, r.err);
+    const after = JSON.parse(readFileSync(sp, "utf8"));
+    assert.equal(after.checklist.telegram_url_verified, false);
+    assert.equal(after.checklist.links_checked, false);
+    assert.equal(after.checklist.article_url_verified, true, "проверка статьи не зависит от поста");
+    // ссылка была в черновике, но в ОПУБЛИКОВАННОМ снимке её нет → предложение формируется
+    const dr = join(sb, "drafts/cp4");
+    mkdirSync(dr, { recursive: true });
+    writeFileSync(join(dr, "telegram.md"), "Черновок со ссылкой https://kulikov.im/blog/cp4.html внутри.");
+    writeFileSync(join(dr, "telegram-final.md"), "Опубликованный текст без ссылки.");
+    const cp = run("state.mjs", ["cp4", "crosspromo"], sb);
+    assert.equal(cp.status, 0, cp.err);
+    assert.doesNotMatch(cp.out, /уже есть/);
+    assert.ok(existsSync(join(dr, "crosspromo.md")), "предложение записано");
+  });
+
+  test("images: check --json реально печатает JSON (флаг, а не опция со значением)", () => {
+    const img = join(sb, "drafts/js/images");
+    [1, 2, 3].forEach((n) => {
+      const c = join(img, `concept-0${n}`);
+      mkdirSync(c, { recursive: true });
+      writeFileSync(join(c, "telegram.png"), pngHdr(1024, 1024));
+      writeFileSync(join(c, "blog-cover.webp"), webpHdr(1280, 720));
+      writeFileSync(join(c, "blog-preview.webp"), webpHdr(800, 450));
+      writeFileSync(join(c, "prompt.md"), "p");
+    });
+    const r = run("images.mjs", ["check", img, "--json"], sb);
+    assert.equal(r.status, 0, r.err);
+    const j = JSON.parse(r.out.trim());
+    assert.equal(j.ok, true);
+    assert.ok(j.concepts["concept-01"]);
+  });
+});

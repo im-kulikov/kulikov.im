@@ -109,6 +109,14 @@ try {
         console.error(`«${value}» не похож на пост Telegram (https://t.me/…). Не выдумывай URL.`);
         process.exit(1);
       }
+      // URL сменился — подтверждения прежнего URL больше не действительны: снимаем флаги,
+      // иначе crosspromo/verify примут новый URL как уже проверенный
+      if ((key === "article_url" || key === "telegram_url") && state[key] && state[key] !== value) {
+        if (key === "article_url") state.checklist.article_url_verified = false;
+        if (key === "telegram_url") state.checklist.telegram_url_verified = false;
+        state.checklist.links_checked = false;
+        console.log(`${id}: ${key} изменился — проверки article_url_verified/telegram_url_verified/links_checked сброшены.`);
+      }
       if (key.startsWith("images.")) state.images[key.slice(7)] = value;
       else if (key.startsWith("new_terms")) state.new_terms = value.split(",").map((s) => s.trim()).filter(Boolean);
       else state[key] = value;
@@ -135,9 +143,10 @@ try {
     const readIf = (f) => (existsSync(join(drafts, f)) ? readFileSync(join(drafts, f), "utf8") : "");
     const finalText = readIf("telegram-final.md"); // снимок фактически опубликованного поста (если вёлся)
     const draftText = readIf("telegram.md");
-    // идемпотентность: ссылка уже в тексте поста — дубль не предлагаем
-    if (`${finalText}\n${draftText}`.includes(state.article_url)) {
-      console.log(`${id}: ссылка на статью уже есть в тексте поста — дополнение не требуется (дубликаты не добавляем).`);
+    // идемпотентность: ревизуем ОПУБЛИКОВАННЫЙ снимок, если он есть (черновик мог содержать
+    // ссылку, которую в пост не вставили), иначе — черновик
+    if ((finalText || draftText).includes(state.article_url)) {
+      console.log(`${id}: ссылка на статью уже есть в тексте поста (${finalText ? "снимок telegram-final.md" : "черновик telegram.md"}) — дополнение не требуется (дубликаты не добавляем).`);
       process.exit(0);
     }
     // строка дополнения обязана нести ссылку: если в --text её нет — добавляем в конец

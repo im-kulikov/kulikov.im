@@ -16,7 +16,7 @@
 //   node .agents/skills/article-production/scripts/intake.mjs <tmp/inbox/archive.zip> [--force]
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, statfsSync, statSync, writeFileSync } from "node:fs";
 import { extname, join, relative, resolve } from "node:path";
 import { TMP, newState, validId, writeStateAtomic } from "./lib.mjs";
 
@@ -50,10 +50,12 @@ if (!validId(id)) {
 const work = join(TMP, "working", id);
 const sha = createHash("sha256").update(readFileSync(zip)).digest("hex");
 
-if (existsSync(work)) {
+// пропускаем только УСПЕШНО распакованный intake: отказы чистят archive/, и повтор запуска
+// должен обрабатывать архив, а не молча рапортовать успех по одному факту существования каталога
+if (existsSync(join(work, "archive"))) {
   const known = existsSync(join(work, "state.json")) ? JSON.parse(readFileSync(join(work, "state.json"), "utf8")) : null;
   if (!force) {
-    console.log(`tmp/working/${id} уже существует — пропуск (защита от повторной обработки).`);
+    console.log(`tmp/working/${id} уже распакован — пропуск (защита от повторной обработки).`);
     if (known) console.log(`Состояние: ${known.state}; архив sha ${known.archive_sha256?.slice(0, 12) ?? "?"}… (этот: ${sha.slice(0, 12)}…).`);
     process.exit(0);
   }
@@ -62,7 +64,6 @@ if (existsSync(work)) {
   }
   rmSync(join(work, "archive"), { recursive: true, force: true });
 }
-mkdirSync(join(work, "archive"), { recursive: true });
 
 // ---- 1. листинг до распаковки ----
 // `unzip -l` (классическая таблица «Length Date Time Name»; заголовки и итоги регуляркой отсекаются)
@@ -87,8 +88,8 @@ if (dangerous.length) {
   process.exit(1);
 }
 // нормализация: на кейс-инсенситивных ФС (APFS по умолчанию) A.txt и a.txt — один файл;
-// a/b и a//b unzip пишет в один путь — молчаливый overwrite недопустим и здесь
-const norm = (n) => n.toLowerCase().replace(/\/{2,}/g, "/").replace(/(?:^|\/)\.\//g, "/");
+// a/b и a//b, ровно как ./a.txt и a.txt, распакуются в один путь — молчаливый overwrite недопустим
+const norm = (n) => n.toLowerCase().replace(/\/{2,}/g, "/").replace(/^\.\//, "").replace(/\/\.\//g, "/");
 const names = entries.map((e) => norm(e.name));
 const dupes = names.filter((n, i) => names.indexOf(n) !== i);
 if (dupes.length) {
@@ -123,13 +124,19 @@ const nested = entries.filter((e) => ARCHIVE_EXT.has(extname(e.name).toLowerCase
 // symlink-записи отклоняем ДО распаковки: цель ссылки невидима в листинге, а unzip
 // создаёт ссылку раньше любого пост-клинапа — окно для записи «через» ссылку наружу.
 // Атрибуты берём из zipinfo (`unzip -Z`): первый токен строки — режим вида lrwxrwxrwx.
+// Если zipinfo сам не смог прочитать архив — отказ (fail closed): «не смогли проверить
+// на symlinks» не должно превращаться в «symlinks нет».
 const zinfo = spawnSync("unzip", ["-Z", zip], { encoding: "utf8" });
-const symEntries = zinfo.status === 0
-  ? zinfo.stdout
-      .split("\n")
-      .filter((l) => /^l[rwxst-]{9}(\s|$)/.test(l.trim()))
-      .map((l) => l.trim().split(/\s+/).at(-1))
-  : [];
+if (zinfo.status !== 0) {
+  rmSync(join(work, "archive"), { recursive: true, force: true });
+  console.error("unzip -Z не смог прочитать архив — проверка symlink-записей невозможна, распаковка отменена (fail closed):");
+  console.error(String(zinfo.stderr || zinfo.stdout || "").split("\n")[0]);
+  process.exit(1);
+}
+const symEntries = zinfo.stdout
+  .split("\n")
+  .filter((l) => /^l[rwxst-]{9}(\s|$)/.test(l.trim()))
+  .map((l) => l.trim().split(/\s+/).at(-1));
 if (symEntries.length) {
   rmSync(join(work, "archive"), { recursive: true, force: true });
   console.error("Архив содержит symlink-записи (распаковка создала бы ссылки до проверок) — отказ до распаковки:");
@@ -138,8 +145,21 @@ if (symEntries.length) {
 }
 
 // ---- 2. распаковка (только после проверок; ничего из archive/ не исполняем) ----
-const unzip = spawnSync("unzip", ["-o", zip, "-d", join(work, "archive")], { encoding: "utf8" });
+// лимит распакованного объёма можем проверить только ПОСЛЕ записи файлов — стримить лимиты
+// через unzip нельзя. Единственный превентивный контроль исчерпания диска: свободного места
+// в целевой ФС должно хватать на максимально допустимый объём (256 МиБ), иначе отказ до записи
+const target = join(work, "archive");
+const st = statfsSync(TMP);
+const freeBytes = Number(st.bavail) * Number(st.bsize); // statfs возвращает BigInt
+if (freeBytes < MAX_TOTAL) {
+  rmSync(target, { recursive: true, force: true });
+  console.error(`Свободно ${(freeBytes / 1024 / 1024).toFixed(0)} МБ < лимита распакованного объёма ${MAX_TOTAL / 1024 / 1024} МБ — отказ до распаковки.`);
+  process.exit(1);
+}
+mkdirSync(target, { recursive: true });
+const unzip = spawnSync("unzip", ["-o", zip, "-d", target], { encoding: "utf8" });
 if (unzip.status !== 0) {
+  rmSync(target, { recursive: true, force: true }); // частично распакованное не оставляем: повторный запуск должен обработать архив
   console.error("Распаковка не удалась:\n" + unzip.stderr);
   process.exit(1);
 }

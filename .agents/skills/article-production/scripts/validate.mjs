@@ -61,6 +61,11 @@ else {
     }
   }
 }
+// блок «--- … ---» есть, но YAML пуст или не отображение: молча пропустить проверки —
+// значит пропустить статью без title/slug/draft через гейт
+if (fm === null || typeof fm !== "object" || Array.isArray(fm)) {
+  add("article.md: front matter", false, "блок найден, но не является YAML-отображением (пустой или сломанный)");
+}
 if (fm) {
   const req = ["title", "description", "date", "tags", "slug", "draft", "image"];
   const miss = req.filter((k) => !(k in fm));
@@ -104,20 +109,32 @@ else {
 // ---- 4. термины: кандидаты должны быть разрешены (confirm или убрать из текста) ----
 const known = [];
 const candidates = new Set();
+let registryFailed = false;
 for (const [label, text] of [["article", body], ["telegram", existsSync(tgPath) ? readFileSync(tgPath, "utf8") : ""]]) {
   if (!text.trim()) continue;
-  const r = run("terms.mjs", ["check", "-"], text);
-  if (r.status !== 0) continue;
+  const r = run("terms.mjs", ["check", "-"], text); // текст — на stdin, не argv
+  if (r.status !== 0) {
+    registryFailed = true; // недоступный/битый реестр — не «ноль кандидатов», а упавшая проверка
+    continue;
+  }
   try {
     const j = JSON.parse(r.stdout);
     j.known?.forEach((k) => known.push(`${k.term}(${k.status})`));
     j.candidates?.forEach((c) => candidates.add(c));
-  } catch { /* регистр не прочитан — не блокируем */ }
+  } catch {
+    registryFailed = true;
+  }
 }
 add(
   "термины: кандидаты разрешены",
-  candidates.size === 0,
-  candidates.size ? `подтверди (terms.mjs confirm) или убери: ${[...candidates].join(", ")}` : known.length ? `известные: ${[...new Set(known)].join(", ")}` : "новых капс-терминов нет",
+  candidates.size === 0 && !registryFailed,
+  registryFailed
+    ? "реестр терминов недоступен или повреждён (terms.mjs check упал) — проверка не выполнена"
+    : candidates.size
+      ? `подтверди (terms.mjs confirm) или убери: ${[...candidates].join(", ")}`
+      : known.length
+        ? `известные: ${[...new Set(known)].join(", ")}`
+        : "новых капс-терминов нет",
 );
 
 // ---- 5. secrets: high блокируют ----
