@@ -20,7 +20,15 @@ function frontMatters() {
   for (const d of readdirSync(dir, { withFileTypes: true })) {
     if (!d.isDirectory()) continue;
     const f = ["index.md", "_index.md"].map((n) => join(dir, d.name, n)).find(existsSync);
-    if (f) out[d.name] = YAML.parse(readFileSync(f, "utf8").split(/^---\s*$/m)[1] ?? "") ?? {};
+    if (f) out[d.name] = YAML.parse(readFileSync(f, "utf8").split(/^---\s*$/m)[1]) ?? {};
+    // the blog is a RU-only section of nested article bundles: "blog/<slug>" pages, no EN twins
+    if (d.name === "blog" && existsSync(join(dir, d.name, "_index.md"))) {
+      for (const a of readdirSync(join(dir, d.name), { withFileTypes: true })) {
+        if (!a.isDirectory()) continue;
+        const af = join(dir, d.name, a.name, "index.md");
+        if (existsSync(af)) out[`blog/${a.name}`] = YAML.parse(readFileSync(af, "utf8").split(/^---\s*$/m)[1]) ?? {};
+      }
+    }
   }
   return out;
 }
@@ -34,14 +42,17 @@ export const MENU_ORDER = Object.entries(FM).filter(([, fm]) => fm.menus?.main).
 // English pages exist where the page has an index.en.md / _index.en.md next to the Russian one.
 export const EN_PAGES = Object.keys(FM).filter((p) => !FM[p].draft && ["index.en.md", "_index.en.md"].some((n) => existsSync(join(ROOT, "src/content", p === "index" ? "" : p, n)))).sort();
 export const enPath = (page) => (page === "index" ? "/en/" : `/en/${page}.html`);
-export const urlPath = (page) => (page === "index" ? "/" : `/${page}.html`);
+// the blog section renders at /blog/ (directory permalink), its articles at /blog/<slug>.html
+export const urlPath = (page) => (page === "index" ? "/" : page === "blog" ? "/blog/" : `/${page}.html`);
+// html file of a page inside the built site ("blog" lives at blog/index.html, not blog.html)
+export const htmlPath = (page) => (page === "blog" ? "blog/index" : page);
 export const PAGES = contentPages(); // indexable pages (without 404)
 export const ALL_PAGES = [...PAGES, "404"].sort();
 
 // ---- DOM (parse5) ----
 const cache = new Map();
 export function dom(page) {
-  if (!cache.has(page)) cache.set(page, parse(read(`${page}.html`)));
+  if (!cache.has(page)) cache.set(page, parse(read(`${htmlPath(page)}.html`)));
   return cache.get(page);
 }
 export function* walk(n) {

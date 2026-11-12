@@ -47,7 +47,7 @@ describe("fragments", () => {
         if (!frag) continue;
         const lp = path ? localPath(path, urlPath(p)) : urlPath(p);
         if (lp === null) continue;
-        const target = lp === "/" ? "index" : lp.replace(/^\//, "").replace(/\.html$/, "");
+        const target = lp === "/" ? "index" : lp.replace(/^\//, "").replace(/\/$/, "").replace(/\.html$/, "");
         const ids = new Set(all(dom(target), (x) => x.attrs?.some((a) => a.name === "id")).map((x) => attr(x, "id")));
         if (!ids.has(frag)) bad.push(`${p}: ${h}`);
       }

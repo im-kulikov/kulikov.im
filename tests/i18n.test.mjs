@@ -6,9 +6,14 @@ import { BASE, EN_PAGES, PAGES, all, attr, dom, enPath, exists, link, meta, read
 const en = (p) => dom(p === "index" ? "en/index" : `en/${p}`);
 const visibleText = (d) => [...walk(d)].filter((n) => n.nodeName === "#text" && !["script", "style"].includes(n.parentNode?.tagName)).map((n) => n.value).join(" ");
 
-test("every page has an English twin", () => {
-  assert.deepEqual(EN_PAGES, PAGES);
-  for (const p of PAGES) assert.equal(exists(`en/${p === "index" ? "index" : p}.html`), EN_PAGES.includes(p), p);
+test("every page has an English twin (the blog is Russian-only by design)", () => {
+  const translated = PAGES.filter((p) => p !== "blog" && !p.startsWith("blog/"));
+  assert.deepEqual(EN_PAGES, translated);
+  for (const p of translated) assert.equal(exists(`en/${p === "index" ? "index" : p}.html`), EN_PAGES.includes(p), p);
+  for (const p of PAGES.filter((p) => p === "blog" || p.startsWith("blog/"))) {
+    assert.ok(!EN_PAGES.includes(p), `${p}: the blog has no English versions`);
+    assert.equal(exists(`en/${p}.html`), false, p);
+  }
 });
 
 describe("every English page", () => {

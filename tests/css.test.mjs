@@ -29,9 +29,11 @@ test("no unprocessed Tailwind/PostCSS directives leaked into the output", () => 
 
 // Classes used in the HTML but without any rule in the CSS: only page/marker hooks are allowed.
 // A new entry here would be a class that silently does nothing (typo): review before adding.
+// cl/l/w/line are Chroma line-table markers, language-* mark the code language, post is the article wrapper hook.
 const NO_RULE = new Set([
-  "about", "default-page", "git-date", "git-hash", "git-info", "home", "home-page", "img", "open-source", "open-source-page",
-  "projects", "projects-page", "resume", "resume-page", "services", "services-page", "system",
+  "about", "cl", "default-page", "git-date", "git-hash", "git-info", "home", "home-page", "img", "l", "language-bash", "language-ini",
+  "language-text", "language-yaml", "line", "open-source", "open-source-page", "post", "projects", "projects-page",
+  "resume", "resume-page", "services", "services-page", "system", "w",
 ]);
 test("classes used in HTML have a CSS rule (except the allowlist)", () => {
   const defined = new Set([...css.matchAll(/\.((?:\\.|[\w-])+)/g)].map((m) => m[1].replace(/\\(.)/g, "$1")));
