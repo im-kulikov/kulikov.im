@@ -16,7 +16,10 @@
 - CTA в header — короткий: RU «Написать мне →», EN «Message me →»
   (параметр `navigation_button.label`). **Только в header**: все прочие
   Telegram-CTA используют полный `contact.label` («Написать в Telegram» /
-  «Message me on Telegram») и не сокращаются.
+  «Message me on Telegram») и не сокращаются. Исключение — кнопка статьи
+  «Обсудить в Telegram» (`blog/single.html`): это ссылка на пост канала
+  из front matter `telegram:`, а не контактное CTA — `contact.label` к ней
+  не применяется.
 - Проверяется машиночно: `tests/e2e/header.e2e.mjs` (14 ширин × RU/EN:
   одна строка ≥1024, бургер ниже, локализация обоих CTA, отсутствие
   переполнения).

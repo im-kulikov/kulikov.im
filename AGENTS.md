@@ -35,7 +35,8 @@
   бинарник — тогда тесты падают на проверке версии; используй локальный
   `HUGO_BIN=$PWD/tmp/bin/hugo` для `hugo`/`npm test`/preview.
 - Превью блога: `HUGO_BIN=$PWD/tmp/bin/hugo hugo server --buildDrafts`
-  (контент блога — черновики) → http://127.0.0.1:1313/blog/ .
+  (контент блога уже production; `--buildDrafts` — страховка на случай
+  черновиков) → http://127.0.0.1:1313/blog/ .
 - Dev-сервер перезаписывает `hugo_stats.json` классами черновиков; после
   остановки/правки классов регенерируй из production-сборки:
   `HUGO_ENVIRONMENT=production ./tmp/bin/hugo --gc --minify --baseURL https://kulikov.im/ --destination build/prod-stats`
