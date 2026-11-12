@@ -60,6 +60,13 @@ export function linkifyLine(line) {
     .replace(/(?<![\w>/.-])kulikov\.im\/[^\s<>]+/g, (u) => `<a href="https://${u}">${u}</a>`);
 }
 
+// Режим --link: вся строка — анкор ссылки, URL живёт только в href.
+// Видимая длина не зависит от длины URL (спасает посты у лимита caption).
+export function anchorLine(text, url) {
+  const href = /^https?:\/\//.test(url) ? url : `https://${url}`;
+  return `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>`;
+}
+
 // URL дополнения для проверки дубля: хвостовую пунктуацию (…URL). — в URL не входит,
 // с ней hasUrl не совпал бы и повторный apply вставил бы дубликат.
 export function lineUrlOf(line) {
@@ -73,10 +80,32 @@ export function splitParagraphs(captionHtml) {
 }
 
 // Сборка итогового HTML из абзацев + дополнения (пустой пост → только дополнение).
-export function buildEditedHtml(paragraphs, line) {
+// Дополнение ВСЕГДА последний элемент — таково требование к кросс-промо-ссылке.
+export function buildEditedHtml(paragraphs, line, link = null) {
   const body = paragraphs.filter((p) => visibleCaption(p, "html").trim() !== "").join("<br><br>");
-  const tail = linkifyLine(line);
+  const tail = link ? anchorLine(line, link) : linkifyLine(line);
   return body ? `${body}<br><br>${tail}` : tail;
+}
+
+// Поабзацный diff (LCS): « » контекст, «-» убрано, «+» добавлено — для preview.
+export function diffParagraphs(oldParas, newParas) {
+  const n = oldParas.length;
+  const m = newParas.length;
+  const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--)
+    for (let j = m - 1; j >= 0; j--)
+      dp[i][j] = oldParas[i] === newParas[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const out = [];
+  let i = 0;
+  let j = 0;
+  while (i < n && j < m) {
+    if (oldParas[i] === newParas[j]) out.push({ t: " ", s: oldParas[i++] }), j++;
+    else if (dp[i + 1][j] >= dp[i][j + 1]) out.push({ t: "-", s: oldParas[i++] });
+    else out.push({ t: "+", s: newParas[j++] });
+  }
+  while (i < n) out.push({ t: "-", s: oldParas[i++] });
+  while (j < m) out.push({ t: "+", s: newParas[j++] });
+  return out;
 }
 
 // Убирает абзац: последний (--drop-last-paragraph) или по видимому префиксу
@@ -105,9 +134,14 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   };
   const line = opt("line");
   const dropPrefix = opt("drop-paragraph");
-  const usage = "usage: tg-edit.mjs <preview|apply> <post-url> --line \"📖 Разбор — в блоге: <url>\" [--drop-paragraph \"видимый префикс\" | --drop-last-paragraph] [--yes]";
+  const linkUrl = opt("link");
+  const usage = "usage: tg-edit.mjs <preview|apply> <post-url> --line \"текст\" [--link <url>] [--drop-paragraph \"видимый префикс\" | --drop-last-paragraph] [--yes]\n  без --link: URL внутри строки станет ссылкой; с --link: ВСЯ строка — анкор, URL только в href (короче для лимита)";
   if ((cmd !== "preview" && cmd !== "apply") || !line || !postUrl) {
     console.error(usage);
+    process.exit(2);
+  }
+  if (linkUrl !== undefined && !/^(https?:\/\/|kulikov\.im\/)/.test(linkUrl)) {
+    console.error(`--link: «${linkUrl}» не похож на URL (https://… или kulikov.im/…).`);
     process.exit(2);
   }
   if (dropPrefix !== undefined && !dropPrefix.trim()) {
@@ -149,7 +183,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1);
   }
   const current = visibleCaption(toBotHtml(captionHtml), "html");
-  const lineUrl = lineUrlOf(line);
+  const lineUrl = linkUrl ?? lineUrlOf(line);
   // бесхемная форма — подстрока и schemed-, и голой ссылки в посте: дубликат ловится в обоих видах
   if (lineUrl && hasUrl(current, lineUrl.replace(/^https?:\/\//, ""))) {
     console.log(`${postUrl}: ссылка уже в посте — дополнение не нужно (идемпотентность).`);
@@ -168,26 +202,23 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       process.exit(1);
     }
   }
-  const editedHtml = buildEditedHtml(paragraphs, line);
+  const editedHtml = buildEditedHtml(paragraphs, line, linkUrl);
   const edited = visibleCaption(editedHtml, "html");
   const limit = media ? 1024 : 4096; // UTF-16, как считает Telegram
   const len = edited.length;
   console.log(`пост ${postUrl} (${media ? "медиа: правка caption" : "текст: правка text"})`);
   console.log(`длина: ${current.length} → ${len} UTF-16 (лимит ${limit}${len > limit ? " — ПРЕВЫШЕН" : ""})`);
-  if (dropped !== null) {
-    console.log("--- УБИРАЕТСЯ абзац (место под дополнение) ---");
-    console.log(visibleCaption(dropped, "html"));
-  }
-  console.log("--- сейчас (видимый текст) ---");
-  console.log(current);
-  console.log("--- станет (видимый текст) ---");
-  console.log(edited);
+  // diff по абзацам: владелец видит, что именно изменится, а не весь пост целиком
+  const oldVis = splitParagraphs(captionHtml).map((p) => visibleCaption(p, "html"));
+  const newVis = edited.split("\n\n");
+  for (const d of diffParagraphs(oldVis, newVis)) console.log(`${d.t} ${d.s.replace(/\n/g, "\n  ")}`);
+  console.log(`добавляемый HTML (последний элемент): ${buildEditedHtml([], line, linkUrl)}`);
   if (len > limit) {
-    console.error("лимит превышен: сократи дополнение (например, без «Подробный технический») или убери второстепенную фразу.");
+    console.error("лимит превышен: сократи строку-анкор или убери второстепенный абзац (--drop-paragraph).");
     process.exit(1);
   }
   if (cmd === "preview") {
-    console.log("preview: ничего не отправлено. Применение: tg-edit.mjs apply <post-url> --line \"…\" --yes");
+    console.log("preview: ничего не отправлено. Применение: tg-edit.mjs apply <post-url> --line \"…\" [--link <url>] --yes");
     process.exit(0);
   }
 

@@ -1061,6 +1061,17 @@ describe("tg-edit.mjs: правка опубликованных постов ч
     // пустой пост → только дополнение, без ведущего <br><br>
     assert.equal(tg.buildEditedHtml([], "строка"), "строка");
 
+    // режим --link: вся строка — анкор (длина не зависит от URL), URL только в href;
+    // экранирование & и < работает в анкоре и href; голый домен получает https://
+    assert.equal(tg.anchorLine("📖 Подробности — в блоге", "kulikov.im/blog/x.html"), '<a href="https://kulikov.im/blog/x.html">📖 Подробности — в блоге</a>');
+    assert.equal(tg.anchorLine("a<b & c", "https://kulikov.im/a?x=1&y=2"), '<a href="https://kulikov.im/a?x=1&amp;y=2">a&lt;b &amp; c</a>');
+    const anchored = tg.buildEditedHtml(["<b>текст</b>"], "📖 Разбор — в блоге", "https://kulikov.im/blog/x.html");
+    assert.ok(anchored.endsWith('<a href="https://kulikov.im/blog/x.html">📖 Разбор — в блоге</a>'), "ссылка — последний элемент");
+
+    // поабзацный diff: удаление в середине и дополнение в конце видны как -/+
+    const d = tg.diffParagraphs(["a", "b", "c"], ["a", "c", "новая"]);
+    assert.deepEqual(d.map((x) => x.t + x.s), [" a", "-b", " c", "+новая"]);
+
     // абзацы: разбиение, удаление последнего и по видимому префиксу, промах — ошибка
     const paras = tg.splitParagraphs(cap);
     assert.equal(paras.length, 2);
@@ -1097,6 +1108,13 @@ describe("tg-edit.mjs: правка опубликованных постов ч
     const emptyVal = run("tg-edit.mjs", ["preview", url, "--line", "тест", "--drop-paragraph", ""], sb);
     assert.equal(emptyVal.status, 2);
     assert.match(emptyVal.err, /префикс не может быть пустым/);
+    // --link: без значения и с мусором — отказ до сети
+    const noLink = run("tg-edit.mjs", ["preview", url, "--line", "тест", "--link"], sb);
+    assert.equal(noLink.status, 2);
+    assert.match(noLink.err, /--link.*требует значение/);
+    const badLink = run("tg-edit.mjs", ["preview", url, "--line", "тест", "--link", "не-url"], sb);
+    assert.equal(badLink.status, 2);
+    assert.match(badLink.err, /--link.*не похож на URL/);
   });
 });
 
