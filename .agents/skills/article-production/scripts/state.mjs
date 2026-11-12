@@ -227,6 +227,13 @@ try {
         process.exit(1);
       }
     };
+    // «Сначала сбросить, потом заработать»: провал перечеки не должен оставлять
+    // на диске флаги прежнего успеха — сбрасываем и персистим ДО любых запросов
+    const FLAG = { article_url: "article_url_verified", telegram_url: "telegram_url_verified" };
+    for (const key of targets) state.checklist[FLAG[key]] = false;
+    if (what === "links") state.checklist.links_checked = false;
+    writeStateAtomic(state);
+
     const bodies = {};
     for (const key of targets) bodies[key] = await fetchBody(key);
     if (what === "article") state.checklist.article_url_verified = true;
@@ -268,6 +275,15 @@ try {
     }
     if (!state.telegram_url) {
       console.error(`${id}: transition в published требует реальный telegram_url (state.mjs ${id} set telegram_url=https://t.me/…).`);
+      process.exit(1);
+    }
+  }
+  if (cmd2 === "done" && (TRANSITIONS[state.state] ?? []).includes("done")) {
+    // done = публикация завершена целиком: чек-лист обязан быть закрыт, иначе архив
+    // переедет в done/ с недоведёнными ссылками. Невалидные переходы отсекает transition()
+    const pending = CHECKLIST.filter((k) => !state.checklist?.[k]);
+    if (pending.length) {
+      console.error(`${id}: переход в done требует закрытый чек-лист публикации (не выполнено: ${pending.join(", ")}). См. references/workflow.md §3.`);
       process.exit(1);
     }
   }

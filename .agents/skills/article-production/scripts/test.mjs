@@ -211,6 +211,7 @@ describe("state transitions (state.mjs + lib.mjs)", () => {
     assert.match(noUrl.err, /требует реальный telegram_url/); // отсутствующий Telegram URL не выдумываем
     run("state.mjs", ["art", "set", "telegram_url=https://t.me/dompod/9"], sb);
     run("state.mjs", ["art", "step", "article_published"], sb);
+    for (const s of ["article_url_verified", "telegram_published", "telegram_url_verified", "site_redeployed", "links_checked"]) run("state.mjs", ["art", "step", s], sb);
     const pub = run("state.mjs", ["art", "published"], sb);
     assert.equal(pub.status, 0, pub.err);
     const done = run("state.mjs", ["art", "done"], sb);
@@ -902,5 +903,54 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     const j = JSON.parse(r.out.trim());
     assert.equal(j.ok, true);
     assert.ok(j.concepts["concept-01"]);
+  });
+});
+
+// =====================================================================
+describe("hardening: повторное ревью PR #31 (3 замечания)", () => {
+  const sb = box();
+
+  test("checkCrossLinks: префикс URL не принимается — /50 ≠ /5", async () => {
+    const { checkCrossLinks } = await import(join(SCRIPTS, "lib.mjs"));
+    const p = checkCrossLinks({
+      articleHtml: '<a href="https://t.me/homeinprod/50">тг</a>',
+      telegramHtml: "смотри https://kulikov.im/blog/x.html",
+      articleUrl: "https://kulikov.im/blog/x.html",
+      telegramUrl: "https://t.me/homeinprod/5",
+    });
+    assert.equal(p.length, 1);
+    assert.match(p[0], /нет ссылки на Telegram-пост/);
+    assert.equal(
+      checkCrossLinks({ articleHtml: 'href="https://t.me/homeinprod/5"', telegramHtml: "…https://kulikov.im/blog/x.html…", articleUrl: "https://kulikov.im/blog/x.html", telegramUrl: "https://t.me/homeinprod/5" }).length,
+      0,
+    );
+  });
+
+  test("verify: провал перечеки сбрасывает и персистит прежние флаги успеха", () => {
+    run("intake.mjs", [makeZip(sb, "cp6.zip", { "n.txt": "x" })], sb);
+    const sp = join(sb, "working/cp6/state.json");
+    const st = JSON.parse(readFileSync(sp, "utf8"));
+    st.article_url = "http://127.0.0.1:9/blog/x.html"; // закрытый порт
+    st.checklist.article_url_verified = true; // прошлый успех
+    writeFileSync(sp, JSON.stringify(st));
+    const r = run("state.mjs", ["cp6", "verify", "article"], sb);
+    assert.equal(r.status, 1);
+    const after = JSON.parse(readFileSync(sp, "utf8"));
+    assert.equal(after.checklist.article_url_verified, false, "флаг обязан сняться и сохраниться");
+  });
+
+  test("done заблокирован при незакрытом чек-листе; архив остаётся в inbox, после закрытия — проходит", () => {
+    run("intake.mjs", [makeZip(sb, "cp7.zip", { "n.txt": "x" })], sb);
+    for (const to of ["processing", "draft", "review", "approved", "publishing"]) run("state.mjs", ["cp7", to], sb);
+    run("state.mjs", ["cp7", "set", "telegram_url=https://t.me/homeinprod/7"], sb);
+    run("state.mjs", ["cp7", "step", "article_published"], sb);
+    assert.equal(run("state.mjs", ["cp7", "published"], sb).status, 0);
+    const done = run("state.mjs", ["cp7", "done"], sb);
+    assert.equal(done.status, 1);
+    assert.match(done.err, /чек-лист/);
+    assert.ok(existsSync(join(sb, "inbox/cp7.zip")), "архив не должен переезжать в done/ с незавершённой публикацией");
+    for (const s of ["article_url_verified", "telegram_published", "telegram_url_verified", "site_redeployed", "links_checked"]) run("state.mjs", ["cp7", "step", s], sb);
+    assert.equal(run("state.mjs", ["cp7", "done"], sb).status, 0);
+    assert.ok(!existsSync(join(sb, "inbox/cp7.zip")));
   });
 });

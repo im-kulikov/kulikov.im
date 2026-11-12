@@ -184,7 +184,7 @@ Brief, статья, Telegram-подпись с фактической длин�
 | `state.mjs <id> set key=value` | slug / article_url / telegram_url / images.* / new_terms |
 | `state.mjs <id> verify <article\|telegram\|links>` | HTTP-проверка реальных URL; `links` — двусторонняя: статья ⇄ пост |
 | `state.mjs <id> crosspromo [--text "…"]` | предложение «📖 Подробный разбор — в блоге» для поста (после `verify article`): длина UTF-16, без дублей |
-| `test.mjs` | тесты всего workflow (59 шт; песочницы EDITORIAL_TMP, данные не трогаются) |
+| `test.mjs` | тесты всего workflow (62 шт; песочницы EDITORIAL_TMP, данные не трогаются) |
 
 Хрупкие места скриптов (пойманы ревью PR #31, покрыты тестами — легко сломать
 при правках, тесты обязаны остаться красными на регрессию):

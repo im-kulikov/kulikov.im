@@ -124,16 +124,24 @@ export function visibleCaption(raw, format = "html") {
 export const crossPromoLine = (articleUrl) => `📖 Подробный разбор — в блоге: ${articleUrl}`;
 export const crossPromoAnchor = "📖 Подробный разбор — в блоге";
 
+// Точное совпадение ссылки: substring-проверка принимала пост /50 за /5 (префикс).
+// URL обязан встретиться целиком — сразу за ним не может стоять символ,
+// продолжающий URL (буква/цифра/подчёркивание/дефис).
+export const hasUrl = (haystack, url) => {
+  if (!haystack || !url) return false;
+  return new RegExp(`${url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`).test(haystack);
+};
+
 // Двусторонняя проверка ссылок по телам уже загруженных страниц:
 // статья содержит ссылку на пост («Обсудить в Telegram»), пост — ссылку на статью.
 // Пустое тело = ссылки нет (HTTP 200 с пустым ответом — не доказательство).
 // Возвращает список человекочитаемых проблем (пусто = всё на месте).
 export function checkCrossLinks({ articleHtml, telegramHtml, articleUrl, telegramUrl }) {
   const problems = [];
-  if (telegramUrl && (!articleHtml || !articleHtml.includes(telegramUrl))) {
+  if (telegramUrl && !hasUrl(articleHtml, telegramUrl)) {
     problems.push(`на странице статьи нет ссылки на Telegram-пост (${telegramUrl}); обнови front matter telegram: и передеплой`);
   }
-  if (articleUrl && (!telegramHtml || !telegramHtml.includes(articleUrl))) {
+  if (articleUrl && !hasUrl(telegramHtml, articleUrl)) {
     problems.push(`в Telegram-посте нет ссылки на статью (${articleUrl}); примени дополнение из crosspromo (с approval владельца)`);
   }
   return problems;
