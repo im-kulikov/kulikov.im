@@ -1,7 +1,8 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, statSync } from "node:fs";
-import { ALL_PAGES, SITE, all, attr, classes, dom, link, read } from "./helpers/site.mjs";
+import { existsSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { ALL_PAGES, ROOT, SITE, all, attr, classes, dom, link, read } from "./helpers/site.mjs";
 
 const files = readdirSync(`${SITE}/css`);
 const css = files.map((f) => read(`css/${f}`)).join("\n");
@@ -29,18 +30,26 @@ test("no unprocessed Tailwind/PostCSS directives leaked into the output", () => 
 
 // Classes used in the HTML but without any rule in the CSS: only page/marker hooks are allowed.
 // A new entry here would be a class that silently does nothing (typo): review before adding.
-const NO_RULE = new Set([
-  "about", "default-page", "git-date", "git-hash", "git-info", "home", "home-page", "img", "open-source", "open-source-page",
-  "projects", "projects-page", "resume", "resume-page", "services", "services-page", "system",
+// SITE_HOOKS are always present; BLOG_HOOKS (Chroma line markers, the article wrapper) appear
+// with published articles and are exempt from the stale check when the blog content is absent.
+// language-* (code language markers) are exempt by pattern — the set is open-ended.
+const SITE_HOOKS = new Set([
+  "about", "default-page", "git-date", "git-hash", "git-info", "home", "home-page", "img",
+  "open-source", "open-source-page", "projects", "projects-page",
+  "resume", "resume-page", "services", "services-page", "system",
 ]);
+const hasBlog = existsSync(join(ROOT, "src/content/blog"));
+const BLOG_HOOKS = hasBlog ? new Set(["cl", "l", "line", "post", "w"]) : new Set();
+const NO_RULE = new Set([...SITE_HOOKS, ...BLOG_HOOKS]);
 test("classes used in HTML have a CSS rule (except the allowlist)", () => {
   const defined = new Set([...css.matchAll(/\.((?:\\.|[\w-])+)/g)].map((m) => m[1].replace(/\\(.)/g, "$1")));
   const used = new Set(ALL_PAGES.flatMap((p) => all(dom(p), (n) => attr(n, "class")).flatMap(classes)));
-  const missing = [...used].filter((c) => !defined.has(c) && !NO_RULE.has(c)).sort();
+  const missing = [...used].filter((c) => !defined.has(c) && !NO_RULE.has(c) && !/^language-[\w-]+$/.test(c)).sort();
   assert.deepEqual(missing, []);
-  // and the allowlist must not rot: every entry is still used and still without a rule
-  const stale = [...NO_RULE].filter((c) => !used.has(c) || defined.has(c)).sort();
-  assert.deepEqual(stale, [], "remove these from NO_RULE");
+  // and the allowlist must not rot: every present hook is still used and still without a rule
+  // (blog hooks only when the blog content exists — without articles they are legitimately absent)
+  const stale = [...SITE_HOOKS, ...(hasBlog ? BLOG_HOOKS : [])].filter((c) => !used.has(c) || defined.has(c)).sort();
+  assert.deepEqual(stale, [], "remove these unused or now-ruled hooks");
 });
 
 describe("accessibility and print", () => {

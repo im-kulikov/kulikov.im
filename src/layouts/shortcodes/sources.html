@@ -1,0 +1,17 @@
+{{- /* Shortcode "sources": the article's Sources section (external citations).
+       Reader-visible in the page HTML, but marked data-search-exclude — the contract
+       the SearchIndex template (layouts/index.searchindex.json) uses to strip this
+       section from the searchable text. External sources stay readable in the article
+       and never become index entries of their own.
+       Usage (title is optional, defaults to «Источники»):
+         {{< sources title="Источники и связанные материалы" >}}
+         - [Title](https://example.com)
+         {{< /sources >}} */ -}}
+<section class="post-sources" data-search-exclude>
+    <h2>{{ .Get "title" | default "Источники" }}</h2>
+    {{- .Inner | .Page.RenderString (dict "display" "block") }}
+</section>
+{{- /* sentinel closing the excluded block: the search-index template strips up to THIS element,
+       so a nested raw <section> inside the sources list cannot end the strip early.
+       NB: HTML-комментарии goldmark из .Content вырезает — поэтому маркер — скрытый элемент */ -}}
+<span hidden data-search-exclude-end></span>

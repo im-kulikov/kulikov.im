@@ -8,7 +8,7 @@ import { createServer } from "node:http";
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
-import { ALIASES, ALL_PAGES, EN_PAGES, PAGES, SITE, enPath, urlPath } from "../helpers/site.mjs";
+import { ALIASES, ALL_PAGES, EN_PAGES, MENU_ORDER, PAGES, SITE, enPath, urlPath } from "../helpers/site.mjs";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".xml": "application/xml", ".txt": "text/plain", ".webmanifest": "application/manifest+json" };
 let server, origin, browser;
@@ -110,22 +110,25 @@ describe("layout", () => {
     }
   });
 
-  test("the five menu items are numbered by a CSS counter and the contact button is not", async () => {
+  test("the menu items are numbered by a CSS counter and the contact button is not", async () => {
     const { page, context } = await open("index");
     // getComputedStyle does not resolve counter(), so check the declaration and render the number
     const marks = await page.locator("#nav-menu > li").evaluateAll((lis) =>
       lis.map((li) => getComputedStyle(li.firstElementChild, "::before").content));
     const shot = await page.locator("#nav-menu > li").first().screenshot();
     await context.close();
-    assert.deepEqual(marks.slice(0, 5).map((m) => m.startsWith("counter(nav")), [true, true, true, true, true]);
-    assert.ok(!marks[5].startsWith("counter("), `contact button must not be numbered: ${marks[5]}`);
+    // counters come first (menu items), the trailing non-menu entries (contact CTA, language switch) are not numbered
+    const numbered = marks.filter((m) => m.startsWith("counter(nav")).length;
+    assert.equal(numbered, MENU_ORDER.length, "numbered items == pages with menus.main");
+    assert.deepEqual(marks.slice(numbered).map((m) => m.startsWith("counter(")), marks.slice(numbered).map(() => false));
     assert.ok(shot.length > 500);
   });
 
   test("every indexable page is reachable from the menu on desktop", async () => {
     const { page, context } = await open("index");
     const hrefs = await page.locator("header nav a").evaluateAll((a) => a.map((x) => x.getAttribute("href")));
-    for (const p of PAGES.filter((x) => x !== "index")) assert.ok(hrefs.includes(urlPath(p)), p);
+    // top-level sections live in the menu; blog articles are reachable through the /blog/ section page
+    for (const p of PAGES.filter((x) => x !== "index" && !x.startsWith("blog/"))) assert.ok(hrefs.includes(urlPath(p)), p);
     await context.close();
   });
 });

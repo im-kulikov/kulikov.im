@@ -2,3 +2,6 @@
 build
 node_modules
 .hugo_build.lock
+
+# local editorial workspace: per-publication materials only (inbox/working/drafts/done + local Hugo bin) — never published
+/tmp/

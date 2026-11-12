@@ -1,9 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
-import { ALIASES, ALL_PAGES, BASE, EN_PAGES, PAGES, ROOT, SITE, all, classes, dom, enPath, exists, read, text, urlPath } from "./helpers/site.mjs";
+import { ALIASES, ALL_PAGES, BASE, EN_PAGES, PAGES, ROOT, SITE, all, classes, dom, enPath, exists, htmlPath, read, text, urlPath } from "./helpers/site.mjs";
 import { BUILD_LOG, STATS_COPY } from "./helpers/paths.mjs";
 import { BUILD_SHA, HUGO } from "./helpers/hugo.mjs";
 
@@ -13,8 +13,20 @@ test("build log has no warnings, errors or deprecations", () => {
 });
 
 test("built pages equal the pages derived from src/content (+404, +alias stubs); drafts are not built", () => {
-  const built = readdirSync(SITE).filter((f) => f.endsWith(".html")).map((f) => f.replace(/\.html$/, "")).sort();
-  assert.deepEqual(built, [...ALL_PAGES, ...ALIASES.map((a) => a.from)].sort());
+  // recursive walk: the blog section renders at blog/index.html and articles at blog/<slug>.html;
+  // blog/page/<n> is Hugo pagination (count depends on the paginate setting, not on content)
+  const walk = (d, base = d) =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? walk(join(d, e.name), base) : e.name.endsWith(".html") ? [relative(base, join(d, e.name)).replace(/\.html$/, "")] : [],
+    );
+  const built = walk(SITE).filter((p) => !/^blog\/page\//.test(p)).sort();
+  const expected = [
+    ...ALL_PAGES.map(htmlPath),
+    ...ALIASES.map((a) => a.from),
+    ...EN_PAGES.map((p) => `en/${p === "index" ? "index" : p}`),
+    "en/404",
+  ].sort();
+  assert.deepEqual(built, expected);
 });
 
 test("renamed pages keep their old URL: alias stubs redirect and point canonical to the new page", () => {

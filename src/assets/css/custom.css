@@ -54,8 +54,22 @@
     .navbar {
         @apply relative flex flex-wrap items-center justify-between gap-y-2;
     }
+    /* the row (logo + menu + CTA + lang) lives from lg (1024): compact there, roomy from xl (1280).
+       RU with Блог needs ~830px at lg styles — the lg container offers 984px */
+    @media (min-width: 1024px) {
+        .navbar {
+            @apply flex-nowrap;
+        }
+    }
     .navbar-brand {
         @apply block rounded-lg;
+    }
+    @media (min-width: 1024px) and (max-width: 1279px) {
+        /* slight logo shrink on the compact row only; the SVG keeps its 160x32 attributes */
+        .navbar-brand svg {
+            width: 144px;
+            height: auto;
+        }
     }
 
     .nav-toggle {
@@ -78,11 +92,15 @@
     }
 
     .navbar-nav {
-        @apply flex w-full flex-col items-stretch gap-1 pb-3 pt-2 lg:w-auto lg:flex-row lg:items-center lg:gap-1 lg:pb-0 lg:pt-0 xl:gap-3;
+        @apply flex w-full flex-col items-stretch gap-1 pb-3 pt-2 lg:w-auto lg:flex-row lg:items-center lg:gap-1 lg:pb-0 lg:pt-0 xl:gap-2;
     }
     /* with JS the menu collapses on small screens; without JS it stays visible */
     .js .navbar-nav {
         @apply hidden lg:flex;
+    }
+    /* compact row on lg only: tighter CTA padding (the header CTA is scoped here) */
+    .navbar-nav .btn-sm {
+        @apply lg:px-3 xl:px-4;
     }
     .js .navbar-nav[data-open] {
         @apply flex;
@@ -96,7 +114,7 @@
         counter-increment: nav;
     }
     .nav-link {
-        @apply relative flex items-baseline gap-2 rounded-lg px-3 py-2.5 text-[0.95rem] font-medium transition-colors lg:px-2.5 xl:px-3;
+        @apply relative flex items-baseline gap-2 whitespace-nowrap rounded-lg px-3 py-2.5 font-medium transition-colors lg:gap-1.5 lg:px-1.5 lg:text-[0.9rem] xl:gap-2 xl:px-2.5 xl:text-[0.95rem];
         color: color-mix(in srgb, var(--ink) 72%, transparent);
     }
     .nav-link::before {
@@ -449,7 +467,7 @@
         border-color: color-mix(in srgb, var(--ink) 45%, var(--surface));
     }
     .lang-switch a {
-        @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 no-underline transition-colors;
+        @apply inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 no-underline transition-colors lg:px-2.5 xl:px-3;
         color: color-mix(in srgb, var(--ink) 72%, transparent);
     }
     .lang-switch a:hover {
@@ -484,5 +502,300 @@
     }
     .logo-accent {
         fill: var(--accent);
+    }
+}
+
+@layer components {
+    /* ---------- blog (Russian-only section; tokens and components as everywhere else) ---------- */
+    .post-list {
+        @apply grid grid-cols-1 gap-6 md:grid-cols-2;
+    }
+    .post-card {
+        @apply gap-0 p-0;
+    }
+    .post-card-link {
+        @apply flex h-full flex-col;
+    }
+    .post-card-media img {
+        @apply aspect-video w-full rounded-t-2xl object-cover;
+        border-bottom: 1px solid var(--line);
+    }
+    .post-card-body {
+        @apply flex flex-1 flex-col gap-2 p-6;
+    }
+    .post-card-title {
+        @apply text-[1.15rem] leading-snug;
+        transition: color 0.2s;
+    }
+    .post-card-link:hover .post-card-title {
+        color: var(--accent);
+    }
+    .post-card-excerpt {
+        @apply text-[0.95rem] leading-relaxed;
+        color: color-mix(in srgb, var(--ink) 72%, transparent);
+    }
+    .post-meta {
+        @apply flex flex-wrap items-center gap-x-4 gap-y-2 text-sm;
+        color: color-mix(in srgb, var(--ink) 62%, transparent);
+    }
+    .post-tag-list {
+        @apply flex flex-wrap gap-2;
+    }
+    /* chips of the card footer sit outside the link (tags are not links: taxonomy pages are a later decision) */
+    .post-card .post-tag-list {
+        @apply px-6 pb-6 pt-0;
+    }
+    .blog-hero {
+        @apply pt-10 pb-8 lg:pt-14 lg:pb-10;
+    }
+    .blog-hero-art {
+        /* compact brand mark beside the text; the source WebP is sized for 2x (560px) */
+        max-width: 280px;
+    }
+
+    .post-header {
+        @apply pt-12 pb-8 lg:pt-16;
+    }
+    /* one wrap for header, cover and body: follows the site container width
+       (.container: full width with px-5, capped at 1240px from xl) — the article
+       page shares the same horizontal grid as every other section; the readable
+       column and the wide area are separated inside .post-body, not here */
+    .post-wrap {
+        @apply w-full;
+    }
+    .post-cover {
+        @apply w-full;
+    }
+    .post-cover img {
+        @apply w-full rounded-2xl;
+        border: 1px solid var(--line);
+        box-shadow: 0 24px 48px -24px rgb(var(--shadow) / 0.35);
+    }
+    /* left-aligned readable column (~820px) + wide area up to the wrap edges:
+       text, headings and lists share one left edge; code, tables and media span the wrap */
+    .post-body {
+        display: grid;
+        grid-template-columns: min(820px, 100%) minmax(0, 1fr);
+    }
+    .post-body > * {
+        grid-column: 1;
+        min-width: 0;
+    }
+    .post-body > .highlight,
+    .post-body > pre,
+    .post-body > table,
+    .post-body > img,
+    .post-body > figure,
+    .post-body > hr {
+        grid-column: 1 / -1;
+    }
+    .post-body p {
+        @apply my-5;
+    }
+    .post-body h2 {
+        @apply mt-12 mb-4;
+        font-size: 1.6rem;
+    }
+    .post-body h3 {
+        @apply mt-10 mb-3;
+        font-size: 1.3rem;
+    }
+    .post-body ul,
+    .post-body ol {
+        @apply my-5 pl-6;
+    }
+    .post-body ul {
+        @apply list-disc;
+    }
+    .post-body ol {
+        @apply list-decimal;
+    }
+    .post-body li {
+        @apply my-1.5;
+    }
+    .post-body li::marker {
+        color: var(--accent);
+    }
+    .post-body a {
+        @apply rounded-sm underline underline-offset-4;
+        color: var(--accent);
+    }
+    .post-body a:hover {
+        @apply decoration-2;
+    }
+    .post-body blockquote {
+        @apply my-6 rounded-xl py-1 pl-5 pr-4;
+        border-left: 3px solid var(--accent);
+        background: color-mix(in srgb, var(--accent-soft) 55%, transparent);
+        color: color-mix(in srgb, var(--ink) 80%, transparent);
+    }
+    .post-body img {
+        @apply my-6 h-auto max-w-full rounded-xl;
+        border: 1px solid var(--line);
+    }
+    .post-body figcaption {
+        @apply mt-2 text-center text-sm;
+        color: color-mix(in srgb, var(--ink) 60%, transparent);
+    }
+    .post-body hr {
+        @apply my-10;
+        border: none;
+        border-top: 1px solid var(--line);
+    }
+    .post-body code {
+        @apply rounded-md px-1.5 py-0.5 font-mono text-[0.86em];
+        background: var(--surface-sunken);
+        border: 1px solid var(--line);
+    }
+    .post-body pre {
+        @apply my-6 overflow-x-auto rounded-xl p-4 font-mono text-[0.86rem] leading-relaxed;
+        background: var(--surface-sunken);
+        border: 1px solid var(--line);
+        tab-size: 4;
+    }
+    .post-body pre code {
+        @apply border-none bg-transparent p-0 text-inherit;
+    }
+    .post-body table {
+        @apply my-6 block w-full overflow-x-auto text-left text-[0.95rem];
+        border-collapse: collapse;
+    }
+    .post-body th,
+    .post-body td {
+        @apply border-b px-3 py-2.5;
+        border-color: var(--line);
+    }
+    .post-body th {
+        @apply font-semibold;
+        color: var(--ink);
+        border-bottom-width: 2px;
+    }
+    .post-body tbody tr:last-child td {
+        border-bottom: none;
+    }
+    /* demo notice for mock articles (front matter `mock: true`); removed with the flag */
+    .post-mock-note {
+        @apply my-6 rounded-xl px-4 py-3 text-sm;
+        border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line));
+        color: color-mix(in srgb, var(--ink) 72%, transparent);
+    }
+    /* sources: reader-visible citations (shortcode "sources"), excluded from search
+       via the data-search-exclude marker — see layouts/index.searchindex.json */
+    .post-sources {
+        @apply my-10 rounded-xl px-5 py-4 text-[0.95rem];
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--surface-sunken) 55%, transparent);
+    }
+    .post-sources h2 {
+        @apply mt-2 mb-3;
+        font-size: 1.1rem;
+    }
+    .post-sources ul {
+        @apply my-0 pl-5;
+    }
+    .post-nav {
+        @apply grid gap-4 sm:grid-cols-2;
+    }
+    .post-nav-link {
+        @apply flex h-full flex-col gap-1 p-5;
+    }
+
+    /* ---------- code highlighting (Chroma classes; palette follows the site tokens) ---------- */
+    .chroma .k,
+    .chroma .kc,
+    .chroma .kd,
+    .chroma .kn,
+    .chroma .kp,
+    .chroma .kr,
+    .chroma .kt,
+    .chroma .ow {
+        color: var(--accent);
+    }
+    .chroma .s,
+    .chroma .sa,
+    .chroma .sb,
+    .chroma .sc,
+    .chroma .dl,
+    .chroma .s1,
+    .chroma .s2,
+    .chroma .se,
+    .chroma .sh,
+    .chroma .si,
+    .chroma .sx,
+    .chroma .sr,
+    .chroma .ss {
+        color: #0e7490;
+    }
+    .chroma .c,
+    .chroma .c1,
+    .chroma .cm,
+    .chroma .cs,
+    .chroma .ch {
+        font-style: italic;
+        /* 68% ink keeps the muted look and clears 4.5:1 contrast in light mode (52% measured 3.8:1) */
+        color: color-mix(in srgb, var(--ink) 68%, transparent);
+    }
+    .chroma .m,
+    .chroma .mb,
+    .chroma .mh,
+    .chroma .mi,
+    .chroma .mo,
+    .chroma .mx {
+        color: #b45309;
+    }
+    .chroma .na,
+    .chroma .nb,
+    .chroma .nc,
+    .chroma .nd,
+    .chroma .ne,
+    .chroma .nf,
+    .chroma .ni,
+    .chroma .nl,
+    .chroma .no,
+    .chroma .nt,
+    .chroma .nv,
+    .chroma .nx {
+        color: color-mix(in srgb, var(--ink) 88%, var(--accent));
+    }
+    .chroma .o,
+    .chroma .p {
+        color: color-mix(in srgb, var(--ink) 65%, transparent);
+    }
+    .chroma .gh,
+    .chroma .gu,
+    .chroma .ges {
+        font-weight: 600;
+    }
+    @media (prefers-color-scheme: dark) {
+        .chroma .s,
+        .chroma .sa,
+        .chroma .sb,
+        .chroma .sc,
+        .chroma .dl,
+        .chroma .s1,
+        .chroma .s2,
+        .chroma .se,
+        .chroma .sh,
+        .chroma .si,
+        .chroma .sx,
+        .chroma .sr,
+        .chroma .ss {
+            color: #5eead4;
+        }
+        .chroma .m,
+        .chroma .mb,
+        .chroma .mh,
+        .chroma .mi,
+        .chroma .mo,
+        .chroma .mx {
+            color: #fbbf24;
+        }
+    }
+
+    @media print {
+        .post-body pre,
+        .post-body table {
+            overflow: visible;
+        }
     }
 }

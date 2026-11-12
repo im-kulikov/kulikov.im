@@ -1,0 +1,15 @@
+{{- /* Cover image from the article page bundle (cover.*). Args: page, width (px), quality (1-100, default 65), preload (bool), alt.
+       alt chain: caller's alt → front matter image_alt → page title. */ -}}
+{{- $cover := .page.Resources.GetMatch "cover.*" -}}
+{{- if not $cover -}}
+    {{- errorf "blog/cover: no cover.* resource in %q" .page.File.Path -}}
+{{- end -}}
+{{- $img := $cover.Resize (printf "%dx q%d webp" (int .width) (int (.quality | default 65))) -}}
+<img
+        src="{{ $img.RelPermalink }}"
+        alt="{{ .alt | default .page.Params.image_alt | default .page.Title }}"
+        class="{{ .class }} img"
+        width="{{ $img.Width }}"
+        height="{{ $img.Height }}"
+        decoding="auto"
+        {{- if .preload }} fetchpriority="high"{{ else }} loading="lazy"{{ end }} />

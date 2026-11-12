@@ -10,6 +10,8 @@ if (toggle && menu) {
   const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
 
   toggle.addEventListener("click", () => set(!isOpen()));
+  // close after following a link (and when the desktop row takes over)
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && isOpen()) {
       set(false);
