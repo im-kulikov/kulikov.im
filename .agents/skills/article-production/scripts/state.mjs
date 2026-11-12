@@ -23,7 +23,7 @@
 // пишет снимок metadata.json (canonical state.json остаётся в working/).
 import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CHECKLIST, TMP, TRANSITIONS, checkCrossLinks, crossPromoAnchor, crossPromoLine, readState, transition, utf16Length, visibleCaption, writeStateAtomic } from "./lib.mjs";
+import { CHECKLIST, TMP, TRANSITIONS, checkCrossLinks, crossPromoAnchor, crossPromoLine, hasUrl, readState, transition, utf16Length, visibleCaption, writeStateAtomic } from "./lib.mjs";
 
 const [, , id, cmd2, ...rest] = process.argv;
 const note = rest.includes("--note") ? rest[rest.indexOf("--note") + 1] : undefined;
@@ -144,8 +144,9 @@ try {
     const finalText = readIf("telegram-final.md"); // снимок фактически опубликованного поста (если вёлся)
     const draftText = readIf("telegram.md");
     // идемпотентность: ревизуем ОПУБЛИКОВАННЫЙ снимок, если он есть (черновик мог содержать
-    // ссылку, которую в пост не вставили), иначе — черновик
-    if ((finalText || draftText).includes(state.article_url)) {
+    // ссылку, которую в пост не вставили), иначе — черновик; совпадение ссылки точное
+    // (hasUrl), чтобы текст с «…/x.html-черновик» не погасил предложение для «/x.html»
+    if (hasUrl(finalText || draftText, state.article_url)) {
       console.log(`${id}: ссылка на статью уже есть в тексте поста (${finalText ? "снимок telegram-final.md" : "черновик telegram.md"}) — дополнение не требуется (дубликаты не добавляем).`);
       process.exit(0);
     }

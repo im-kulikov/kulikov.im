@@ -886,6 +886,11 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     assert.equal(cp.status, 0, cp.err);
     assert.doesNotMatch(cp.out, /уже есть/);
     assert.ok(existsSync(join(dr, "crosspromo.md")), "предложение записано");
+    // и наоборот: снимок содержит ссылку-ПРЕФИКС другого адреса (…/cp4.html-v2) — не гасит предложение
+    writeFileSync(join(dr, "telegram-final.md"), "В тексте https://kulikov.im/blog/cp4.html-v2 — другой адрес.");
+    const cp2 = run("state.mjs", ["cp4", "crosspromo"], sb);
+    assert.equal(cp2.status, 0, cp2.err);
+    assert.doesNotMatch(cp2.out, /уже есть/);
   });
 
   test("images: check --json реально печатает JSON (флаг, а не опция со значением)", () => {
@@ -911,7 +916,7 @@ describe("hardening: повторное ревью PR #31 (3 замечания)
   const sb = box();
 
   test("checkCrossLinks: префикс URL не принимается — /50 ≠ /5", async () => {
-    const { checkCrossLinks } = await import(join(SCRIPTS, "lib.mjs"));
+    const { checkCrossLinks, hasUrl } = await import(join(SCRIPTS, "lib.mjs"));
     const p = checkCrossLinks({
       articleHtml: '<a href="https://t.me/homeinprod/50">тг</a>',
       telegramHtml: "смотри https://kulikov.im/blog/x.html",
@@ -924,6 +929,12 @@ describe("hardening: повторное ревью PR #31 (3 замечания)
       checkCrossLinks({ articleHtml: 'href="https://t.me/homeinprod/5"', telegramHtml: "…https://kulikov.im/blog/x.html…", articleUrl: "https://kulikov.im/blog/x.html", telegramUrl: "https://t.me/homeinprod/5" }).length,
       0,
     );
+    // продолжение пути меняет адрес — отвергаем; query/фрагмент — тот же адрес, принимаем
+    assert.equal(hasUrl('<a href="https://kulikov.im/blog/x.html/extra">', "https://kulikov.im/blog/x.html"), false);
+    assert.equal(hasUrl("ссылка https://kulikov.im/blog/x.html/ в тексте", "https://kulikov.im/blog/x.html"), false);
+    assert.equal(hasUrl('<a href="https://t.me/homeinprod/5?comment=42">', "https://t.me/homeinprod/5"), true);
+    assert.equal(hasUrl('<a href="https://kulikov.im/blog/x.html#sources">', "https://kulikov.im/blog/x.html"), true);
+    assert.equal(hasUrl("https://kulikov.im/blog/x.html", "https://kulikov.im/blog/x.html"), true);
   });
 
   test("verify: провал перечеки сбрасывает и персистит прежние флаги успеха", () => {
