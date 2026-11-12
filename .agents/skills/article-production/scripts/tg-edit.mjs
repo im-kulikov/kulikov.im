@@ -87,6 +87,11 @@ export function buildEditedHtml(paragraphs, line, link = null) {
   return body ? `${body}<br><br>${tail}` : tail;
 }
 
+// Bot API parse_mode=html НЕ поддерживает <br> («Unsupported start tag "br"», проверено на
+// живом канале 2026-11-12): переводы строк передаются обычными символами \n.
+// Длину это не меняет — visibleCaption считает <br> и \n одинаково (по одному \n).
+export const toApiHtml = (html) => html.replace(/<br>/g, "\n");
+
 // Поабзацный diff (LCS): « » контекст, «-» убрано, «+» добавлено — для preview.
 export function diffParagraphs(oldParas, newParas) {
   const n = oldParas.length;
@@ -116,6 +121,12 @@ export function dropParagraph(paragraphs, prefix = null) {
   if (i < 0) throw new Error(`абзац с видимым началом «${prefix}» не найден`);
   return [[...paragraphs.slice(0, i), ...paragraphs.slice(i + 1)], paragraphs[i]];
 }
+
+// Дубль-контроль: ссылка уже в посте? Проверяем СЫРОЙ HTML caption (не видимый текст):
+// в анкор-режиме URL живёт в href и в тексте не виден — проверка по тексту слепа,
+// повторный apply продублиров бы строку (поймано на живом канале: пост спас лимит-гейт).
+export const alreadyLinked = (captionHtml, url) =>
+  hasUrl(toBotHtml(captionHtml), String(url).replace(/^https?:\/\//, ""));
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
 const { pathToFileURL } = await import("node:url");
@@ -184,8 +195,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
   const current = visibleCaption(toBotHtml(captionHtml), "html");
   const lineUrl = linkUrl ?? lineUrlOf(line);
-  // бесхемная форма — подстрока и schemed-, и голой ссылки в посте: дубликат ловится в обоих видах
-  if (lineUrl && hasUrl(current, lineUrl.replace(/^https?:\/\//, ""))) {
+  // дубль-контроль по сырому HTML: ловит и полную ссылку в тексте, и URL в href анкора
+  // (кэш t.me может отдать старую страницу — тогда последнюю инстанцию скажет API: «not modified»)
+  if (lineUrl && alreadyLinked(captionHtml, lineUrl)) {
     console.log(`${postUrl}: ссылка уже в посте — дополнение не нужно (идемпотентность).`);
     process.exit(0);
   }
@@ -212,7 +224,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const oldVis = splitParagraphs(captionHtml).map((p) => visibleCaption(p, "html"));
   const newVis = edited.split("\n\n");
   for (const d of diffParagraphs(oldVis, newVis)) console.log(`${d.t} ${d.s.replace(/\n/g, "\n  ")}`);
-  console.log(`добавляемый HTML (последний элемент): ${buildEditedHtml([], line, linkUrl)}`);
+  console.log(`добавляемый фрагмент (последний элемент): ${JSON.stringify(toApiHtml(buildEditedHtml([], line, linkUrl)))}`);
   if (len > limit) {
     console.error("лимит превышен: сократи строку-анкор или убери второстепенный абзац (--drop-paragraph).");
     process.exit(1);
@@ -227,7 +239,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     chat_id: target.chatId,
     message_id: target.messageId,
     parse_mode: "html",
-    [media ? "caption" : "text"]: editedHtml,
+    [media ? "caption" : "text"]: toApiHtml(editedHtml), // <br> → \n: Bot API HTML не знает <br>
   };
   let resp;
   try {
@@ -243,6 +255,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1);
   }
   if (!resp.ok) {
+    // «message is not modified» = контент уже идентичен: правка применена РАНЬШЕ.
+    // Это авторитетная идемпотентность: локальная проверка по embed может не увидеть
+    // свежую правку из-за кэша t.me, а API сравнивает фактическое содержимое.
+    if (/not modified/i.test(resp.description ?? "")) {
+      console.log(`✓ пост ${target.chatId}/${target.messageId}: правка уже применена (контент идентичен).`);
+      process.exit(0);
+    }
     console.error(`Bot API ${api} отклонил правку: ${resp.error_code} ${resp.description}`);
     process.exit(1);
   }

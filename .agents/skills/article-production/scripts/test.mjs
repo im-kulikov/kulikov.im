@@ -1072,6 +1072,16 @@ describe("tg-edit.mjs: правка опубликованных постов ч
     const d = tg.diffParagraphs(["a", "b", "c"], ["a", "c", "новая"]);
     assert.deepEqual(d.map((x) => x.t + x.s), [" a", "-b", " c", "+новая"]);
 
+    // Bot API HTML не знает <br>: в payload — только \n (длина не меняется)
+    assert.equal(tg.toApiHtml("a<br><br><b>b</b><br>c"), "a\n\n<b>b</b>\nc");
+    assert.ok(!tg.toApiHtml(tg.buildEditedHtml(tg.splitParagraphs(cap), "тест", "https://kulikov.im/x.html")).includes("<br"));
+
+    // дубль-контроль по СЫРОМУ HTML: анкор-URL в href невидим в тексте, но дубликат ловится
+    const anchorHtml = 'до: <a href="https://kulikov.im/blog/x.html">📖 Разбор — в блоге</a>';
+    assert.equal(tg.alreadyLinked(anchorHtml, "https://kulikov.im/blog/x.html"), true);
+    assert.equal(tg.alreadyLinked("читай https://kulikov.im/blog/x.html целиком", "kulikov.im/blog/x.html"), true);
+    assert.equal(tg.alreadyLinked(anchorHtml, "https://kulikov.im/blog/ДРУГОЙ.html"), false);
+
     // абзацы: разбиение, удаление последнего и по видимому префиксу, промах — ошибка
     const paras = tg.splitParagraphs(cap);
     assert.equal(paras.length, 2);
