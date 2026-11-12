@@ -518,6 +518,20 @@ describe("images.mjs: размеры и бюджеты (без генераци�
     assert.match(r.err, /150 КБ/);
     assert.match(r.err, /концепций 2/);
   });
+
+  test("check: переименованный файл не конвертируется — тип содержимого сверен с требуемым (Copilot #3)", () => {
+    const dir = join(sb, "drafts/renamed/images");
+    // PNG-заголовок под именем .webp и WebP-заголовок под именем .png: размеры/вес корректны,
+    // гейт должен падать именно на несоответствии формата содержимого
+    concept(dir, 1, { cover: pngHdr(1280, 720), tg: webpHdr(1024, 1024) });
+    concept(dir, 2);
+    concept(dir, 3);
+    const r = run("images.mjs", ["check", dir], sb);
+    assert.equal(r.status, 1);
+    assert.match(r.err, /concept-01\/blog-cover\.webp: содержимое — png, а требуется webp/);
+    assert.match(r.err, /concept-01\/telegram\.png: содержимое — webp, а требуется png/);
+    assert.ok(!r.err.includes("concept-02"), "концепции с честными файлами не задеты");
+  });
 });
 
 // =====================================================================
@@ -805,6 +819,17 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     assert.equal(visibleCaption("&amp;lt;", "html"), "&lt;"); // двойной декод исключён
     assert.equal(visibleCaption("a\n\n\n\nb", "html"), "a\n\n\n\nb"); // внутренние переносы Telegram считает как есть
     assert.equal(visibleCaption("a<br>b", "html"), "a\nb");
+  });
+
+  test("visibleCaption markdownv2: литералы внутри кода Telegram считает посимвольно (Copilot #3)", async () => {
+    const { visibleCaption } = await import(join(SCRIPTS, "lib.mjs"));
+    // 1100 литеральных «_» внутри фенса: раньше срезались как разметка → 0 вместо 1100,
+    // сверхлимитная подпись проходила гейт длины
+    assert.equal(visibleCaption("```" + "_".repeat(1100) + "```", "markdownv2").length, 1100);
+    assert.equal(visibleCaption("`a_b` и `\\.`", "markdownv2"), "a_b и \\."); // эскейп внутри кода — литерален
+    assert.equal(visibleCaption("`[не ссылка](https://t.me/x)`", "markdownv2"), "[не ссылка](https://t.me/x)");
+    // вне кода разметка по-прежнему не считается
+    assert.equal(visibleCaption("*ж* _к_ \\~ и [текст](https://t.me/x)", "markdownv2"), "ж к ~ и текст");
   });
 
   test("checkCrossLinks: пустое тело ответа = отсутствующая ссылка, не успех", async () => {

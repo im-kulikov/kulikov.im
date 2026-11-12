@@ -108,11 +108,20 @@ export function visibleCaption(raw, format = "html") {
       return Number.isInteger(code) && code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : ent;
     });
   } else if (format === "markdownv2") {
-    text = text
-      .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // [text](url) → text
-      .replace(/```[\s\S]*?```/g, (m) => m.replace(/```/g, ""))
-      .replace(/[*_~]{1,2}/g, "")
-      .replace(/\\([^\w\s])/g, "$1"); // escaped punctuation \. → .
+    // Один проход альтернатив: содержимое кода (```фенсы``` и `спаны`) литерально —
+    // Telegram считает его посимвольно (внутри кода нет ни разметки, ни эскейпов),
+    // поэтому оно матчится АТОМОМ раньше срезания разметки и возвращается без маркеров.
+    // Последовательные replace'ы срезали бы литеральные «_»/«*»/«\.» внутри кода — недосчёт.
+    text = text.replace(
+      /```[\s\S]*?```|`[^`\n]*`|\[[^\]]*\]\([^)]*\)|[*_~]{1,2}|\\([^\w\s])/g,
+      (m, esc) => {
+        if (m.startsWith("```")) return m.slice(3, -3);
+        if (m.startsWith("`")) return m.slice(1, -1);
+        if (m.startsWith("[")) return m.slice(1, m.indexOf("]("));
+        if (esc !== undefined) return esc; // эскейп \. → виден сам символ
+        return ""; // * _ ~ — маркеры разметки
+      },
+    );
   }
   // внутренние переносы НЕ схлопываем: Telegram считает их как есть, нормализация занижала бы длину
   return text.trim();

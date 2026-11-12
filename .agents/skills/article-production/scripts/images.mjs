@@ -46,6 +46,9 @@ const LIMITS = {
   coverMinW: 1280,
   previewW: [720, 880],
 };
+// Требуемый формат по имени файла: imageInfo читает тип по magic bytes, и без этой
+// сверки PNG, переименованный в blog-cover.webp, проходил бы гейты (переименование ≠ конвертация).
+const REQUIRED_TYPE = { "telegram.png": "png", "blog-cover.webp": "webp", "blog-preview.webp": "webp" };
 
 // ---------- проверка images/concept-*/ (шаг 10) ----------
 export function checkImages(dir) {
@@ -76,6 +79,7 @@ export function checkImages(dir) {
         continue;
       }
       concepts[c][name] = rec;
+      if (rec.type !== REQUIRED_TYPE[name]) problems.push(`${c}/${name}: содержимое — ${rec.type}, а требуется ${REQUIRED_TYPE[name]} (переименование файла не конвертирует его)`);
       if (name === "telegram.png") {
         if (rec.w !== rec.h) problems.push(`${c}/telegram.png: ${rec.w}×${rec.h} — не квадрат 1:1`);
         if (bytes > LIMITS.telegram.maxBytes) problems.push(`${c}/telegram.png: ${(bytes / KB / KB).toFixed(1)} МБ > ${LIMITS.telegram.label}`);
