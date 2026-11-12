@@ -46,9 +46,10 @@ test("classes used in HTML have a CSS rule (except the allowlist)", () => {
   const used = new Set(ALL_PAGES.flatMap((p) => all(dom(p), (n) => attr(n, "class")).flatMap(classes)));
   const missing = [...used].filter((c) => !defined.has(c) && !NO_RULE.has(c) && !/^language-[\w-]+$/.test(c)).sort();
   assert.deepEqual(missing, []);
-  // and the allowlist must not rot: every always-present entry is still used and still without a rule
-  const stale = [...SITE_HOOKS].filter((c) => !used.has(c) || defined.has(c)).sort();
-  assert.deepEqual(stale, [], "remove these from SITE_HOOKS");
+  // and the allowlist must not rot: every present hook is still used and still without a rule
+  // (blog hooks only when the blog content exists — without articles they are legitimately absent)
+  const stale = [...SITE_HOOKS, ...(hasBlog ? BLOG_HOOKS : [])].filter((c) => !used.has(c) || defined.has(c)).sort();
+  assert.deepEqual(stale, [], "remove these unused or now-ruled hooks");
 });
 
 describe("accessibility and print", () => {

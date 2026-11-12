@@ -11,3 +11,7 @@
     <h2>{{ .Get "title" | default "Источники" }}</h2>
     {{- .Inner | .Page.RenderString (dict "display" "block") }}
 </section>
+{{- /* sentinel closing the excluded block: the search-index template strips up to THIS element,
+       so a nested raw <section> inside the sources list cannot end the strip early.
+       NB: HTML-комментарии goldmark из .Content вырезает — поэтому маркер — скрытый элемент */ -}}
+<span hidden data-search-exclude-end></span>

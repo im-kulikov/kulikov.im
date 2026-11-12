@@ -16,17 +16,22 @@ export const exists = (p) => existsSync(join(SITE, p));
 // Pages are derived from src/content so a new page is tested automatically; drafts are not built.
 function frontMatters() {
   const dir = join(ROOT, "src/content");
-  const out = { index: YAML.parse(readFileSync(join(dir, "_index.md"), "utf8").split(/^---\s*$/m)[1]) };
+  // ?? {} — index.md без front matter валиден для Hugo и не должен ронять весь сьют
+  const out = { index: YAML.parse(readFileSync(join(dir, "_index.md"), "utf8").split(/^---\s*$/m)[1] ?? "") ?? {} };
   for (const d of readdirSync(dir, { withFileTypes: true })) {
     if (!d.isDirectory()) continue;
     const f = ["index.md", "_index.md"].map((n) => join(dir, d.name, n)).find(existsSync);
-    if (f) out[d.name] = YAML.parse(readFileSync(f, "utf8").split(/^---\s*$/m)[1]) ?? {};
-    // the blog is a RU-only section of nested article bundles: "blog/<slug>" pages, no EN twins
+    if (f) out[d.name] = YAML.parse(readFileSync(f, "utf8").split(/^---\s*$/m)[1] ?? "") ?? {};
+    // the blog is a RU-only section of nested article bundles: "blog/<slug>" pages, no EN twins;
+    // ключ — фронтматтерный slug (URL статьи), с откатом на имя каталога
     if (d.name === "blog" && existsSync(join(dir, d.name, "_index.md"))) {
       for (const a of readdirSync(join(dir, d.name), { withFileTypes: true })) {
         if (!a.isDirectory()) continue;
         const af = join(dir, d.name, a.name, "index.md");
-        if (existsSync(af)) out[`blog/${a.name}`] = YAML.parse(readFileSync(af, "utf8").split(/^---\s*$/m)[1]) ?? {};
+        if (existsSync(af)) {
+          const fm = YAML.parse(readFileSync(af, "utf8").split(/^---\s*$/m)[1] ?? "") ?? {};
+          out[`blog/${fm.slug ?? a.name}`] = fm;
+        }
       }
     }
   }
