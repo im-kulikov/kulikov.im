@@ -89,50 +89,50 @@ terms:
   - term: CI
     definition: continuous integration — автоматическая сборка и тесты на каждое изменение
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: PR
     definition: pull request — предложение изменений с ревью перед слиянием
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: URL
     definition: uniform resource locator — адрес ресурса в сети
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: HTML
     definition: hyper text markup language — язык разметки веб-страниц
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: UTF-16
     definition: "кодировка: символы вне ASCII (эмодзи) занимают две единицы — так Telegram считает длину"
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: JPG
     definition: JPEG — распространённый формат сжатия фотографий
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
   - term: КБ
     definition: килобайт, 1024 байта
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-12
+    first_article_id: blog-launch
+    first_telegram_url: https://t.me/homeinprod/16
 
