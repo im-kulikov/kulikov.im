@@ -84,10 +84,14 @@ if (cmd === "check") {
   // - «MTProto» не даёт токена вовсе (за «MTP» — строчная, откат к «MT» запрещён границей);
   // - «API-ключ» даёт «API» (дефис с последующей строчной — не часть токена),
   // - «X-TOKEN» — один токен целиком; «XML-хвост» — «XML», без дефиса.
+  // Одиночная заглавная (включая «буква+цифры»: И, В, P2, А4) — НЕ кандидат:
+  // в русском одиночные буквы — грамматика, а не аббревиатуры; реестр — про
+  // «секретные буквы» с ≥ 2 заглавными буквами в токене (UTF-16, P2P, АЭС — да; P2 — нет).
   const tokens = new Set(
     (raw.match(/(?<![\p{L}\p{Nd}])[\p{Lu}][\p{Lu}\p{Nd}]*(?:-[\p{Lu}\p{Nd}]+)*(?![\p{L}\p{N}])/gu) ?? []),
   );
   const candidates = [...tokens]
+    .filter((tok) => (tok.match(/[\p{Lu}]/gu) ?? []).length >= 2)
     .filter((tok) => !STOPWORDS.has(tok) && !exists(terms, tok) && !terms.some((t) => termRe(t.term).test(tok)))
     .sort();
   console.log(JSON.stringify({ known, candidates, note: "candidates — эвристика для review автора, не автодобавление" }, null, 2));

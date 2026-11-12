@@ -1158,6 +1158,19 @@ describe("hardening: собственное ревью PR #31 (3 домена)",
     assert.ok(!j.candidates.some((c) => c === "XML-" || c === "MT" || c === "CRUD-"), JSON.stringify(j.candidates));
   });
 
+  test("terms: одиночные КАПС-буквы и «буква+цифры» (И, В, P2, А4) — НЕ кандидаты; P2P/B2B — кандидаты", () => {
+    const reg = registry(sb);
+    const res = spawnSync("node", [join(SCRIPTS, "terms.mjs"), "check", "-", "--registry", reg], {
+      input: "И конвейер, а В итоге UTF-16 считает P2 и А4, но P2P-сеть и B2B — да. X-TOKEN целиком.",
+      encoding: "utf8", env: { ...process.env, EDITORIAL_TMP: sb },
+    });
+    assert.equal(res.status, 0, res.stderr);
+    const j = JSON.parse(res.stdout);
+    for (const yes of ["UTF-16", "P2P", "B2B", "X-TOKEN"]) assert.ok(j.candidates.includes(yes), `${yes} должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
+    for (const no of ["P2", "А4"]) assert.ok(!j.candidates.includes(no), `${no} — не термин: ${JSON.stringify(j.candidates)}`);
+    assert.ok(!j.candidates.some((c) => c.length === 1), `одиночных букв нет: ${JSON.stringify(j.candidates)}`);
+  });
+
   test("validate: h1 «# Источники» и заголовок в цитате тоже проваливают гейт; отсутствие article.md — один FAIL, не два", () => {
     const mk = (id, body) => {
       const d = join(sb, "drafts", id);

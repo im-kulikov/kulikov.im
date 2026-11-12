@@ -143,8 +143,18 @@ describe("searchindex.json: production build ships only published kulikov.im art
       const entry = idx.find((e) => e.uri === url(a));
       const { urls, labels } = sourcesOf(a);
       assert.ok(urls.length > 0, `${a.slug}: no sources block found`);
-      for (const u of urls) assert.ok(!entry.text.includes(u), `${a.slug}: source URL leaked: ${u}`);
-      for (const l of labels) assert.ok(!entry.text.includes(l), `${a.slug}: source label leaked: ${l}`);
+      // утечка = присутствует в индексе, но НЕ упомянута в теле ВНЕ секции источников:
+      // тело статьи вправе само называть «Hugo» или цитировать тот же адрес.
+      // Точная граница URL: голый includes ловил ложную «утечку», когда источник
+      // (https://kulikov.im/blog/) — префикс легитимной ссылки из тела
+      // (…/blog/vps-maintenance.html); продолжение пути/буквы = другой адрес.
+      const bodyOutside = a.text.replace(/\{\{<\s*sources[^>]*>\}\}[\s\S]*?\{\{<\s*\/sources\s*>\}\}/, "");
+      const urlIn = (hay, u) =>
+        new RegExp(`${u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\p{L}\\p{N}/-])`, "u").test(hay);
+      for (const u of urls)
+        assert.ok(!(urlIn(entry.text, u) && !urlIn(bodyOutside, u)), `${a.slug}: source URL leaked: ${u}`);
+      for (const l of labels)
+        assert.ok(!(entry.text.includes(l) && !bodyOutside.includes(l)), `${a.slug}: source label leaked: ${l}`);
       assert.ok(entry.text.includes(bodyPhraseOf(a)), `${a.slug}: body heading missing from the index text`);
     }
   });
