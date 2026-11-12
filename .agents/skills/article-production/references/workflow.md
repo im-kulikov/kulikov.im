@@ -184,7 +184,9 @@ Brief, статья, Telegram-подпись с фактической длин�
 | `state.mjs <id> set key=value` | slug / article_url / telegram_url / images.* / new_terms |
 | `state.mjs <id> verify <article\|telegram\|links>` | HTTP-проверка реальных URL; `links` — двусторонняя: статья ⇄ пост |
 | `state.mjs <id> crosspromo [--text "…"]` | предложение «📖 Подробный разбор — в блоге» для поста (после `verify article`): длина UTF-16, без дублей |
-| `test.mjs` | тесты всего workflow (62 шт; песочницы EDITORIAL_TMP, данные не трогаются) |
+| `tg-edit.mjs preview <post-url> --line "…"` | правка ОПУБЛИКОВАННОГО поста: diff по живому тексту (embed), UTF-16 лимит (1024/4096), ничего не отправляет |
+| `tg-edit.mjs apply <post-url> --line "…" --yes` | применение правки через Bot API (`editMessageCaption`/`editMessageText`, parse_mode=html); `--yes` = approval владельца; токен: env `TELEGRAM_BOT_TOKEN`; `--drop-paragraph "префикс"` / `--drop-last-paragraph` — освободить место (лимит caption) |
+| `test.mjs` | тесты всего workflow (71 шт; песочницы EDITORIAL_TMP, данные не трогаются) |
 
 Хрупкие места скриптов (пойманы ревью PR #31, покрыты тестами — легко сломать
 при правках, тесты обязаны остаться красными на регрессию):

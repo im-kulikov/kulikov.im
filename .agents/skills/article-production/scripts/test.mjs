@@ -25,10 +25,14 @@ const box = () => {
   return d;
 };
 const run = (script, args, sandbox, opts = {}) => {
+  const env = { ...process.env, EDITORIAL_TMP: sandbox };
+  // тесты НИКОГДА не ходят в живой Telegram: токен из окружения вырезаем,
+  // иначе «apply без токена» при экспортированном TELEGRAM_BOT_TOKEN правил бы реальный пост
+  delete env.TELEGRAM_BOT_TOKEN;
   const r = spawnSync("node", [join(SCRIPTS, script), ...args], {
     encoding: "utf8",
     cwd: ROOT,
-    env: { ...process.env, EDITORIAL_TMP: sandbox },
+    env,
     timeout: opts.timeout ?? 30_000,
   });
   return { status: r.status, out: r.stdout ?? "", err: r.stderr ?? "" };
@@ -999,6 +1003,100 @@ describe("hardening: повторное ревью PR #31 (3 замечания)
     for (const s of ["article_url_verified", "telegram_published", "telegram_url_verified", "site_redeployed", "links_checked"]) run("state.mjs", ["cp7", "step", s], sb);
     assert.equal(run("state.mjs", ["cp7", "done"], sb).status, 0);
     assert.ok(!existsSync(join(sb, "inbox/cp7.zip")));
+  });
+});
+
+// =====================================================================
+describe("tg-edit.mjs: правка опубликованных постов через Bot API", () => {
+  const sb = box();
+  // фрагмент реальной embed-страницы поста №11 (фото + caption, кастомные emoji, <b>, <br/>)
+  const EMBED = `<!DOCTYPE html><html><body><div class="tgme_widget_message_wrap"><div class="tgme_widget_message_photo_wrap"></div><div class="tgme_widget_message_text js-message_text" dir="auto"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09FA496.png')"><b>\u{1F916}</b></i> <b>Кажется, я немного переучил…</b><br/><br/>Результат: <b>78,9% \u2192 94,4%</b>&#33;</div></div></body></html>`;
+
+  test("чистые функции: parsePostUrl / extractCaptionHtml / isMediaPost / toBotHtml / buildEditedHtml", async () => {
+    const tg = await import(join(SCRIPTS, "tg-edit.mjs"));
+    assert.deepEqual(tg.parsePostUrl("https://t.me/homeinprod/5"), { chatId: "@homeinprod", messageId: 5 });
+    assert.equal(tg.parsePostUrl("https://t.me/homeinprod"), null);
+    assert.equal(tg.parsePostUrl("https://vk.com/x/5"), null);
+
+    const cap = tg.extractCaptionHtml(EMBED);
+    assert.ok(cap.includes("переучил"));
+    assert.equal(tg.extractCaptionHtml("<html>нет текста</html>"), null);
+    assert.equal(tg.isMediaPost(EMBED), true);
+    assert.equal(tg.isMediaPost(EMBED.replace("tgme_widget_message_photo_wrap", "x")), false);
+
+    // emoji-обёртка разворачивается в сам символ, <br/> → <br>, длина видимого текста не врёт
+    const bot = tg.toBotHtml(cap);
+    assert.ok(!bot.includes('class="emoji"'));
+    assert.ok(bot.includes("<br>"));
+    const { visibleCaption } = await import(join(SCRIPTS, "lib.mjs"));
+    assert.ok(visibleCaption(bot, "html").startsWith("\u{1F916} Кажется"));
+    assert.ok(visibleCaption(bot, "html").endsWith("94,4%!"));
+
+    // дополнение: <br><br> + кликабельный URL; видимая длина = текст + перенос + строка
+    const edited = tg.buildEditedHtml(tg.splitParagraphs(cap), "\u{1F4D6} Подробный разбор — в блоге: https://kulikov.im/blog/x.html");
+    assert.ok(edited.endsWith('<br><br>\u{1F4D6} Подробный разбор — в блоге: <a href="https://kulikov.im/blog/x.html">https://kulikov.im/blog/x.html</a>'));
+    const vis = visibleCaption(edited, "html");
+    assert.ok(vis.includes("\n\n\u{1F4D6} Подробный разбор — в блоге: https://kulikov.im/blog/x.html"));
+
+    // «голая» метка kulikov.im/… становится <a> с абсолютным href (Telegram требует https://);
+    // чужой голый домен не линкуется, schemed-URL любого хоста — линкуется
+    assert.equal(tg.linkifyLine("разбор: kulikov.im/blog/x.html"), 'разбор: <a href="https://kulikov.im/blog/x.html">kulikov.im/blog/x.html</a>');
+    assert.ok(!tg.linkifyLine("см. example.com/x").includes("<a "));
+    assert.ok(tg.linkifyLine("см. https://x.io/a").includes('<a href="https://x.io/a">'));
+    // голые & < > в дополнении (и в query URL) экранируются — Bot API HTML иначе даёт 400
+    assert.equal(
+      tg.linkifyLine("a<b & https://kulikov.im/a?x=1&y=2"),
+      'a&lt;b &amp; <a href="https://kulikov.im/a?x=1&amp;y=2">https://kulikov.im/a?x=1&amp;y=2</a>',
+    );
+
+    // ссылки из embed идут с target/rel/onclick — Bot API принимает <a> ТОЛЬКО с href
+    const linked = tg.toBotHtml('до: <a href="https://x.io/a?p=1&amp;q=2" target="_blank" rel="noopener" onclick="evil()">ссылка</a>');
+    assert.equal(linked, 'до: <a href="https://x.io/a?p=1&amp;q=2">ссылка</a>');
+
+    // URL дополнения для идемпотентности: хвостовая пунктуация не часть адреса
+    assert.equal(tg.lineUrlOf("разбор: https://kulikov.im/x.html."), "https://kulikov.im/x.html");
+    assert.equal(tg.lineUrlOf("в блоге kulikov.im/x.html!"), "kulikov.im/x.html");
+    assert.equal(tg.lineUrlOf("без ссылок"), "");
+
+    // пустой пост → только дополнение, без ведущего <br><br>
+    assert.equal(tg.buildEditedHtml([], "строка"), "строка");
+
+    // абзацы: разбиение, удаление последнего и по видимому префиксу, промах — ошибка
+    const paras = tg.splitParagraphs(cap);
+    assert.equal(paras.length, 2);
+    const [withoutLast, last] = tg.dropParagraph(paras);
+    assert.ok(visibleCaption(last, "html").startsWith("Результат"));
+    assert.equal(withoutLast.length, 1);
+    const [withoutMid] = tg.dropParagraph(paras, "Результат:");
+    assert.equal(withoutMid.length, 1);
+    assert.ok(!withoutMid.some((p) => visibleCaption(p, "html").startsWith("Результат")));
+    assert.throws(() => tg.dropParagraph(paras, "Нет такого абзаца"), /не найден/);
+  });
+
+  test("CLI: apply без --yes / без токена / кривой URL / флаг без значения — отказ ДО любых запросов", () => {
+    const url = "https://t.me/homeinprod/5";
+    const no = run("tg-edit.mjs", ["apply", url, "--line", "x https://kulikov.im/blog/x.html"], sb);
+    assert.equal(no.status, 2);
+    assert.match(no.err, /--yes/);
+    // --yes есть, но токена тестам не дают (харнесс вырезает даже экспортированный) — отказ до сети
+    process.env.TELEGRAM_BOT_TOKEN = "1234567890:AAfake_token_for_strip_test_000000";
+    try {
+      const noTok = run("tg-edit.mjs", ["apply", url, "--line", "x", "--yes"], sb);
+      assert.equal(noTok.status, 2);
+      assert.match(noTok.err, /TELEGRAM_BOT_TOKEN/);
+    } finally {
+      delete process.env.TELEGRAM_BOT_TOKEN;
+    }
+    const bad = run("tg-edit.mjs", ["preview", "https://t.me/homeinprod", "--line", "x"], sb);
+    assert.equal(bad.status, 2);
+    assert.match(bad.err, /не похож на пост/);
+    // флаг со значением, но значение забыто / пустой префикс — отказ, а не «молча без удаления»
+    const noVal = run("tg-edit.mjs", ["preview", url, "--line", "тест", "--drop-paragraph"], sb);
+    assert.equal(noVal.status, 2);
+    assert.match(noVal.err, /требует значение/);
+    const emptyVal = run("tg-edit.mjs", ["preview", url, "--line", "тест", "--drop-paragraph", ""], sb);
+    assert.equal(emptyVal.status, 2);
+    assert.match(emptyVal.err, /префикс не может быть пустым/);
   });
 });
 
