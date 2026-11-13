@@ -147,6 +147,53 @@ Image Brief (шаблон):
 Preview и cover — одна композиция и один aspect ratio, поэтому preview
 получается ресайзом из cover (разрешено; отдельная генерация не нужна).
 
+### Предпочтительный pipeline: Telegram-first + outpainting
+
+Один сюжет → одна генерация → расширение, а не вторая интерпретация:
+
+1. **Canonical visual brief** (`images/visual-brief.md` + `visual-manifest.json`) —
+   единый источник истины: сюжет, персонаж (внешность/одежда/выражение),
+   палитра, свет, обязательные объекты с количеством, запреты
+   (текст/псевдо-UI/метрики), форматы и provenance.
+2. **Telegram master 1536×1024** (строго 3:2) — генерация из canonical brief.
+   Визуальный review ДО любого расширения: все объекты в кадре, читаемость
+   на мобильном. `telegram.png` 1200×800 — пропорциональный resize (PNG!).
+3. **Horizontal outpainting** до 1820×1024:
+   `images.mjs outpaint-stage master.png --out expanded.png` — master по центру
+   (x=142), боковые зоны по 142px — заготовка для генеративного заполнения;
+   промпт-fallback описывает ТОЛЬКО продолжение сцены по краям (стены, полки,
+   свет, перспектива), без новых смысловых центров и без изменения центра.
+   После генерации: `images.mjs outpaint-verify expanded.png master.png` —
+   центральная область обязана совпасть с master пиксель в пиксель (decoded
+   RGBA; lossless intermediate, не побайтовое PNG-совпадение). Швы на
+   границах x=142/x=1678 — информационно + обязательный визуальный review.
+4. **blog-cover.webp 1280×720 и preview 800×450** — из expanded (AR 1820×1024
+   отличается от 16:9 на ~0.025% — внутри допуска AR_TOL).
+
+Fallback `separate-compositions` (две независимые генерации) — явно и
+обоснованно в manifest: схемы, таймлайны, сцены с несколькими независимыми
+смысловыми центрами, где горизонтальное расширение не подходит.
+
+Provenance: `images.mjs provenance <concept-dir>` собирает provenance.json
+(sha256 + размеры всех файлов, mode). В concept-каталоге хранить: master,
+expanded, финальные файлы, outpaint-instructions, brief/manifest.
+Результаты outpaint-verify и статус визуального review — в manifest.
+
+**Pixel-perfect ≠ готовность к публикации.** `outpaint-verify` (0 mismatches)
+и provenance/hashes — технические проверки; они НЕ делают cover готовым и НЕ
+выставляют визуальный статус. В manifest обязательны
+`visual_review.status` ∈ `pending-review | approved | needs-iteration`:
+ставит владелец после осмотра швов (границы x=142/x=1678);
+`needs-iteration` — типичный первый результат fallback-пути (пример:
+demo metrika-lighthouse, левый шов). `manifest`-гейт валидирует статус и
+отклоняет произвольные значения.
+
+**Fallback ограничен.** resize + lossless compositing центра гарантирует
+пиксельную целостность центра, но швы и перспектива боков зависят от
+генератора: это НЕ эквивалент настоящего masked outpainting. Каждый
+fallback-результат проходит визуальный review швов; `needs-iteration`
+означает повтор генерации (или настоящий masked outpainting, если появится).
+
 ### Адаптация ≠ геометрия (урок поста №16, 2026-11-12)
 
 Иллюстрация — СЦЕНА с персонажем и объектами, а не текстура. Правила:

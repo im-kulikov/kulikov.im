@@ -10,7 +10,7 @@
 //
 // convert/crop используют Chrome (OffscreenCanvas): системный sips в этом окружении сломан
 // (exit 13). Бюджеты сайта: webp ≤ 150 КБ каждый (тесты images.test.mjs); покрывает и og ≤ 300 КБ.
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 
 // ---------- размеры без внешних зависимостей (PNG + WebP: VP8X/VP8/VP8L) ----------
@@ -101,16 +101,38 @@ export function checkImages(dir) {
   return { ok: problems.length === 0, problems, concepts, webpSum };
 }
 
-// ---------- convert/crop через Chrome canvas ----------
 const MIME = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp" };
+// Расширение выхода = фактический формат содержимого (дефект 2026-11-13: crop всегда
+// кодировал WebP, и telegram.png с WebP-нутрим упирался в гейт magic bytes). PNG — lossless.
+const OUT_TYPE = {
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+};
+function assertSrcMatchesExt(src) {
+  const real = imageInfo(src).type,
+    claimed = extname(src).toLowerCase().replace(".", "");
+  if (!["png", "webp", "jpg", "jpeg"].includes(claimed)) return;
+  if (real !== claimed)
+    throw new Error(
+      `${src}: содержимое — ${real}, а расширение .${claimed} (переименование ≠ конвертация; приведи файл к честному расширению)`,
+    );
+}
 async function toWebp(src, mode, quality, out) {
   const { chromium } = await import("playwright-core");
   const mime = MIME[extname(src).toLowerCase()];
   if (!mime) throw new Error(`не поддерживаю ${extname(src)} как источник`);
+  assertSrcMatchesExt(resolve(src));
+  const outType = OUT_TYPE[extname(out).toLowerCase()];
+  if (!outType)
+    throw new Error(
+      `не поддерживаю ${extname(out)} как выходной формат (png/webp/jpg)`,
+    );
   const dataUrl = `data:${mime};base64,${readFileSync(src).toString("base64")}`;
   const browser = await chromium.launch({ channel: "chrome" });
   const page = await browser.newPage();
-  const b64 = await page.evaluate(async ([url, m, q]) => {
+  const b64 = await page.evaluate(async ([url, m, q, outType]) => {
     const img = new Image();
     await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
     let w, h, sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
@@ -125,16 +147,151 @@ async function toWebp(src, mode, quality, out) {
     }
     const canvas = new OffscreenCanvas(w, h);
     canvas.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
-    const blob = await canvas.convertToBlob({ type: "image/webp", quality: q });
+    const blob = await canvas.convertToBlob({ type: outType, quality: outType === "image/png" ? undefined : q });
     const buf = new Uint8Array(await blob.arrayBuffer());
     let bin = "";
     for (const byte of buf) bin += String.fromCharCode(byte);
     return btoa(bin);
-  }, [dataUrl, mode, quality]);
+  }, [dataUrl, mode, quality, outType]);
   await browser.close();
   const { writeFileSync } = await import("node:fs");
   writeFileSync(out, Buffer.from(b64, "base64"));
   return out;
+}
+
+// ---------- Telegram-first outpainting (tg-master 1536×1024 → expanded 1820×1024) ----------
+const TG = { w: 1536, h: 1024, side: 142, expandedW: 1820 };
+async function decodePixels(src) {
+  const { chromium } = await import("playwright-core");
+  const mime = MIME[extname(src).toLowerCase()];
+  if (!mime) throw new Error(`не поддерживаю ${extname(src)} как источник`);
+  assertSrcMatchesExt(resolve(src));
+  const dataUrl = `data:${mime};base64,${readFileSync(src).toString("base64")}`;
+  const browser = await chromium.launch({ channel: "chrome" });
+  const page = await browser.newPage();
+  const px = await page.evaluate(async (url) => {
+    const img = new Image();
+    await new Promise((res, rej) => {
+      img.onload = res;
+      img.onerror = rej;
+      img.src = url;
+    });
+    const c = new OffscreenCanvas(img.naturalWidth, img.naturalHeight);
+    const ctx = c.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    return {
+      w: img.naturalWidth,
+      h: img.naturalHeight,
+      data: Array.from(
+        ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data,
+      ),
+    };
+  }, dataUrl);
+  await browser.close();
+  return px;
+}
+async function encodePixels(w, h, data, out) {
+  const { chromium } = await import("playwright-core");
+  const browser = await chromium.launch({ channel: "chrome" });
+  const page = await browser.newPage();
+  const b64 = await page.evaluate(
+    async ([w, h, data]) => {
+      const c = new OffscreenCanvas(w, h);
+      c.getContext("2d").putImageData(
+        new ImageData(new Uint8ClampedArray(data), w, h),
+        0,
+        0,
+      );
+      const blob = await c.convertToBlob({ type: "image/png" }); // lossless: центр должен сохраниться пиксель в пиксель
+      const buf = new Uint8Array(await blob.arrayBuffer());
+      let bin = "";
+      for (const byte of buf) bin += String.fromCharCode(byte);
+      return btoa(bin);
+    },
+    [w, h, data],
+  );
+  await browser.close();
+  const { writeFileSync } = await import("node:fs");
+  writeFileSync(out, Buffer.from(b64, "base64"));
+  return out;
+}
+// stage: master по центру expanded-холста, боковые зоны — растянутые крайние столбцы
+// (это только ЗАГОТОВКА для генеративного заполнения, не итог; см. image.md §Outpainting)
+async function outpaintStage(master, side, out) {
+  const m = await decodePixels(master);
+  if (m.w !== TG.w || m.h !== TG.h)
+    throw new Error(
+      `master должен быть ровно ${TG.w}×${TG.h}, получено ${m.w}×${m.h}`,
+    );
+  if (side !== TG.side)
+    throw new Error(
+      `side должен быть ровно ${TG.side} (симметричное расширение до ${TG.expandedW}×${TG.h})`,
+    );
+  const W = TG.expandedW,
+    H = TG.h,
+    ch = 4;
+  const data = new Array(W * H * ch).fill(0);
+  const col = (x) => {
+    // цвет крайнего столбца master для заглушки-подсказки генератору
+    const out = new Array(H * ch);
+    for (let y = 0; y < H; y++)
+      for (let c = 0; c < ch; c++)
+        out[y * ch + c] = m.data[(y * m.w + x) * ch + c];
+    return out;
+  };
+  const left = col(0),
+    right = col(m.w - 1);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const src = x >= side && x < side + m.w;
+      const o = (y * W + x) * ch;
+      if (src)
+        for (let c = 0; c < ch; c++)
+          data[o + c] = m.data[(y * m.w + (x - side)) * ch + c];
+      else
+        for (let c = 0; c < ch; c++)
+          data[o + c] = (x < side ? left : right)[y * ch + c];
+    }
+  }
+  return encodePixels(W, H, data, out);
+}
+// verify: центральная область expanded должна совпадать с master пиксель в пиксель
+// (decoded RGBA, не побайтовое PNG-совпадение); швы на границах — информационно
+async function outpaintVerify(expanded, master, side) {
+  const e = await decodePixels(expanded),
+    m = await decodePixels(master);
+  if (e.w !== TG.expandedW || e.h !== TG.h)
+    throw new Error(
+      `expanded должен быть ровно ${TG.expandedW}×${TG.h}, получено ${e.w}×${e.h}`,
+    );
+  if (m.w !== TG.w || m.h !== TG.h)
+    throw new Error(
+      `master должен быть ровно ${TG.w}×${TG.h}, получено ${m.w}×${m.h}`,
+    );
+  let mismatch = 0,
+    first = null;
+  for (let y = 0; y < TG.h; y++)
+    for (let x = 0; x < TG.w; x++) {
+      const eo = (y * e.w + (x + side)) * 4,
+        mo = (y * m.w + x) * 4;
+      for (let c = 0; c < 4; c++)
+        if (e.data[eo + c] !== m.data[mo + c]) {
+          mismatch++;
+          if (!first)
+            first = `(${x + side},${y}) ch${c}: ${e.data[eo + c]}≠${m.data[mo + c]}`;
+        }
+    }
+  const seam = (x) => {
+    let d = 0;
+    for (let y = 0; y < TG.h; y += 8)
+      for (let c = 0; c < 3; c++)
+        d += Math.abs(
+          e.data[(y * e.w + x) * 4 + c] - e.data[(y * e.w + x - 1) * 4 + c],
+        );
+    return d;
+  };
+  const seams = { left: seam(side), right: seam(side + TG.w) };
+  return { mismatch, first, seams };
 }
 
 // ---------- CLI (только при прямом запуске; validate.mjs/package.mjs импортируют функции выше) ----------
@@ -187,8 +344,127 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         console.error(res.ok ? "✓ изображения прошли проверки" : `✗ ${res.problems.length} проблем`);
       }
       process.exit(res.ok ? 0 : 1);
+    } else if (cmd === "outpaint-stage") {
+      const [master] = pos();
+      const side = +opt("side", TG.side);
+      const out = resolve(opt("out", "outpaint-expanded.png"));
+      if (!master)
+        throw new Error(
+          "usage: images.mjs outpaint-stage <master.png> [--side 142] --out expanded.png",
+        );
+      await outpaintStage(resolve(master), side, out);
+      console.log(
+        `${out}: ${TG.expandedW}×${TG.h} (master по центру, x=${side}; боковые зоны — заглушка для генеративного заполнения)`,
+      );
+    } else if (cmd === "outpaint-verify") {
+      const [expanded, master] = pos();
+      const side = +opt("side", TG.side);
+      if (!expanded || !master)
+        throw new Error(
+          "usage: images.mjs outpaint-verify <expanded.png> <master.png> [--side 142]",
+        );
+      const r = await outpaintVerify(resolve(expanded), resolve(master), side);
+      console.log(
+        `center pixels mismatched: ${r.mismatch}${r.first ? ` (первое: ${r.first})` : ""}`,
+      );
+      console.log(
+        `seams @x=${side}: ${r.seams.left}, @x=${side + TG.w}: ${r.seams.right} (информационно; швы требует визуального review)`,
+      );
+      if (r.mismatch) {
+        console.error(
+          "✗ центральная область не совпадает с master пиксель в пиксель",
+        );
+        process.exit(1);
+      }
+      console.log(
+        "✓ round-trip: центральная область идентична master (decoded RGBA)",
+      );
+    } else if (cmd === "manifest") {
+      const [file] = pos();
+      if (!file)
+        throw new Error("usage: images.mjs manifest <visual-manifest.json>");
+      const m = JSON.parse(readFileSync(resolve(file), "utf8"));
+      const problems = [];
+      if (!["telegram-first", "separate-compositions"].includes(m.mode))
+        problems.push(
+          `mode: ${m.mode} — ожидается telegram-first | separate-compositions`,
+        );
+      if (m.mode === "telegram-first") {
+        if (!m.master || m.master.w !== TG.w || m.master.h !== TG.h)
+          problems.push(`master: ожидается {w:${TG.w},h:${TG.h}}`);
+        if (m.side_px !== TG.side)
+          problems.push(`side_px: ожидается ${TG.side}`);
+        if (!m.outpaint_instructions)
+          problems.push("outpaint_instructions: отсутствует");
+        if (!m.expanded)
+          problems.push("expanded: отсутствует (1820×1024 intermediate)");
+        if (!["pending-review", "approved", "needs-iteration"].includes(m.visual_review?.status))
+          problems.push(
+            "visual_review.status: ожидается pending-review | approved | needs-iteration (ставит владелец после осмотра швов; tests/provenance его НЕ выставляют)",
+          );
+      }
+      for (const k of ["telegram", "cover", "preview"])
+        if (!m.outputs?.[k]) problems.push(`outputs.${k}: отсутствует`);
+      if (!m.brief)
+        problems.push("brief: отсутствует (canonical visual brief)");
+      if (!m.provenance) problems.push("provenance: отсутствует");
+      if (problems.length) {
+        problems.forEach((x) => console.error(`✗ ${x}`));
+        process.exit(1);
+      }
+      console.log(`✓ manifest валиден (mode=${m.mode})`);
+    } else if (cmd === "provenance") {
+      const [dir] = pos();
+      if (!dir) throw new Error("usage: images.mjs provenance <concept-dir>");
+      const { createHash } = await import("node:crypto");
+      const mode = JSON.parse(
+        readFileSync(resolve(dir, "visual-manifest.json"), "utf8"),
+      ).mode;
+      const req = [
+        "visual-brief.md",
+        "visual-manifest.json",
+        "blog-cover.webp",
+        "blog-preview.webp",
+        ...(mode === "telegram-first"
+          ? [
+              "telegram-master.png",
+              "telegram.png",
+              "outpaint-expanded.png",
+              "outpaint-instructions.md",
+            ]
+          : ["telegram.png"]),
+      ];
+      const missing = req.filter((f) => !existsSync(resolve(dir, f)));
+      if (missing.length) {
+        missing.forEach((f) => console.error(`✗ отсутствует ${f}`));
+        process.exit(1);
+      }
+      const files = {};
+      for (const f of req) {
+        const buf = readFileSync(resolve(dir, f));
+        // размеры — best effort: provenance фиксирует и ещё не обработанные файлы
+        let i = null;
+        try {
+          i = imageInfo(resolve(dir, f));
+        } catch {}
+        files[f] = {
+          sha256: createHash("sha256").update(buf).digest("hex"),
+          bytes: buf.length,
+          ...(i ? { w: i.w, h: i.h, type: i.type } : {}),
+        };
+      }
+      const out = resolve(dir, "provenance.json");
+      writeFileSync(
+        out,
+        JSON.stringify(
+          { generated_at: new Date().toISOString(), mode, files },
+          null,
+          2,
+        ),
+      );
+      console.log(`${out}: ${req.length} файлов зафиксировано`);
     } else {
-      throw new Error("usage: images.mjs <info|convert|crop|check> …");
+      throw new Error("usage: images.mjs <info|convert|crop|check|outpaint-stage|outpaint-verify|manifest|provenance> …");
     }
   } catch (e) {
     console.error(e.message);
