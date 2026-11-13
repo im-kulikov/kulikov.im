@@ -14,6 +14,18 @@
 - Подтверждённые конвенции проекта (header, макет статей, i18n, визуальный
   стиль) — `.agents/docs/conventions.md`.
 
+## Git workflow (обязательный)
+
+- Разработка — только в отдельных Git worktrees внутри репозитория
+  (`tmp/worktree/<branch-dir>`), на feature-ветках от актуального `origin/main`;
+  основной working tree — только `main`, синхронизация и админ-Git-операции.
+  Полный lifecycle (start → development → merge → cleanup), правила защиты
+  Git-контекста (`git -C <absolute-path>`, проверка pwd/ветки перед write),
+  запрет разрушительных операций без явного разрешения и чеклисты агента —
+  **`.agents/docs/git-workflow.md`** (обязателен к исполнению).
+- Merge и deployment — только по явному разрешению владельца; cleanup после
+  merge — только если разрешён полный lifecycle задачи.
+
 ## Editorial workflow и блог
 
 Подготовка статей блога и публикаций Telegram-канала «Домашний прод» —
@@ -22,9 +34,10 @@
 12 шагов конвейера, CLI). Скачивание/распаковка входящих архивов, генерация
 иллюстраций (`$imagegen`), валидация и публикация — по этому скиллу.
 
-- `tmp/` — вне Git, только материалы конкретных публикаций:
-  `inbox/`, `working/`, `drafts/`, `done/` (+ `bin/` — локальный Hugo).
-  Промптов, скриптов и реестров в `tmp/` нет — постоянная часть в скилле.
+- `tmp/` — вне Git: материалы конкретных публикаций (`inbox/`, `working/`,
+  `drafts/`, `done/`), `bin/` (локальный Hugo) и worktrees задач
+  (`tmp/worktree/<branch-dir>`, см. Git workflow выше). Промптов, скриптов
+  и реестров в `tmp/` нет — постоянная часть в скилле.
 - Публикация и интеграция в `src/content/blog/` — только после явного
   approval владельца; commit/push/deploy — только по отдельному разрешению.
 - Блог — RU-only; EN-версии раздела нет и не создаётся.
@@ -33,7 +46,8 @@
 
 - Hugo закреплён версией `.hugo-version` (0.167.0). Homebrew мог обновить
   бинарник — тогда тесты падают на проверке версии; используй локальный
-  `HUGO_BIN=$PWD/tmp/bin/hugo` для `hugo`/`npm test`/preview.
+  `HUGO_BIN=$PWD/tmp/bin/hugo` для `hugo`/`npm test`/preview (в worktree —
+  абсолютный путь бинарника основного дерева, см. Git workflow выше).
 - Превью блога: `HUGO_BIN=$PWD/tmp/bin/hugo hugo server --buildDrafts`
   (контент блога уже production; `--buildDrafts` — страховка на случай
   черновиков) → http://127.0.0.1:1313/blog/ .
