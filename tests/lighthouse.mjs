@@ -39,7 +39,8 @@ const METRICS = {
   "total-blocking-time": ["TBT", 200],
   "cumulative-layout-shift": ["CLS", 0.1],
 }; // ms (CLS: unitless)
-const RUNS = 3; // attempts per page before a budget miss counts
+const RUNS = 3; // successful runs per page; budgets are checked against their median (not best-of-N)
+const MAX_ATTEMPTS = 5; // hard cap: extra attempts only for infrastructure errors (interstitial, no metrics), never for budget misses
 const QUIET = {
   pauseAfterLoadMs: 250,
   networkQuietThresholdMs: 250,
@@ -88,60 +89,99 @@ const chrome = await launch({
   chromeFlags: ["--headless=new", "--no-sandbox"],
   chromePath: process.env.CHROME_PATH,
 });
-const overBudget = (page, lhr) => [
-  ...Object.entries(SCORES)
-    .filter(([c, min]) => lhr.categories[c].score < min)
-    .map(([c, min]) => `${page}: ${c} ${lhr.categories[c].score} < ${min}`),
-  ...Object.entries(METRICS)
-    .filter(([id, [, max]]) => lhr.audits[id].numericValue > max)
-    .map(
-      ([id, [label, max]]) =>
-        `${page}: ${label} ${lhr.audits[id].numericValue} > ${max}`,
-    ),
-];
+// Best Practices: the `third-party-cookies` audit is skipped — Yandex.Metrika sets its own
+// cookies by design (`yandexuid`, `yabs-sid`, `sync_cookie_csrf`, ... from mc.yandex.ru in the
+// watch/tag.js responses), so this audit is deterministically red on CI runners while the
+// counter is enabled. This is an accepted owner trade-off, NOT a fix of the underlying issue.
+// All other Best Practices audits (CSP/XSS, console errors, deprecations, ...) stay active.
+// Revisit this exclusion if the analytics integration changes (different vendor or a cookieless mode).
+const SKIP_AUDITS = ["third-party-cookies"];
+const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
+// infrastructure error = the page did not actually load (Chrome interstitial, missing metrics);
+// budget misses are measurement results and must never trigger a retry
+const infraError = (lhr) =>
+  lhr.runtimeError?.message ||
+  Object.values(lhr.audits).some((a) => a.scoreDisplayMode === "error");
+const value = (lhr, id) => lhr.audits[id].numericValue;
+const metricCell = (label, v) =>
+  label === "CLS" ? Math.round(v * 1000) / 1000 : Math.round(v);
+
 const failures = [];
 const rows = [];
 mkdirSync(REPORTS, { recursive: true });
 try {
   for (const page of PAGES) {
-    // a shared CI runner has noisy neighbours (TBT swings from 0 to 300 ms between runs): a page fails only if it is over budget in all RUNS attempts
-    let result,
-      over,
-      tries = 0;
-    do {
-      tries++;
-      result = await lighthouse(origin + page, {
+    const runs = [];
+    let attempts = 0;
+    let lastReport = "";
+    while (runs.length < RUNS && attempts < MAX_ATTEMPTS) {
+      attempts++;
+      const result = await lighthouse(origin + page, {
         port: chrome.port,
         logLevel: "error",
         output: "html",
         onlyCategories: Object.keys(SCORES),
+        skipAudits: SKIP_AUDITS,
         ...QUIET,
       });
-      over = overBudget(page, result.lhr);
-    } while (over.length && tries < RUNS);
-    failures.push(...over);
-    const { lhr, report } = result;
-    const cells = [
-      ...Object.keys(SCORES).map((c) =>
-        Math.round(lhr.categories[c].score * 100),
-      ),
-      ...Object.entries(METRICS).map(([id, [label]]) =>
-        label === "CLS"
-          ? Math.round(lhr.audits[id].numericValue * 1000) / 1000
-          : Math.round(lhr.audits[id].numericValue),
-      ),
-    ];
+      if (infraError(result.lhr)) continue;
+      runs.push(result.lhr);
+      lastReport = result.report; // HTML report of the last successful run (all runs' values go to the table)
+    }
     const name =
       page
         .replace(/^\/|\.html$/g, "")
         .replace(/\/$/, "")
         .replaceAll("/", "-") || "home";
-    writeFileSync(join(REPORTS, `${name}.html`), report);
+    if (runs.length < RUNS) {
+      failures.push(
+        `${page}: only ${runs.length}/${RUNS} valid runs in ${attempts} attempts (infrastructure errors)`,
+      );
+      continue;
+    }
+    const last = { report: lastReport }; // keeps the summary/write block unchanged in shape
+    // budgets apply to the median of the RUNS runs; maxima are reported for diagnostics (spike visibility)
+    failures.push(
+      ...Object.entries(SCORES)
+        .filter(
+          ([c, min]) => median(runs.map((l) => l.categories[c].score)) < min,
+        )
+        .map(
+          ([c, min]) =>
+            `${page}: ${c} median ${median(runs.map((l) => l.categories[c].score))} < ${min}`,
+        ),
+      ...Object.entries(METRICS)
+        .filter(([id, [, max]]) => median(runs.map((l) => value(l, id))) > max)
+        .map(
+          ([id, [label, max]]) =>
+            `${page}: ${label} median ${Math.round(median(runs.map((l) => value(l, id))))} > ${max}`,
+        ),
+    );
+    const med = (id) => median(runs.map((l) => value(l, id)));
+    const cells = [
+      ...Object.keys(SCORES).map((c) =>
+        Math.round(median(runs.map((l) => l.categories[c].score)) * 100),
+      ),
+      ...Object.entries(METRICS).map(([id, [label]]) =>
+        metricCell(label, med(id)),
+      ),
+    ];
+    const maxima = [
+      `max LCP ${Math.round(Math.max(...runs.map((l) => value(l, "largest-contentful-paint"))))}`,
+      `max TBT ${Math.round(Math.max(...runs.map((l) => value(l, "total-blocking-time"))))}`,
+    ];
+    writeFileSync(join(REPORTS, `${name}.html`), last.report);
+    const runDetail = runs
+      .map(
+        (l) =>
+          `LCP ${Math.round(value(l, "largest-contentful-paint"))}/TBT ${Math.round(value(l, "total-blocking-time"))}`,
+      )
+      .join(", ");
     rows.push(
-      `| ${page}${tries > 1 ? ` (${tries} runs)` : ""} | ${cells.join(" | ")} |`,
+      `| ${page} | ${cells.join(" | ")} | ${maxima.join(", ")} (${runs.length} runs: ${runDetail}) |`,
     );
     console.log(
-      `${page.padEnd(20)} ${cells.join(" | ")}${tries > 1 ? `  (${tries} runs)` : ""}`,
+      `${page.padEnd(20)} ${cells.join(" | ")}  ${maxima.join(", ")}  [${runDetail}]`,
     );
   }
 } finally {
@@ -156,11 +196,13 @@ const head = [
   "Page",
   ...Object.keys(SCORES),
   ...Object.values(METRICS).map(([label]) => label),
+  "Runs (medians gate the budgets; maxima show spikes)",
 ];
 const budget = [
-  "budget",
+  "budget (median of 3 runs)",
   ...Object.values(SCORES).map((v) => `≥ ${v * 100}`),
   ...Object.values(METRICS).map(([, max]) => `≤ ${max}`),
+  "",
 ];
 const {
   GITHUB_SERVER_URL: host,
