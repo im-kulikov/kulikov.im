@@ -7,10 +7,10 @@ description: >-
 keywords: [lighthouse, яндекс-метрика, cookies, ci, hugo]
 date: 2026-11-13
 tags: [ci, аналитика, lighthouse]
-draft: true
+draft: false
 slug: metrika-lighthouse
 image: cover.webp
-telegram: ""
+telegram: "https://t.me/homeinprod/17"
 ---
 
 Долгое время я был уверен, что на моём сайте стоит Яндекс.Метрика. Счётчик числится в кабинете, настройки на месте — значит, работает. По крайней мере, так я думал. Захотелось посмотреть, сколько людей читает блог, открыл отчёты и увидел красивую пустоту.
