@@ -2,21 +2,34 @@ import { describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { ALL_PAGES, ROOT, SITE, all, attr, classes, dom, link, read } from "./helpers/site.mjs";
+import {
+  ALL_PAGES,
+  ROOT,
+  SITE,
+  all,
+  attr,
+  classes,
+  dom,
+  link,
+  read,
+} from "./helpers/site.mjs";
 
 const files = readdirSync(`${SITE}/css`);
 const css = files.map((f) => read(`css/${f}`)).join("\n");
 
 test("every page links exactly one local stylesheet and it exists", () => {
   for (const p of ALL_PAGES) {
-    const own = link(dom(p), "stylesheet").map((n) => attr(n, "href")).filter((h) => h.startsWith("/css/"));
+    const own = link(dom(p), "stylesheet")
+      .map((n) => attr(n, "href"))
+      .filter((h) => h.startsWith("/css/"));
     assert.equal(own.length, 1, p);
     assert.ok(files.includes(own[0].replace("/css/", "")), own[0]);
   }
 });
 
 test("size budget: CSS <= 90 KB (now ~64 KB)", () => {
-  for (const f of files) assert.ok(statSync(`${SITE}/css/${f}`).size <= 90 * 1024, f);
+  for (const f of files)
+    assert.ok(statSync(`${SITE}/css/${f}`).size <= 90 * 1024, f);
 });
 
 test("dark mode styles are present (prefers-color-scheme: dark)", () => {
@@ -34,25 +47,59 @@ test("no unprocessed Tailwind/PostCSS directives leaked into the output", () => 
 // with published articles and are exempt from the stale check when the blog content is absent.
 // language-* (code language markers) are exempt by pattern — the set is open-ended.
 const SITE_HOOKS = new Set([
-  "about", "default-page", "git-date", "git-hash", "git-info", "home", "home-page", "img",
-  "open-source", "open-source-page", "projects", "projects-page",
-  "resume", "resume-page", "services", "services-page", "system",
+  "about",
+  "default-page",
+  "git-date",
+  "git-hash",
+  "git-info",
+  "home",
+  "home-page",
+  "img",
+  "open-source",
+  "open-source-page",
+  "projects",
+  "projects-page",
+  "resume",
+  "resume-page",
+  "services",
+  "services-page",
+  "system",
 ]);
 const hasBlog = existsSync(join(ROOT, "src/content/blog"));
-const BLOG_HOOKS = hasBlog ? new Set(["cl", "l", "line", "post", "w"]) : new Set();
+// "cp" is a Chroma token (comment/preprocessor, e.g. {{ in a go-html-template fence)
+// that appears only with this article published — same exemption family as cl/line/w
+const BLOG_HOOKS = hasBlog
+  ? new Set(["cl", "cp", "l", "line", "post", "w"])
+  : new Set();
 const NO_RULE = new Set([...SITE_HOOKS, ...BLOG_HOOKS]);
 test("classes used in HTML have a CSS rule (except the allowlist)", () => {
-  const defined = new Set([...css.matchAll(/\.((?:\\.|[\w-])+)/g)].map((m) => m[1].replace(/\\(.)/g, "$1")));
-  const used = new Set(ALL_PAGES.flatMap((p) => all(dom(p), (n) => attr(n, "class")).flatMap(classes)));
-  const missing = [...used].filter((c) => !defined.has(c) && !NO_RULE.has(c) && !/^language-[\w-]+$/.test(c)).sort();
+  const defined = new Set(
+    [...css.matchAll(/\.((?:\\.|[\w-])+)/g)].map((m) =>
+      m[1].replace(/\\(.)/g, "$1"),
+    ),
+  );
+  const used = new Set(
+    ALL_PAGES.flatMap((p) =>
+      all(dom(p), (n) => attr(n, "class")).flatMap(classes),
+    ),
+  );
+  const missing = [...used]
+    .filter(
+      (c) => !defined.has(c) && !NO_RULE.has(c) && !/^language-[\w-]+$/.test(c),
+    )
+    .sort();
   assert.deepEqual(missing, []);
   // and the allowlist must not rot: every present hook is still used and still without a rule
   // (blog hooks only when the blog content exists — without articles they are legitimately absent)
-  const stale = [...SITE_HOOKS, ...(hasBlog ? BLOG_HOOKS : [])].filter((c) => !used.has(c) || defined.has(c)).sort();
+  const stale = [...SITE_HOOKS, ...(hasBlog ? BLOG_HOOKS : [])]
+    .filter((c) => !used.has(c) || defined.has(c))
+    .sort();
   assert.deepEqual(stale, [], "remove these unused or now-ruled hooks");
 });
 
 describe("accessibility and print", () => {
-  test("print stylesheet exists (header must not stay sticky on paper)", () => assert.match(css, /@media print/));
-  test("reduced-motion is respected", () => assert.match(css, /prefers-reduced-motion/));
+  test("print stylesheet exists (header must not stay sticky on paper)", () =>
+    assert.match(css, /@media print/));
+  test("reduced-motion is respected", () =>
+    assert.match(css, /prefers-reduced-motion/));
 });

@@ -135,4 +135,46 @@ terms:
     first_published_at: 2026-11-12
     first_article_id: blog-launch
     first_telegram_url: https://t.me/homeinprod/16
+  - term: LCP
+    definition: Largest Contentful Paint — метрика скорости отрисовки самого крупного элемента страницы
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: TBT
+    definition: Total Blocking Time — суммарное время блокировки основного потока браузера
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: CLS
+    definition: Cumulative Layout Shift — метрика сдвигов макета при загрузке
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: SEO
+    definition: Search Engine Optimization — поисковая оптимизация
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: CSP
+    definition: Content Security Policy — механизм ограничения источников контента на странице
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: Cookie
+    definition: небольшой файл, который сайт сохраняет в браузере посетителя
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
 
