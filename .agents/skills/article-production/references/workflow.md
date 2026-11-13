@@ -20,7 +20,7 @@
 7. **Telegram preview** — `telegram.md` + tg-check (`prompts/telegram.md`).
 8. **Image Brief** — `images/brief.md`, три РАЗНЫЕ концепции (`prompts/image.md`).
 9. **Генерация изображений через `$imagegen`** — built-in skill, без API-ключей;
-   6 вызовов (3 концепции × [1:1 + широкая]); preview — ресайз из cover.
+   6 вызовов (3 концепции × [3:2 + широкая 16:9]); preview — ресайз из cover.
 10. **Проверка изображений и подготовка размеров** — `images.mjs crop/check`.
 11. **Сборка Review Package** — `validate.mjs` → `package.mjs`
     (metadata.json + каркас review.md).

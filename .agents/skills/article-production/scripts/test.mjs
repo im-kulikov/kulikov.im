@@ -488,7 +488,7 @@ describe("images.mjs: размеры и бюджеты (без генераци�
   const concept = (dir, n, opts = {}) => {
     const c = join(dir, `concept-0${n}`);
     mkdirSync(c, { recursive: true });
-    writeFileSync(join(c, "telegram.png"), opts.tg ?? pngHdr(1024, 1024));
+    writeFileSync(join(c, "telegram.png"), opts.tg ?? pngHdr(1200, 800)); // 3:2 — единый формат ленты
     writeFileSync(join(c, "blog-cover.webp"), opts.cover ?? webpHdr(1280, 720));
     writeFileSync(join(c, "blog-preview.webp"), opts.preview ?? webpHdr(800, 450));
     writeFileSync(join(c, "prompt.md"), "prompt");
@@ -503,6 +503,25 @@ describe("images.mjs: размеры и бюджеты (без генераци�
     assert.match(r.out, /t\.webp: webp 1280×720/);
   });
 
+  test("crop: смена пропорций — ОТКАЗ (геометрия ≠ адаптация); --force-crop-ar / совпадение AR — можно", () => {
+    // фальшивый заголовок достаточен для ОТКАЗА: гейт срабатывает до реальной обработки
+    writeFileSync(join(sb, "scene.png"), pngHdr(1672, 941)); // широкая сцена, как в инциденте поста №16
+    const refuse = run("images.mjs", ["crop", join(sb, "scene.png"), "1024x1024", "--out", join(sb, "x1.webp")], sb);
+    assert.equal(refuse.status, 2);
+    assert.match(refuse.err, /меняет пропорции/);
+    assert.match(refuse.err, /force-crop-ar/);
+    // для случаев, где обработка РЕАЛЬНО выполняется, нужен настоящий PNG (Chrome его грузит):
+    // герметичная фикстура 1×1 — заголовок врёт только о размере, пиксель настоящий
+    const real1x1 = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+    writeFileSync(join(sb, "real.png"), real1x1);
+    // явный осознанный флаг (--force-crop-ar) — обработка идёт
+    const forced = run("images.mjs", ["crop", join(sb, "real.png"), "4x2", "--force-crop-ar", "--out", join(sb, "x2.webp")], sb);
+    assert.equal(forced.status, 0, forced.err);
+    // совпадающие пропорции (1:1 → 2×2) — гейт не спрашивает, обработка идёт
+    const same = run("images.mjs", ["crop", join(sb, "real.png"), "2x2", "--out", join(sb, "x3.webp")], sb);
+    assert.equal(same.status, 0, same.err);
+  });
+
   test("check: три корректные концепции проходят", () => {
     const dir = join(sb, "drafts/ok/images");
     [1, 2, 3].forEach((n) => concept(dir, n));
@@ -512,12 +531,12 @@ describe("images.mjs: размеры и бюджеты (без генераци�
 
   test("check: не-квадрат, не-16:9, лишний вес, две концепции — отклоняется", () => {
     const dir = join(sb, "drafts/bad/images");
-    concept(dir, 1, { tg: pngHdr(1024, 768) }); // telegram не 1:1
+    concept(dir, 1, { tg: pngHdr(1024, 1024) }); // telegram не 3:2 (квадрат — больше не формат)
     concept(dir, 2, { cover: Buffer.concat([webpHdr(1024, 768), Buffer.alloc(160 * 1024)]) }); // не 16:9 + >150 КБ
     // concept-03 отсутствует
     const r = run("images.mjs", ["check", dir], sb);
     assert.equal(r.status, 1);
-    assert.match(r.err, /не квадрат 1:1/);
+    assert.match(r.err, /не 3:2/);
     assert.match(r.err, /не 16:9/);
     assert.match(r.err, /150 КБ/);
     assert.match(r.err, /концепций 2/);
@@ -631,7 +650,7 @@ describe("package.mjs: сборка review package", () => {
       const c = join(img, `concept-0${n}`);
       mkdirSync(c, { recursive: true });
       writeFileSync(join(c, "prompt.md"), "использованный промпт");
-      writeFileSync(join(c, "telegram.png"), pngHdr(1024, 1024));
+      writeFileSync(join(c, "telegram.png"), pngHdr(1200, 800));
       writeFileSync(join(c, "blog-cover.webp"), webpHdr(1280, 720));
       writeFileSync(join(c, "blog-preview.webp"), webpHdr(800, 450));
     });
@@ -938,7 +957,7 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     [1, 2, 3].forEach((n) => {
       const c = join(img, `concept-0${n}`);
       mkdirSync(c, { recursive: true });
-      writeFileSync(join(c, "telegram.png"), pngHdr(1024, 1024));
+      writeFileSync(join(c, "telegram.png"), pngHdr(1200, 800));
       writeFileSync(join(c, "blog-cover.webp"), webpHdr(1280, 720));
       writeFileSync(join(c, "blog-preview.webp"), webpHdr(800, 450));
       writeFileSync(join(c, "prompt.md"), "p");
@@ -1161,12 +1180,12 @@ describe("hardening: собственное ревью PR #31 (3 домена)",
   test("terms: одиночные КАПС-буквы и «буква+цифры» (И, В, P2, А4) — НЕ кандидаты; P2P/B2B — кандидаты", () => {
     const reg = registry(sb);
     const res = spawnSync("node", [join(SCRIPTS, "terms.mjs"), "check", "-", "--registry", reg], {
-      input: "И конвейер, а В итоге UTF-16 считает P2 и А4, но P2P-сеть и B2B — да. X-TOKEN целиком.",
+      input: "И конвейер, а В итоге АЭС считает P2 и А4, но P2P-сеть и B2B — да. X-TOKEN целиком.", // UTF-16/CI/PR… уже в реестре (published с blog-launch) — кандидатами быть не обязаны
       encoding: "utf8", env: { ...process.env, EDITORIAL_TMP: sb },
     });
     assert.equal(res.status, 0, res.stderr);
     const j = JSON.parse(res.stdout);
-    for (const yes of ["UTF-16", "P2P", "B2B", "X-TOKEN"]) assert.ok(j.candidates.includes(yes), `${yes} должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
+    for (const yes of ["АЭС", "P2P", "B2B", "X-TOKEN"]) assert.ok(j.candidates.includes(yes), `${yes} должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
     for (const no of ["P2", "А4"]) assert.ok(!j.candidates.includes(no), `${no} — не термин: ${JSON.stringify(j.candidates)}`);
     assert.ok(!j.candidates.some((c) => c.length === 1), `одиночных букв нет: ${JSON.stringify(j.candidates)}`);
   });
