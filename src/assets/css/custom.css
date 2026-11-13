@@ -549,8 +549,20 @@
         @apply pt-10 pb-8 lg:pt-14 lg:pb-10;
     }
     .blog-hero-art {
-        /* compact brand mark beside the text; the source WebP is sized for 2x (560px) */
-        max-width: 280px;
+        /* compact brand mark: small accent under the text on mobile (200px, centered),
+           slightly larger side-by-side from sm (640), full 280px from lg (1024);
+           the source WebP is sized for 2x (560px) */
+        max-width: 200px;
+    }
+    @media (min-width: 640px) {
+        .blog-hero-art {
+            max-width: 220px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .blog-hero-art {
+            max-width: 280px;
+        }
     }
 
     .post-header {

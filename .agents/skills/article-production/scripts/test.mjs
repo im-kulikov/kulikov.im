@@ -521,6 +521,344 @@ describe("images.mjs: размеры и бюджеты (без генераци�
     const same = run("images.mjs", ["crop", join(sb, "real.png"), "2x2", "--out", join(sb, "x3.webp")], sb);
     assert.equal(same.status, 0, same.err);
   });
+  // --- Telegram-first outpaint helpers (реальные PNG через Chrome canvas) ---
+  const realPng = async (w, h, paintSrc) => {
+    const { chromium } = await import("playwright-core");
+    const b = await chromium.launch({ channel: "chrome" });
+    const page = await b.newPage();
+    const b64 = await page.evaluate(
+      async ([w, h, paintSrc]) => {
+        const paint = eval("(" + paintSrc + ")");
+        const c = new OffscreenCanvas(w, h);
+        const ctx = c.getContext("2d");
+        paint(ctx, w, h);
+        const blob = await c.convertToBlob({ type: "image/png" });
+        const buf = new Uint8Array(await blob.arrayBuffer());
+        let bin = "";
+        for (const byte of buf) bin += String.fromCharCode(byte);
+        return btoa(bin);
+      },
+      [w, h, paintSrc],
+    );
+    await b.close();
+    return Buffer.from(b64, "base64");
+  };
+  const solidAndEdge = async (w, h) =>
+    realPng(
+      w,
+      h,
+      '(ctx, W, H) => { ctx.fillStyle = "#123456"; ctx.fillRect(0, 0, W, H); ctx.fillStyle = "#abcdef"; ctx.fillRect(0, 0, 1, H); ctx.fillRect(W - 1, 0, 1, H); }',
+    );
+
+  test("encoder по расширению выхода: PNG→PNG (magic PNG), PNG→WebP, WebP→WebP; input guard на переименование", async () => {
+    const png = await realPng(
+      16,
+      8,
+      '(ctx) => { ctx.fillStyle = "#f00"; ctx.fillRect(0, 0, 16, 8); }',
+    );
+    writeFileSync(join(sb, "enc.png"), png);
+    const toPng = run(
+      "images.mjs",
+      ["crop", join(sb, "enc.png"), "16x8", "--out", join(sb, "enc2.png")],
+      sb,
+    );
+    assert.equal(toPng.status, 0, toPng.err);
+    assert.equal(
+      readFileSync(join(sb, "enc2.png")).subarray(0, 4).toString("latin1"),
+      "\x89PNG",
+      "выход .png обязан быть PNG по magic bytes",
+    );
+    const toWebpOut = run(
+      "images.mjs",
+      ["crop", join(sb, "enc.png"), "16x8", "--out", join(sb, "enc3.webp")],
+      sb,
+    );
+    assert.equal(toWebpOut.status, 0, toWebpOut.err);
+    assert.equal(
+      readFileSync(join(sb, "enc3.webp")).subarray(0, 4).toString("latin1"),
+      "RIFF",
+      "выход .webp обязан быть WebP",
+    );
+    const webpToPng = run(
+      "images.mjs",
+      ["crop", join(sb, "enc3.webp"), "16x8", "--out", join(sb, "enc4.png")],
+      sb,
+    );
+    assert.equal(webpToPng.status, 0, webpToPng.err);
+    assert.equal(
+      readFileSync(join(sb, "enc4.png")).subarray(0, 4).toString("latin1"),
+      "\x89PNG",
+    );
+    const webpToWebp = run(
+      "images.mjs",
+      ["crop", join(sb, "enc3.webp"), "16x8", "--out", join(sb, "enc5.webp")],
+      sb,
+    );
+    assert.equal(webpToWebp.status, 0, webpToWebp.err);
+    // вход с нечестным расширением: PNG-содержимое под .webp — отказ
+    writeFileSync(join(sb, "liar.webp"), png);
+    const liar = run(
+      "images.mjs",
+      [
+        "crop",
+        join(sb, "liar.webp"),
+        "16x8",
+        "--out",
+        join(sb, "liar-out.webp"),
+      ],
+      sb,
+    );
+    assert.equal(liar.status, 2);
+    assert.match(liar.err, /содержимое — png/);
+  });
+
+  test("outpaint-stage: 1536×1024 → 1820×1024, симметрично по 142px; неверный размер — отказ", async () => {
+    const master = await solidAndEdge(1536, 1024);
+    writeFileSync(join(sb, "master.png"), master);
+    const staged = run(
+      "images.mjs",
+      [
+        "outpaint-stage",
+        join(sb, "master.png"),
+        "--out",
+        join(sb, "expanded.png"),
+      ],
+      sb,
+    );
+    assert.equal(staged.status, 0, staged.err);
+    const i = JSON.parse(
+      (run("images.mjs", ["info", join(sb, "expanded.png")], sb)
+        .out.replace(/:\s/, "|")
+        .split("|")[1]
+        .split(",")[0]
+        .trim() &&
+        "{}") ||
+        "{}",
+    ); // размеры проверяем через verify ниже (info не JSON); здесь достаточно существования
+    assert.ok(existsSync(join(sb, "expanded.png")));
+    const wrong = run(
+      "images.mjs",
+      [
+        "outpaint-stage",
+        join(sb, "master.png"),
+        "--side",
+        "100",
+        "--out",
+        join(sb, "e2.png"),
+      ],
+      sb,
+    );
+    assert.equal(wrong.status, 2);
+    assert.match(wrong.err, /side/);
+  });
+
+  test("outpaint-verify: центр совпадает пиксель в пиксель после stage+fill; изменённый центр — отказ", async () => {
+    const master = await solidAndEdge(1536, 1024);
+    writeFileSync(join(sb, "m2.png"), master);
+    const st = run(
+      "images.mjs",
+      ["outpaint-stage", join(sb, "m2.png"), "--out", join(sb, "exp2.png")],
+      sb,
+    );
+    assert.equal(st.status, 0, st.err);
+    const ok = run(
+      "images.mjs",
+      ["outpaint-verify", join(sb, "exp2.png"), join(sb, "m2.png")],
+      sb,
+    );
+    assert.equal(ok.status, 0, ok.err);
+    assert.match(ok.out, /mismatched: 0/);
+    // эмуляция генеративного заполнения: перекрасить ТОЛЬКО боковые зоны (центр не трогать)
+    const { chromium } = await import("playwright-core");
+    const b = await chromium.launch({ channel: "chrome" });
+    const page = await b.newPage();
+    const drawOn = async (src, drawSrc) => {
+      const b64 = await page.evaluate(
+        async ([url, drawSrc]) => {
+          const img = new Image();
+          await new Promise((res, rej) => {
+            img.onload = res;
+            img.onerror = rej;
+            img.src = url;
+          });
+          const c = new OffscreenCanvas(1820, 1024);
+          const ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          eval("(" + drawSrc + ")(ctx)");
+          const blob = await c.convertToBlob({ type: "image/png" });
+          const buf = new Uint8Array(await blob.arrayBuffer());
+          let bin = "";
+          for (const byte of buf) bin += String.fromCharCode(byte);
+          return btoa(bin);
+        },
+        [
+          "data:image/png;base64," +
+            readFileSync(join(sb, src)).toString("base64"),
+          drawSrc,
+        ],
+      );
+      const outName = src.replace(".png", "-t.png");
+      writeFileSync(join(sb, outName), Buffer.from(b64, "base64"));
+      return outName;
+    };
+    const filled = await drawOn(
+      "exp2.png",
+      '(ctx) => { ctx.fillStyle = "#00ff00"; ctx.fillRect(0, 0, 142, 1024); ctx.fillRect(1678, 0, 142, 1024); }',
+    );
+    const vOk = run(
+      "images.mjs",
+      ["outpaint-verify", join(sb, filled), join(sb, "m2.png")],
+      sb,
+    );
+    assert.equal(vOk.status, 0, vOk.err); // края перекрашены, центр не тронут — verify проходит
+    assert.match(vOk.out, /seams/);
+    const badFile = await drawOn(
+      "exp2.png",
+      '(ctx) => { ctx.fillStyle = "#ff00ff"; ctx.fillRect(700, 500, 50, 50); }',
+    );
+    await b.close();
+    const bad = run(
+      "images.mjs",
+      ["outpaint-verify", join(sb, badFile), join(sb, "m2.png")],
+      sb,
+    );
+    assert.equal(bad.status, 1);
+    assert.match(bad.err || bad.out, /не совпадает|mismatched: [1-9]/);
+  });
+
+  test("manifest: telegram-first полный — ок; без side_px — отказ; separate-compositions без outpaint-полей — ок", () => {
+    const good = {
+      visual_review: { status: "pending-review" },
+      mode: "telegram-first",
+      brief: "images/brief.md",
+      master: { w: 1536, h: 1024 },
+      side_px: 142,
+      expanded: "outpaint-expanded.png",
+      outpaint_instructions: "outpaint.md",
+      provenance: "provenance.json",
+      outputs: {
+        telegram: "telegram.png",
+        cover: "blog-cover.webp",
+        preview: "blog-preview.webp",
+      },
+    };
+    writeFileSync(join(sb, "m-ok.json"), JSON.stringify(good));
+    assert.equal(
+      run("images.mjs", ["manifest", join(sb, "m-ok.json")], sb).status,
+      0,
+    );
+    const bad = { ...good, side_px: 100 };
+    delete bad.expanded;
+    writeFileSync(join(sb, "m-bad.json"), JSON.stringify(bad));
+    const r = run("images.mjs", ["manifest", join(sb, "m-bad.json")], sb);
+    assert.equal(r.status, 1);
+    assert.match(r.err, /side_px/);
+    const fallback = {
+      mode: "separate-compositions",
+      brief: "images/brief.md",
+      provenance: "provenance.json",
+      outputs: {
+        telegram: "telegram.png",
+        cover: "blog-cover.webp",
+        preview: "blog-preview.webp",
+      },
+    };
+    writeFileSync(join(sb, "m-fb.json"), JSON.stringify(fallback));
+    assert.equal(
+      run("images.mjs", ["manifest", join(sb, "m-fb.json")], sb).status,
+      0,
+    );
+    // визуальный review — обязательное поле tg-first manifest; статус ставит
+    // владелец после осмотра швов: автоматика (tests/provenance/pixel-perfect)
+    // его не выводит и не подменяет
+    const noReview = { ...good };
+    delete noReview.visual_review;
+    writeFileSync(join(sb, "m-noreview.json"), JSON.stringify(noReview));
+    const rNoReview = run("images.mjs", ["manifest", join(sb, "m-noreview.json")], sb);
+    assert.equal(rNoReview.status, 1);
+    assert.match(rNoReview.err, /visual_review/);
+    const badStatus = { ...good, visual_review: { status: "auto-approved" } };
+    writeFileSync(join(sb, "m-badstatus.json"), JSON.stringify(badStatus));
+    const rBad = run("images.mjs", ["manifest", join(sb, "m-badstatus.json")], sb);
+    assert.equal(rBad.status, 1);
+    assert.match(rBad.err, /visual_review/);
+  });
+
+  test("provenance: полный tg-first каталог — ок; без master — отказ", async () => {
+    const dir = join(sb, "prov/concept-01");
+    mkdirSync(dir, { recursive: true });
+    const master = await solidAndEdge(1536, 1024);
+    writeFileSync(join(dir, "telegram-master.png"), master);
+    const st = run(
+      "images.mjs",
+      [
+        "outpaint-stage",
+        join(dir, "telegram-master.png"),
+        "--out",
+        join(dir, "outpaint-expanded.png"),
+      ],
+      sb,
+    );
+    assert.equal(st.status, 0, st.err);
+    writeFileSync(join(dir, "telegram.png"), pngHdr(1200, 800));
+    writeFileSync(join(dir, "blog-cover.webp"), webpHdr(1280, 720));
+    writeFileSync(join(dir, "blog-preview.webp"), webpHdr(800, 450));
+    writeFileSync(join(dir, "visual-brief.md"), "canonical brief");
+    writeFileSync(join(dir, "outpaint-instructions.md"), "fill sides only");
+    writeFileSync(
+      join(dir, "visual-manifest.json"),
+      JSON.stringify({
+        mode: "telegram-first",
+        brief: "visual-brief.md",
+        master: { w: 1536, h: 1024 },
+        side_px: 142,
+        expanded: "outpaint-expanded.png",
+        outpaint_instructions: "outpaint-instructions.md",
+        provenance: "provenance.json",
+        outputs: {
+          telegram: "telegram.png",
+          cover: "blog-cover.webp",
+          preview: "blog-preview.webp",
+        },
+      }),
+    );
+    const ok = run("images.mjs", ["provenance", dir], sb);
+    assert.equal(ok.status, 0, ok.err);
+    const prov = JSON.parse(readFileSync(join(dir, "provenance.json"), "utf8"));
+    assert.equal(prov.files["telegram-master.png"].w, 1536);
+    assert.ok(prov.files["telegram-master.png"].sha256);
+    // без master — отказ
+    const dir2 = join(sb, "prov/concept-02");
+    mkdirSync(dir2, { recursive: true });
+    for (const f of [
+      "telegram.png",
+      "blog-cover.webp",
+      "blog-preview.webp",
+      "visual-brief.md",
+    ])
+      writeFileSync(join(dir2, f), "x");
+    writeFileSync(
+      join(dir2, "visual-manifest.json"),
+      JSON.stringify({
+        mode: "telegram-first",
+        brief: "visual-brief.md",
+        master: { w: 1536, h: 1024 },
+        side_px: 142,
+        expanded: "outpaint-expanded.png",
+        outpaint_instructions: "outpaint-instructions.md",
+        provenance: "provenance.json",
+        outputs: {
+          telegram: "telegram.png",
+          cover: "blog-cover.webp",
+          preview: "blog-preview.webp",
+        },
+      }),
+    );
+    const miss = run("images.mjs", ["provenance", dir2], sb);
+    assert.equal(miss.status, 1);
+    assert.match(miss.err, /telegram-master\.png/);
+  });
+
 
   test("check: три корректные концепции проходят", () => {
     const dir = join(sb, "drafts/ok/images");

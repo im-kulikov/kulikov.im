@@ -10,7 +10,7 @@
     {{- $paginator := .Paginate .RegularPagesRecursive }}
     <header class="hero blog-hero">
         <div class="container">
-            <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+            <div class="grid items-center gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-8 lg:gap-12">
                 <div>
                     {{- with .Params.section.eyebrow }}<p><span class="eyebrow">{{ . }}</span></p>{{ end }}
                     <h1 class="hero-title-sm mt-5">{{ .Params.section.title | default .Title }}</h1>
