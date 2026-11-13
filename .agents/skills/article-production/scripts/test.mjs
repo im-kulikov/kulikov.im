@@ -503,6 +503,25 @@ describe("images.mjs: размеры и бюджеты (без генераци�
     assert.match(r.out, /t\.webp: webp 1280×720/);
   });
 
+  test("crop: смена пропорций — ОТКАЗ (геометрия ≠ адаптация); --force-crop-ar / совпадение AR — можно", () => {
+    // фальшивый заголовок достаточен для ОТКАЗА: гейт срабатывает до реальной обработки
+    writeFileSync(join(sb, "scene.png"), pngHdr(1672, 941)); // широкая сцена, как в инциденте поста №16
+    const refuse = run("images.mjs", ["crop", join(sb, "scene.png"), "1024x1024", "--out", join(sb, "x1.webp")], sb);
+    assert.equal(refuse.status, 2);
+    assert.match(refuse.err, /меняет пропорции/);
+    assert.match(refuse.err, /force-crop-ar/);
+    // для случаев, где обработка РЕАЛЬНО выполняется, нужен настоящий PNG (Chrome его грузит):
+    // герметичная фикстура 1×1 — заголовок врёт только о размере, пиксель настоящий
+    const real1x1 = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+    writeFileSync(join(sb, "real.png"), real1x1);
+    // явный осознанный флаг (--force-crop-ar) — обработка идёт
+    const forced = run("images.mjs", ["crop", join(sb, "real.png"), "4x2", "--force-crop-ar", "--out", join(sb, "x2.webp")], sb);
+    assert.equal(forced.status, 0, forced.err);
+    // совпадающие пропорции (1:1 → 2×2) — гейт не спрашивает, обработка идёт
+    const same = run("images.mjs", ["crop", join(sb, "real.png"), "2x2", "--out", join(sb, "x3.webp")], sb);
+    assert.equal(same.status, 0, same.err);
+  });
+
   test("check: три корректные концепции проходят", () => {
     const dir = join(sb, "drafts/ok/images");
     [1, 2, 3].forEach((n) => concept(dir, n));

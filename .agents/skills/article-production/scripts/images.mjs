@@ -157,6 +157,17 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       if (!src || !spec) throw new Error(`usage: images.mjs ${cmd} <src> ${cmd === "convert" ? "<width>" : "<WxH>"} [--quality 85] [--out <file>]`);
       const quality = +opt("quality", 85) / 100;
       const mode = cmd === "convert" ? { type: "fit", width: +spec } : { type: "crop", w: +spec.split("x")[0], h: +spec.split("x")[1] };
+      // ГЕОМЕТРИЯ ≠ АДАПТАЦИЯ (инцидент поста №16: центр-кроп широкой СЦЕНЫ в квадрат
+      // срезал третью станцию конвейера и самолётик). Кроп при несовпадении пропорций —
+      // только осознанно: явный --force-crop-ar. Совпадающие пропорции (ресайз-кроп) — как было.
+      if (cmd === "crop" && !rest.includes("--force-crop-ar")) {
+        const si = imageInfo(resolve(src));
+        if (Math.abs(si.w / si.h - mode.w / mode.h) > AR_TOL)
+          throw new Error(
+            `кроп ${si.w}×${si.h} → ${mode.w}×${mode.h} меняет пропорции (${(si.w / si.h).toFixed(2)} → ${(mode.w / mode.h).toFixed(2)}) — центр-кроп режет композицию. ` +
+              `Варианты: сгенерировать/адаптировать под целевой формат; convert (ресайз с сохранением пропорций); поле --force-crop-ar — только если обрезаемое заведомо не смысл.`,
+          );
+      }
       const base = src.replace(/\.[^.]+$/, "");
       const out = resolve(opt("out", cmd === "convert" ? `${base}.webp` : `${base}-${spec}.webp`));
       await toWebp(resolve(src), mode, quality, out);
