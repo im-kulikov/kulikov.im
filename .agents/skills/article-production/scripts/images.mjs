@@ -41,7 +41,7 @@ export function imageInfo(file) {
 
 const KB = 1024;
 const LIMITS = {
-  telegram: { maxBytes: 5 * KB * KB, label: "5 МБ (фото Telegram)" },
+  telegram: { maxBytes: 5 * KB * KB, label: "5 МБ (фото Telegram)", ar: 3 / 2, arLabel: "3:2" },
   webp: { maxBytes: 150 * KB, label: "150 КБ (бюджет сайта, tests/images.test.mjs)" },
   coverMinW: 1280,
   previewW: [720, 880],
@@ -49,6 +49,8 @@ const LIMITS = {
 // Требуемый формат по имени файла: imageInfo читает тип по magic bytes, и без этой
 // сверки PNG, переименованный в blog-cover.webp, проходил бы гейты (переименование ≠ конвертация).
 const REQUIRED_TYPE = { "telegram.png": "png", "blog-cover.webp": "webp", "blog-preview.webp": "webp" };
+// Допуск на отклонение пропорций (последние ~2% — артефакты округления пикселей, не «другой формат»)
+const AR_TOL = 0.02;
 
 // ---------- проверка images/concept-*/ (шаг 10) ----------
 export function checkImages(dir) {
@@ -81,7 +83,10 @@ export function checkImages(dir) {
       concepts[c][name] = rec;
       if (rec.type !== REQUIRED_TYPE[name]) problems.push(`${c}/${name}: содержимое — ${rec.type}, а требуется ${REQUIRED_TYPE[name]} (переименование файла не конвертирует его)`);
       if (name === "telegram.png") {
-        if (rec.w !== rec.h) problems.push(`${c}/telegram.png: ${rec.w}×${rec.h} — не квадрат 1:1`);
+        // 3:2 (например 1200×800) — единый формат ленты канала; квадрат БЫЛ формально
+        // «проходным», пока кроп из широких сцен не резал композицию (инцидент поста №16)
+        if (Math.abs(rec.w / rec.h - LIMITS.telegram.ar) > AR_TOL)
+          problems.push(`${c}/telegram.png: ${rec.w}×${rec.h} — не 3:2 (цель 1200×800); НЕ кропить чужую композицию — генерируй/адаптируй под 3:2`);
         if (bytes > LIMITS.telegram.maxBytes) problems.push(`${c}/telegram.png: ${(bytes / KB / KB).toFixed(1)} МБ > ${LIMITS.telegram.label}`);
       } else {
         webpSum += bytes;

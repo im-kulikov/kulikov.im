@@ -488,7 +488,7 @@ describe("images.mjs: размеры и бюджеты (без генераци�
   const concept = (dir, n, opts = {}) => {
     const c = join(dir, `concept-0${n}`);
     mkdirSync(c, { recursive: true });
-    writeFileSync(join(c, "telegram.png"), opts.tg ?? pngHdr(1024, 1024));
+    writeFileSync(join(c, "telegram.png"), opts.tg ?? pngHdr(1200, 800)); // 3:2 — единый формат ленты
     writeFileSync(join(c, "blog-cover.webp"), opts.cover ?? webpHdr(1280, 720));
     writeFileSync(join(c, "blog-preview.webp"), opts.preview ?? webpHdr(800, 450));
     writeFileSync(join(c, "prompt.md"), "prompt");
@@ -512,12 +512,12 @@ describe("images.mjs: размеры и бюджеты (без генераци�
 
   test("check: не-квадрат, не-16:9, лишний вес, две концепции — отклоняется", () => {
     const dir = join(sb, "drafts/bad/images");
-    concept(dir, 1, { tg: pngHdr(1024, 768) }); // telegram не 1:1
+    concept(dir, 1, { tg: pngHdr(1024, 1024) }); // telegram не 3:2 (квадрат — больше не формат)
     concept(dir, 2, { cover: Buffer.concat([webpHdr(1024, 768), Buffer.alloc(160 * 1024)]) }); // не 16:9 + >150 КБ
     // concept-03 отсутствует
     const r = run("images.mjs", ["check", dir], sb);
     assert.equal(r.status, 1);
-    assert.match(r.err, /не квадрат 1:1/);
+    assert.match(r.err, /не 3:2/);
     assert.match(r.err, /не 16:9/);
     assert.match(r.err, /150 КБ/);
     assert.match(r.err, /концепций 2/);
@@ -631,7 +631,7 @@ describe("package.mjs: сборка review package", () => {
       const c = join(img, `concept-0${n}`);
       mkdirSync(c, { recursive: true });
       writeFileSync(join(c, "prompt.md"), "использованный промпт");
-      writeFileSync(join(c, "telegram.png"), pngHdr(1024, 1024));
+      writeFileSync(join(c, "telegram.png"), pngHdr(1200, 800));
       writeFileSync(join(c, "blog-cover.webp"), webpHdr(1280, 720));
       writeFileSync(join(c, "blog-preview.webp"), webpHdr(800, 450));
     });
@@ -938,7 +938,7 @@ describe("hardening: фиксы по ревью PR #31 (Copilot)", () => {
     [1, 2, 3].forEach((n) => {
       const c = join(img, `concept-0${n}`);
       mkdirSync(c, { recursive: true });
-      writeFileSync(join(c, "telegram.png"), pngHdr(1024, 1024));
+      writeFileSync(join(c, "telegram.png"), pngHdr(1200, 800));
       writeFileSync(join(c, "blog-cover.webp"), webpHdr(1280, 720));
       writeFileSync(join(c, "blog-preview.webp"), webpHdr(800, 450));
       writeFileSync(join(c, "prompt.md"), "p");

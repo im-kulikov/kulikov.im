@@ -49,7 +49,7 @@ whenToUse: "Когда в tmp/inbox/ появляется ZIP-архив с ма
 | 6 | Markdown-статья | `prompts/article.md` |
 | 7 | Telegram preview | `prompts/telegram.md` + `scripts/tg-check.mjs` |
 | 8 | Image Brief (3 концепции) | `prompts/image.md` |
-| 9 | Генерация изображений | встроенный `$imagegen` или `codex exec` по подписке (см. правило 2; 6 вызовов: 3 концепции × [1:1 + широкая]) |
+| 9 | Генерация изображений | встроенный `$imagegen` или `codex exec` по подписке (см. правило 2; 6 вызовов: 3 концепции × [3:2 + широкая 16:9]) |
 | 10 | Проверка и размеры | `scripts/images.mjs` (crop 1280×720 / 800×450, check) |
 | 11 | Review Package | `scripts/validate.mjs` → `scripts/package.mjs` |
 | 12 | Human review | показать всё владельцу; выбор концепции; правки |
