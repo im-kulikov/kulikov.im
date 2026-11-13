@@ -1180,12 +1180,12 @@ describe("hardening: собственное ревью PR #31 (3 домена)",
   test("terms: одиночные КАПС-буквы и «буква+цифры» (И, В, P2, А4) — НЕ кандидаты; P2P/B2B — кандидаты", () => {
     const reg = registry(sb);
     const res = spawnSync("node", [join(SCRIPTS, "terms.mjs"), "check", "-", "--registry", reg], {
-      input: "И конвейер, а В итоге UTF-16 считает P2 и А4, но P2P-сеть и B2B — да. X-TOKEN целиком.",
+      input: "И конвейер, а В итоге АЭС считает P2 и А4, но P2P-сеть и B2B — да. X-TOKEN целиком.", // UTF-16/CI/PR… уже в реестре (published с blog-launch) — кандидатами быть не обязаны
       encoding: "utf8", env: { ...process.env, EDITORIAL_TMP: sb },
     });
     assert.equal(res.status, 0, res.stderr);
     const j = JSON.parse(res.stdout);
-    for (const yes of ["UTF-16", "P2P", "B2B", "X-TOKEN"]) assert.ok(j.candidates.includes(yes), `${yes} должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
+    for (const yes of ["АЭС", "P2P", "B2B", "X-TOKEN"]) assert.ok(j.candidates.includes(yes), `${yes} должен быть кандидатом: ${JSON.stringify(j.candidates)}`);
     for (const no of ["P2", "А4"]) assert.ok(!j.candidates.includes(no), `${no} — не термин: ${JSON.stringify(j.candidates)}`);
     assert.ok(!j.candidates.some((c) => c.length === 1), `одиночных букв нет: ${JSON.stringify(j.candidates)}`);
   });
