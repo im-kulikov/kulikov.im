@@ -3,7 +3,14 @@
 // These tests keep the analytics wired into the production build on every page.
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildSite } from "./helpers/hugo.mjs";
@@ -38,15 +45,39 @@ describe("yandex metrika in the production build", () => {
     });
   }
 
-  test("counter id appears only in the metrika partial (no duplicate counters)", () => {
+  // A second *installed* counter can only come from executable Hugo templates
+  // (src/layouts/**/*.html). Prose in src/content/** is authored text — articles
+  // may legitimately mention the counter id (e.g. the metrika-lighthouse post)
+  // without being a counter, so content is intentionally out of scope here.
+  const layoutFilesWithId = (root) => {
     const files = (d, base = d) =>
       readdirSync(d, { withFileTypes: true }).flatMap((e) =>
         e.isDirectory() ? files(join(d, e.name), base) : [join(d, e.name)],
       );
-    const withId = files("src").filter((f) =>
-      readFileSync(f, "utf8").includes(COUNTER),
-    );
-    assert.deepEqual(withId, ["src/layouts/partials/yandex.metrika.html"]);
+    return files(root)
+      .filter((f) => f.endsWith(".html"))
+      .filter((f) => readFileSync(f, "utf8").includes(COUNTER));
+  };
+
+  test("counter id appears only in the metrika partial (no duplicate counters)", () => {
+    assert.deepEqual(layoutFilesWithId("src/layouts"), [
+      "src/layouts/partials/yandex.metrika.html",
+    ]);
+  });
+
+  test("counter id mentioned in content prose is not a counter (regression: metrika-lighthouse article)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "analytics-content-"));
+    try {
+      const post = join(dir, "src/content/blog/metrika-lighthouse");
+      mkdirSync(post, { recursive: true });
+      writeFileSync(
+        join(post, "index.md"),
+        `---\ntitle: t\ndraft: true\n---\n\nСчётчик ${COUNTER} существует и настроен на сайт.`,
+      );
+      assert.deepEqual(layoutFilesWithId(dir), []);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
