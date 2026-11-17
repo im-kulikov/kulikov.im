@@ -10,7 +10,7 @@ tags: [monitoring, grafana, docker, homelab]
 draft: false
 slug: grafana-optimization
 image: cover.webp
-telegram: ""
+telegram: "https://t.me/homeinprod/20"
 ---
 
 Меня в это дело втянул алерт: домашняя Grafana вышла за мой бюджет по памяти. Я увидел 570 с лишним МБ, перезапустил контейнер и получил 360 с лишним. Уже легче, но вопрос остался: что раздувает контейнер, если даже без рендера и заметной нагрузки Grafana ест больше, чем я рассчитывал?
