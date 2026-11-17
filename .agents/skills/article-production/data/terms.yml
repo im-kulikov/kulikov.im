@@ -177,4 +177,39 @@ terms:
     first_published_at: null
     first_article_id: null
     first_telegram_url: null
+  - term: RSS
+    definition: resident set size — физическая память процесса
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: CPU
+    definition: central processing unit — процессор
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: CLI
+    definition: command-line interface — интерфейс командной строки
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: SQL
+    definition: structured query language — язык запросов к базам данных
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: МБ
+    definition: мегабайт, 1024 КБ
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
 
