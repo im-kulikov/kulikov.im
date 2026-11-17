@@ -180,36 +180,36 @@ terms:
   - term: RSS
     definition: resident set size — физическая память процесса
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-17
+    first_article_id: grafana-optimization-v5
+    first_telegram_url: https://t.me/homeinprod/20
   - term: CPU
     definition: central processing unit — процессор
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-17
+    first_article_id: grafana-optimization-v5
+    first_telegram_url: https://t.me/homeinprod/20
   - term: CLI
     definition: command-line interface — интерфейс командной строки
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-17
+    first_article_id: grafana-optimization-v5
+    first_telegram_url: https://t.me/homeinprod/20
   - term: SQL
     definition: structured query language — язык запросов к базам данных
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-17
+    first_article_id: grafana-optimization-v5
+    first_telegram_url: https://t.me/homeinprod/20
   - term: МБ
     definition: мегабайт, 1024 КБ
     aliases: []
-    status: confirmed
-    first_published_at: null
-    first_article_id: null
-    first_telegram_url: null
+    status: published
+    first_published_at: 2026-11-17
+    first_article_id: grafana-optimization-v5
+    first_telegram_url: https://t.me/homeinprod/20
 
