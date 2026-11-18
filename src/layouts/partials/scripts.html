@@ -19,31 +19,31 @@
 {{- $scripts = $scripts | append (resources.Get "js/main.js") }}
 {{- $scripts = $scripts | resources.Concat "js/script.js" }}
 {{- if len $scriptsLazy }}
-  {{- $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
+{{- $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
 {{- end }}
 {{- if (($scripts | minify).Content | len) }}
-  {{- /* the coverage run (tests/coverage.mjs) maps the bundle back to src/assets/js */}}
-  {{- $scripts = $scripts | js.Build (cond (eq hugo.Environment "coverage") (dict "sourceMap" "inline") (dict)) }}
+{{- /* the coverage run (tests/coverage.mjs) maps the bundle back to src/assets/js */}}
+{{- $scripts = $scripts | js.Build (cond (eq hugo.Environment "coverage") (dict "sourceMap" "inline") (dict)) }}
 {{- end }}
 {{- if hugo.IsProduction }}
   {{- $scripts = $scripts | minify | fingerprint "sha256" }}
   {{- if len $scriptsLazy }}
-    {{- $scriptsLazy = $scriptsLazy | minify | fingerprint "sha256" }}
+  {{- $scriptsLazy = $scriptsLazy | minify | fingerprint "sha256" }}
   {{- end }}
 {{- end }}
 {{- /* scripts */}}
 {{- if (($scripts | minify).Content | len) }}
-  <script
-    defer
-    crossorigin="anonymous"
-    integrity="{{ $scripts.Data.Integrity }}"
-    src="{{ $scripts.RelPermalink }}"></script>
+<script
+  defer
+  crossorigin="anonymous"
+  integrity="{{ $scripts.Data.Integrity }}"
+  src="{{ $scripts.RelPermalink }}"></script>
 {{- end }}
 {{- /* scripts lazy */}}
 {{- if len $scriptsLazy }}
-  <script
-    defer
-    crossorigin="anonymous"
-    integrity="{{ $scriptsLazy.Data.Integrity }}"
-    src="{{ $scriptsLazy.RelPermalink }}"></script>
+<script
+  defer
+  crossorigin="anonymous"
+  integrity="{{ $scriptsLazy.Data.Integrity }}"
+  src="{{ $scriptsLazy.RelPermalink }}"></script>
 {{- end }}

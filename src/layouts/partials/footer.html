@@ -1,80 +1,51 @@
 <footer class="footer mt-8">
-  <div class="container py-12">
-    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
-      <div>
-        <a
-          class="navbar-brand inline-block"
-          href="{{ site.Home.RelPermalink }}"
-          aria-label="{{ site.Title }}">
-          {{ partial "components/logo" }}
-        </a>
-        {{- with site.Params.copyright }}
-          {{ $list := (cond (reflect.IsSlice .) . (slice .)) }}
-          <div class="footer-muted mt-5 space-y-1 text-sm">
-            {{ range $list }}
-              <p class="text-balance">{{ . | markdownify }}</p>
-            {{ end }}
-          </div>
-        {{- end }}
-      </div>
-      <nav aria-label="{{ T "site_sections" }}">
-        <p class="mb-3 font-semibold" style="color: var(--ink)">
-          {{ T "sections" }}
-        </p>
-        <ul class="space-y-2">
-          {{ range site.Menus.main }}
-            <li>
-              <a class="footer-link" href="{{ .URL | relLangURL }}"
-                >{{ .Name }}</a
-              >
-            </li>
-          {{ end }}
-        </ul>
-      </nav>
-      <div>
-        <p class="mb-3 font-semibold" style="color: var(--ink)">
-          {{ T "contact_heading" }}
-        </p>
-        <ul class="flex flex-wrap gap-3">
-          {{ range hugo.Data.social.main }}
-            <li>
-              <a
-                class="social-link"
-                target="_blank"
-                rel="noopener"
-                aria-label="{{ .name }}"
-                href="{{ .link | safeURL }}">
-                {{ partial "components/icon" (dict "name" .icon "class" "h-5 w-5") }}
-              </a>
-            </li>
-          {{ end }}
-        </ul>
-        <div class="mt-5">{{ partial "components/lang-switch" . }}</div>
-        {{ with site.Params.contact }}
-          <p class="mt-4 text-sm">
-            <a
-              class="footer-link underline underline-offset-4"
-              href="{{ .url }}"
-              target="_blank"
-              rel="noopener"
-              >{{ .label }}</a
-            >
-          </p>
-        {{ end }}
-      </div>
+    <div class="container py-12">
+        <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+                <a class="navbar-brand inline-block" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Title }}">
+                    {{ partial "components/logo" }}
+                </a>
+                {{- with site.Params.copyright }}
+                    {{ $list := (cond (reflect.IsSlice .) . (slice .)) }}
+                    <div class="footer-muted mt-5 space-y-1 text-sm">
+                        {{ range $list }}<p class="text-balance">{{ . | markdownify }}</p>{{ end }}
+                    </div>
+                {{- end }}
+            </div>
+            <nav aria-label="{{ T "site_sections" }}">
+                <p class="mb-3 font-semibold" style="color: var(--ink)">{{ T "sections" }}</p>
+                <ul class="space-y-2">
+                    {{ range site.Menus.main }}
+                        <li><a class="footer-link" href="{{ .URL | relLangURL }}">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </nav>
+            <div>
+                <p class="mb-3 font-semibold" style="color: var(--ink)">{{ T "contact_heading" }}</p>
+                <ul class="flex flex-wrap gap-3">
+                    {{ range hugo.Data.social.main }}
+                        <li>
+                            <a class="social-link" target="_blank" rel="noopener" aria-label="{{ .name }}" href="{{ .link | safeURL }}">
+                                {{ partial "components/icon" (dict "name" .icon "class" "h-5 w-5") }}
+                            </a>
+                        </li>
+                    {{ end }}
+                </ul>
+                <div class="mt-5">{{ partial "components/lang-switch" . }}</div>
+                {{ with site.Params.contact }}
+                    <p class="mt-4 text-sm"><a class="footer-link underline underline-offset-4" href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a></p>
+                {{ end }}
+            </div>
+        </div>
+        <div class="hidden git-info py-5">
+            {{- /* the commit this site was built from: set by the deploy job (HUGO_BUILD_SHA / HUGO_BUILD_DATE), empty in local builds */}}
+            {{- with getenv "HUGO_BUILD_SHA" }}
+                <p class="git-hash">{{ . }}</p>
+                {{- with getenv "HUGO_BUILD_DATE" }}<p class="git-date">{{ . }}</p>{{ end }}
+            {{- end }}
+        </div>
+        <script>
+            if (new URL(document.location.toString()).searchParams.get("gitinfo")) document.querySelector(".git-info").classList.remove("hidden");
+        </script>
     </div>
-    <div class="hidden git-info py-5">
-      {{- /* the commit this site was built from: set by the deploy job (HUGO_BUILD_SHA / HUGO_BUILD_DATE), empty in local builds */}}
-      {{- with getenv "HUGO_BUILD_SHA" }}
-        <p class="git-hash">{{ . }}</p>
-        {{- with getenv "HUGO_BUILD_DATE" }}
-          <p class="git-date">{{ . }}</p>
-        {{ end }}
-      {{- end }}
-    </div>
-    <script>
-      if (new URL(document.location.toString()).searchParams.get("gitinfo"))
-        document.querySelector(".git-info").classList.remove("hidden");
-    </script>
-  </div>
 </footer>

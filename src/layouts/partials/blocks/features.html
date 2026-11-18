@@ -1,46 +1,42 @@
 {{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ range $i, $e := $data }}
-  <section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
-    <div class="container">
-      <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <div class="{{ if not (modBool $i 2) }}lg:order-2{{ end }}">
-          <div class="hero-art max-w-[520px]">
-            {{ partial "components/image" (dict
-              "src" .image
-              "alt" (.title | plainify)
-              "class" "mx-auto h-auto w-full"
-              "sizes" (dict "xl" 520 "lg" 425 "md" 360))
-            }}
-          </div>
+    <section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
+        <div class="container">
+            <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+                <div class="{{ if not (modBool $i 2) }}lg:order-2{{ end }}">
+                    <div class="hero-art max-w-[520px]">
+                        {{ partial "components/image" (dict
+                                "src" .image
+                                "alt" (.title | plainify)
+                                "class" "mx-auto h-auto w-full"
+                                "sizes" (dict "xl" 520 "lg" 425 "md" 360)) }}
+                    </div>
+                </div>
+                <div>
+                    <h2 class="h2 mb-5">{{ .title | markdownify }}</h2>
+                    <p class="mb-8 text-lg">{{ .content | markdownify }}</p>
+                    <ul class="space-y-3">
+                        {{ range .bullets }}
+                            <li class="flex items-start gap-3">
+                                <span class="check-dot">{{ partial "components/icon" (dict "name" "check") }}</span>
+                                <span>{{ . | markdownify }}</span>
+                            </li>
+                        {{ end }}
+                    </ul>
+                    {{ with .button }}
+                        {{ if .enable }}
+                            {{ $ext := strings.HasPrefix .link "http" }}
+                            <div class="mt-9">
+                                {{ partial "components/action" (dict
+                                        "label" .label
+                                        "style" (cond (eq $i 0) "primary" "outline")
+                                        "url" (cond $ext .link "")
+                                        "page" (cond $ext "" .link)) }}
+                            </div>
+                        {{ end }}
+                    {{ end }}
+                </div>
+            </div>
         </div>
-        <div>
-          <h2 class="h2 mb-5">{{ .title | markdownify }}</h2>
-          <p class="mb-8 text-lg">{{ .content | markdownify }}</p>
-          <ul class="space-y-3">
-            {{ range .bullets }}
-              <li class="flex items-start gap-3">
-                <span class="check-dot"
-                  >{{ partial "components/icon" (dict "name" "check") }}</span
-                >
-                <span>{{ . | markdownify }}</span>
-              </li>
-            {{ end }}
-          </ul>
-          {{ with .button }}
-            {{ if .enable }}
-              {{ $ext := strings.HasPrefix .link "http" }}
-              <div class="mt-9">
-                {{ partial "components/action" (dict
-                  "label" .label
-                  "style" (cond (eq $i 0) "primary" "outline")
-                  "url" (cond $ext .link "")
-                  "page" (cond $ext "" .link))
-                }}
-              </div>
-            {{ end }}
-          {{ end }}
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 {{ end }}
