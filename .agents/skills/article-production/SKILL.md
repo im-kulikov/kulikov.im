@@ -36,6 +36,10 @@ whenToUse: "Когда в tmp/inbox/ появляется ZIP-архив с ма
    не дублируются (идемпотентность). Правка — через `scripts/tg-edit.mjs`
    (Bot API бота-админа канала): сначала `preview` (diff + UTF-16 длина),
    затем `apply --yes`; источник текста — живой пост, не черновик.
+8. **Новый пост с картинкой** — через `scripts/tg-publish.mjs publish … --yes`
+   (Node fetch, не curl; гейт: подпись в ответе API обязана совпасть по
+   содержанию, иначе `deleteMessage` + отказ — урок инцидента 2026-11-17,
+   посты №18/№19 ушли без подписи при ok:true).
 
 ## Конвейер (12 шагов до review)
 
@@ -84,7 +88,7 @@ Telegram-публикации (`state.mjs crosspromo`; правки постов
 | `references/terminology.md` | реестр «секретных букв» |
 | `references/brand-reference.webp` | утверждённый референс владельца (не перегенерировать) |
 | `data/terms.yml` | живой реестр терминов (обновляется на publish) |
-| `scripts/*.mjs` | intake, state, terms, tg-check, secrets-check, images, validate, package, test |
+| `scripts/*.mjs` | intake, state, terms, tg-check, tg-edit, tg-publish, secrets-check, images, validate, package, test |
 
 ## Скрипты — детерминированные операции
 

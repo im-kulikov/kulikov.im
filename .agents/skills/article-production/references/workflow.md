@@ -74,7 +74,7 @@ approval), 6–12 — публикация и двусторонняя связ�
 | 5   | Approval                                  | `state: approved → publishing`                                                                                                                           |
 | 6   | Публикация статьи на сайте                | по отдельному разрешению (commit/push/deploy)                                                                                                            |
 | 7   | Проверка URL статьи                       | `state.mjs <id> verify article`                                                                                                                          |
-| 8   | Подготовка/обновление Telegram-публикации | `state.mjs <id> crosspromo` → предложение; правка существующего поста — вручную/инструментом владельца, только с approval; новый пост — со ссылкой сразу |
+| 8   | Подготовка/обновление Telegram-публикации | `state.mjs <id> crosspromo` → предложение; правка существующего поста — вручную/инструментом владельца, только с approval; новый пост — через `tg-publish.mjs publish … --yes` (prompts/telegram.md §3b) |
 | 9   | Сохранение реального Telegram URL         | `state.mjs <id> set telegram_url=…` (URL передаёт автор; не выдумываем)                                                                                  |
 | 10  | Обновление metadata сайта                 | front matter статьи `telegram: <URL>` + redeploy (по разрешению)                                                                                         |
 | 11  | Проверка двусторонних ссылок              | `state.mjs <id> verify links` — статья ⇄ пост                                                                                                            |
@@ -110,7 +110,7 @@ URL статьи и поста — только **реальные**. Части
 ├── references/                      # этот файл, visual-style, terminology,
 │   └── brand-reference.webp         #   утверждённый референс владельца
 ├── data/terms.yml                   # реестр «секретных букв» (живой, в Git)
-└── scripts/                         # intake/state/terms/tg-check/secrets-check/
+└── scripts/                         # intake/state/terms/tg-check/tg-edit/tg-publish/secrets-check/
                                      # images/validate/package/test
 
 tmp/                                 # материалы конкретных публикаций (вне Git)
@@ -189,7 +189,8 @@ Brief, статья, Telegram-подпись с фактической длин�
 | `state.mjs <id> crosspromo [--text "…"]`                       | предложение «📖 Подробный разбор — в блоге» для поста (после `verify article`): длина UTF-16, без дублей                                                                                                                                                                               |
 | `tg-edit.mjs preview <post-url> --line "текст" [--link <url>]` | правка ОПУБЛИКОВАННОГО поста: поабзацный diff по живому тексту (embed), UTF-16 лимит (1024/4096), ничего не отправляет; `--link` — вся строка становится анкором (URL только в href)                                                                                                   |
 | `tg-edit.mjs apply <post-url> --line "…" [--link <url>] --yes` | применение правки через Bot API (`editMessageCaption`/`editMessageText`, parse_mode=html); ссылка — всегда последний элемент; `--yes` = approval владельца; токен: env `TELEGRAM_BOT_TOKEN`; `--drop-paragraph "префикс"` / `--drop-last-paragraph` — освободить место (лимит caption) |
-| `test.mjs`                                                     | тесты всего workflow (71 шт; песочницы EDITORIAL_TMP, данные не трогаются)                                                                                                                                                                                                             |
+| `tg-publish.mjs preview <image.png> <caption.md>` · `publish … --yes` | публикация НОВОГО поста с картинкой (Node fetch, не curl): гейт подписи — `result.caption` из ответа API обязан совпасть по содержанию, иначе `deleteMessage` + отказ (урок инцидента №18/№19: ok:true ≠ пост корректен); `preview` — офлайн без сети; токен — env `TELEGRAM_BOT_TOKEN` |
+| `test.mjs`                                                     | тесты всего workflow (81 шт; песочницы EDITORIAL_TMP, данные не трогаются)                                                                                                                                                                                                             |
 
 Хрупкие места скриптов (пойманы ревью PR #31, покрыты тестами — легко сломать
 при правках, тесты обязаны остаться красными на регрессию):
@@ -206,6 +207,12 @@ Brief, статья, Telegram-подпись с фактической длин�
   переносы не схлопываются — Telegram считает их как есть;
 - `state.mjs`: смена `article_url`/`telegram_url` сбрасывает флаги верификации;
   дедуп crosspromo — по опубликованному снимку `telegram-final.md`.
+- `tg-publish.mjs`: гейт проверяет САМО свойство «опубликовано с ЭТОЙ подписью»
+  — сверкой содержимого `result.caption` из ответа API, а не голый `ok:true`.
+  Эхо приходит как разобранный текст + caption_entities (иногда с разметкой) —
+  гейт принимает оба вида, голая длина недостаточна. ok:true при пустом/чужом
+  caption = инцидент №18/№19 (2026-11-17), покрыт регрессией в test.mjs
+  (мок-fetch, delete-on-mismatch, не-JSON = «состояние неизвестно»).
 
 Зависимости: Node ≥ 24 (`yaml` из node_modules проекта), системные
 `unzip`/`find`; тесты — ещё `python3` (zip-фикстуры); `images.mjs
