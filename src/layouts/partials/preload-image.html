@@ -1,7 +1,7 @@
 {{- if .Params.section }}
-    {{- /* Генерируем страницу, чтобы получить preload-image: */}}
-    {{- with (partial "page.html" .) }}
-        <!-- preload image -->
-        {{- page.Scratch.Get (printf "preload-image-%s" page.Path) | safeHTML }}
-    {{- end }}
+  {{- /* Генерируем страницу, чтобы получить preload-image: */}}
+  {{- with (partial "page.html" .) }}
+    <!-- preload image -->
+    {{- page.Scratch.Get (printf "preload-image-%s" page.Path) | safeHTML }}
+  {{- end }}
 {{- end }}

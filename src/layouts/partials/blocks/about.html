@@ -1,20 +1,21 @@
 {{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 <section class="section-sm bg-gradient">
-    <div class="container">
-        {{ partial "components/section-title" (dict "icon" "bookmarks" "title" $data.title) }}
-        <div class="grid items-start gap-10 lg:grid-cols-[17rem_1fr] lg:gap-14">
-            {{ with $data.image }}
-                {{ partial "components/image" (dict
-                        "src" .
-                        "alt" $data.sub_title
-                        "pClass" "mx-auto block w-56 lg:w-full"
-                        "class" "aspect-square w-full rounded-3xl object-cover shadow-lg ring-1 ring-black/10 dark:ring-white/15"
-                        "size" "460x460") }}
-            {{ end }}
-            <div class="about-me-description max-w-3xl text-lg leading-8">
-                <h3 class="h3 mb-6">{{ $data.sub_title }}</h3>
-                {{ $data.description | markdownify }}
-            </div>
-        </div>
+  <div class="container">
+    {{ partial "components/section-title" (dict "icon" "bookmarks" "title" $data.title) }}
+    <div class="grid items-start gap-10 lg:grid-cols-[17rem_1fr] lg:gap-14">
+      {{ with $data.image }}
+        {{ partial "components/image" (dict
+          "src" .
+          "alt" $data.sub_title
+          "pClass" "mx-auto block w-56 lg:w-full"
+          "class" "aspect-square w-full rounded-3xl object-cover shadow-lg ring-1 ring-black/10 dark:ring-white/15"
+          "size" "460x460")
+        }}
+      {{ end }}
+      <div class="about-me-description max-w-3xl text-lg leading-8">
+        <h3 class="h3 mb-6">{{ $data.sub_title }}</h3>
+        {{ $data.description | markdownify }}
+      </div>
     </div>
+  </div>
 </section>

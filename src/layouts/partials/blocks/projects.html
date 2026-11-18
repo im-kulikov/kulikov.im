@@ -1,28 +1,33 @@
 {{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ with $data }}
-    {{ if .enable }}
-        <section class="section-sm">
-            <div class="container">
-                {{ partial "components/section-title" (dict "icon" "bookmarks" "title" .title) }}
-                <p class="mb-12 max-w-3xl text-lg">{{ .description | markdownify }}</p>
-                <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 md:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-3 xl:[&>li:last-child:nth-child(3n+1)]:col-span-3 xl:[&>li:last-child:nth-child(3n+2)]:col-span-2">
-                    {{ range .projects }}
-                        <li class="card">
-                            <h3 class="h5">{{ .title }}</h3>
-                            <p class="card-caption mb-1 mt-1">{{ .type }}</p>
-                            {{ with .role }}
-                                <p class="card-caption mb-4"><strong>{{ T "roles" }}:</strong> {{ delimit . ", " }}</p>
-                            {{ end }}
-                            <p class="text-[0.95rem] leading-relaxed">{{ .description | markdownify }}</p>
-                            {{ with .skills }}
-                                <ul class="mt-auto flex flex-wrap gap-2 pt-5">
-                                    {{ range . }}<li class="chip">{{ . }}</li>{{ end }}
-                                </ul>
-                            {{ end }}
-                        </li>
-                    {{ end }}
+  {{ if .enable }}
+    <section class="section-sm">
+      <div class="container">
+        {{ partial "components/section-title" (dict "icon" "bookmarks" "title" .title) }}
+        <p class="mb-12 max-w-3xl text-lg">{{ .description | markdownify }}</p>
+        <ul
+          class="grid grid-cols-1 gap-6 md:grid-cols-2 md:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-3 xl:[&>li:last-child:nth-child(3n+1)]:col-span-3 xl:[&>li:last-child:nth-child(3n+2)]:col-span-2">
+          {{ range .projects }}
+            <li class="card">
+              <h3 class="h5">{{ .title }}</h3>
+              <p class="card-caption mb-1 mt-1">{{ .type }}</p>
+              {{ with .role }}
+                <p class="card-caption mb-4">
+                  <strong>{{ T "roles" }}:</strong> {{ delimit . ", " }}
+                </p>
+              {{ end }}
+              <p class="text-[0.95rem] leading-relaxed">
+                {{ .description | markdownify }}
+              </p>
+              {{ with .skills }}
+                <ul class="mt-auto flex flex-wrap gap-2 pt-5">
+                  {{ range . }}<li class="chip">{{ . }}</li>{{ end }}
                 </ul>
-            </div>
-        </section>
-    {{ end }}
+              {{ end }}
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+    </section>
+  {{ end }}
 {{ end }}

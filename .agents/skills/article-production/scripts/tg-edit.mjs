@@ -22,13 +22,18 @@ export function parsePostUrl(url) {
 // Блок текста поста из embed-страницы. Внутри — только инлайн-разметка (без вложенных div),
 // поэтому ленивый матч до первого </div> корректен.
 export function extractCaptionHtml(embedHtml) {
-  const m = /<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/.exec(embedHtml);
+  const m =
+    /<div class="tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/.exec(
+      embedHtml,
+    );
   return m ? m[1] : null;
 }
 
 // Медиа-пост (фото/видео) → правим caption; чисто текстовый → правим text.
 export function isMediaPost(embedHtml) {
-  return /tgme_widget_message_(photo|video|roundvideo|videoplayer)/.test(embedHtml);
+  return /tgme_widget_message_(photo|video|roundvideo|videoplayer)/.test(
+    embedHtml,
+  );
 }
 
 // Нормализация embed-HTML под Bot API parse_mode=HTML:
@@ -45,11 +50,18 @@ export function toBotHtml(captionHtml) {
     .replace(/<br\s*\/?>/g, "<br>")
     .replace(/<(\/?)(b|i|u|s)\s[^>]*>/g, "<$1$2>")
     .replace(/<a\s[^>]*?href="([^"]*)"[^>]*>/g, '<a href="$1">')
-    .replace(/href="([^"]*)"/g, (m, h) => `href="${h.replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;")}"`);
+    .replace(
+      /href="([^"]*)"/g,
+      (m, h) => `href="${h.replace(/&(?!#?[a-zA-Z0-9]+;)/g, "&amp;")}"`,
+    );
 }
 
 // Экранирование plain-текста дополнения: & < > запрещены голыми в Bot API HTML.
-const escapeHtml = (s) => s.replace(/&(?![a-zA-Z#][a-zA-Z0-9]*;)/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const escapeHtml = (s) =>
+  s
+    .replace(/&(?![a-zA-Z#][a-zA-Z0-9]*;)/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 
 // Дополнение → HTML: сначала экранируем (строка — plain text), затем URL делаем кликабельным
 // <a> (видимая длина не меняется); «голая» метка kulikov.im/… получает href с https://
@@ -57,7 +69,10 @@ const escapeHtml = (s) => s.replace(/&(?![a-zA-Z#][a-zA-Z0-9]*;)/g, "&amp;").rep
 export function linkifyLine(line) {
   return escapeHtml(line)
     .replace(/https?:\/\/[^\s<>]+/g, (u) => `<a href="${u}">${u}</a>`)
-    .replace(/(?<![\w>/.-])kulikov\.im\/[^\s<>]+/g, (u) => `<a href="https://${u}">${u}</a>`);
+    .replace(
+      /(?<![\w>/.-])kulikov\.im\/[^\s<>]+/g,
+      (u) => `<a href="https://${u}">${u}</a>`,
+    );
 }
 
 // Режим --link: вся строка — анкор ссылки, URL живёт только в href.
@@ -71,7 +86,11 @@ export function anchorLine(text, url) {
 // с ней hasUrl не совпал бы и повторный apply вставил бы дубликат.
 export function lineUrlOf(line) {
   const strip = (u) => u.replace(/[.,;:!?…)\]]+$/, "");
-  return strip(/https?:\/\/[^\s<>]+/.exec(line)?.[0] ?? /(?<![\w>/.-])kulikov\.im\/[^\s<>]+/.exec(line)?.[0] ?? "");
+  return strip(
+    /https?:\/\/[^\s<>]+/.exec(line)?.[0] ??
+      /(?<![\w>/.-])kulikov\.im\/[^\s<>]+/.exec(line)?.[0] ??
+      "",
+  );
 }
 
 // Абзацы поста: нормализованный HTML, разбитый по пустой строке (<br><br>).
@@ -82,7 +101,9 @@ export function splitParagraphs(captionHtml) {
 // Сборка итогового HTML из абзацев + дополнения (пустой пост → только дополнение).
 // Дополнение ВСЕГДА последний элемент — таково требование к кросс-промо-ссылке.
 export function buildEditedHtml(paragraphs, line, link = null) {
-  const body = paragraphs.filter((p) => visibleCaption(p, "html").trim() !== "").join("<br><br>");
+  const body = paragraphs
+    .filter((p) => visibleCaption(p, "html").trim() !== "")
+    .join("<br><br>");
   const tail = link ? anchorLine(line, link) : linkifyLine(line);
   return body ? `${body}<br><br>${tail}` : tail;
 }
@@ -99,13 +120,18 @@ export function diffParagraphs(oldParas, newParas) {
   const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
   for (let i = n - 1; i >= 0; i--)
     for (let j = m - 1; j >= 0; j--)
-      dp[i][j] = oldParas[i] === newParas[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      dp[i][j] =
+        oldParas[i] === newParas[j]
+          ? dp[i + 1][j + 1] + 1
+          : Math.max(dp[i + 1][j], dp[i][j + 1]);
   const out = [];
   let i = 0;
   let j = 0;
   while (i < n && j < m) {
-    if (oldParas[i] === newParas[j]) out.push({ t: " ", s: oldParas[i++] }), j++;
-    else if (dp[i + 1][j] >= dp[i][j + 1]) out.push({ t: "-", s: oldParas[i++] });
+    if (oldParas[i] === newParas[j])
+      (out.push({ t: " ", s: oldParas[i++] }), j++);
+    else if (dp[i + 1][j] >= dp[i][j + 1])
+      out.push({ t: "-", s: oldParas[i++] });
     else out.push({ t: "+", s: newParas[j++] });
   }
   while (i < n) out.push({ t: "-", s: oldParas[i++] });
@@ -117,9 +143,14 @@ export function diffParagraphs(oldParas, newParas) {
 // (--drop-paragraph "Правда, обнаружился нюанс:"). Возвращает [оставшиеся абзацы, убранный].
 export function dropParagraph(paragraphs, prefix = null) {
   if (prefix === null) return [paragraphs.slice(0, -1), paragraphs.at(-1)];
-  const i = paragraphs.findIndex((p) => visibleCaption(p, "html").startsWith(prefix));
+  const i = paragraphs.findIndex((p) =>
+    visibleCaption(p, "html").startsWith(prefix),
+  );
   if (i < 0) throw new Error(`абзац с видимым началом «${prefix}» не найден`);
-  return [[...paragraphs.slice(0, i), ...paragraphs.slice(i + 1)], paragraphs[i]];
+  return [
+    [...paragraphs.slice(0, i), ...paragraphs.slice(i + 1)],
+    paragraphs[i],
+  ];
 }
 
 // Дубль-контроль: ссылка уже в посте? Проверяем СЫРОЙ HTML caption (не видимый текст):
@@ -130,7 +161,10 @@ export const alreadyLinked = (captionHtml, url) =>
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
 const { pathToFileURL } = await import("node:url");
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
   const [, , cmd, postUrl, ...rest] = process.argv;
   // флаг обязан иметь значение сразу после себя; «флаг последним аргументом» ≠ «флага нет»
   const opt = (n) => {
@@ -146,42 +180,58 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const line = opt("line");
   const dropPrefix = opt("drop-paragraph");
   const linkUrl = opt("link");
-  const usage = "usage: tg-edit.mjs <preview|apply> <post-url> --line \"текст\" [--link <url>] [--drop-paragraph \"видимый префикс\" | --drop-last-paragraph] [--yes]\n  без --link: URL внутри строки станет ссылкой; с --link: ВСЯ строка — анкор, URL только в href (короче для лимита)";
+  const usage =
+    'usage: tg-edit.mjs <preview|apply> <post-url> --line "текст" [--link <url>] [--drop-paragraph "видимый префикс" | --drop-last-paragraph] [--yes]\n  без --link: URL внутри строки станет ссылкой; с --link: ВСЯ строка — анкор, URL только в href (короче для лимита)';
   if ((cmd !== "preview" && cmd !== "apply") || !line || !postUrl) {
     console.error(usage);
     process.exit(2);
   }
   if (linkUrl !== undefined && !/^(https?:\/\/|kulikov\.im\/)/.test(linkUrl)) {
-    console.error(`--link: «${linkUrl}» не похож на URL (https://… или kulikov.im/…).`);
+    console.error(
+      `--link: «${linkUrl}» не похож на URL (https://… или kulikov.im/…).`,
+    );
     process.exit(2);
   }
   if (dropPrefix !== undefined && !dropPrefix.trim()) {
-    console.error("--drop-paragraph: префикс не может быть пустым (пустой матчит первый попавшийся абзац).");
+    console.error(
+      "--drop-paragraph: префикс не может быть пустым (пустой матчит первый попавшийся абзац).",
+    );
     process.exit(2);
   }
   if (dropPrefix !== undefined && rest.includes("--drop-last-paragraph")) {
-    console.error("--drop-paragraph и --drop-last-paragraph взаимно исключают друг друга.");
+    console.error(
+      "--drop-paragraph и --drop-last-paragraph взаимно исключают друг друга.",
+    );
     process.exit(2);
   }
   if (cmd === "apply" && !rest.includes("--yes")) {
-    console.error("apply требует --yes: явный approval владельца на правку опубликованного поста.\nСначала покажи diff: tg-edit.mjs preview <post-url> --line \"…\"");
+    console.error(
+      'apply требует --yes: явный approval владельца на правку опубликованного поста.\nСначала покажи diff: tg-edit.mjs preview <post-url> --line "…"',
+    );
     process.exit(2);
   }
   const target = parsePostUrl(postUrl);
   if (!target) {
-    console.error(`«${postUrl}» не похож на пост публичного канала (https://t.me/<username>/<id>).`);
+    console.error(
+      `«${postUrl}» не похож на пост публичного канала (https://t.me/<username>/<id>).`,
+    );
     process.exit(2);
   }
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (cmd === "apply" && !token) {
-    console.error("TELEGRAM_BOT_TOKEN не задан (env или keychain-обёртка запускающего).");
+    console.error(
+      "TELEGRAM_BOT_TOKEN не задан (env или keychain-обёртка запускающего).",
+    );
     process.exit(2);
   }
 
   const embedUrl = `${postUrl}${postUrl.includes("?") ? "&" : "?"}embed=1&mode=tme`;
   let embedHtml;
   try {
-    const res = await fetch(embedUrl, { redirect: "follow", signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(embedUrl, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     embedHtml = await res.text();
   } catch (e) {
@@ -190,7 +240,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
   const captionHtml = extractCaptionHtml(embedHtml);
   if (captionHtml === null) {
-    console.error("текстовый блок не найден: пост не существует/удалён либо текста в нём нет.");
+    console.error(
+      "текстовый блок не найден: пост не существует/удалён либо текста в нём нет.",
+    );
     process.exit(1);
   }
   const current = visibleCaption(toBotHtml(captionHtml), "html");
@@ -198,7 +250,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   // дубль-контроль по сырому HTML: ловит и полную ссылку в тексте, и URL в href анкора
   // (кэш t.me может отдать старую страницу — тогда последнюю инстанцию скажет API: «not modified»)
   if (lineUrl && alreadyLinked(captionHtml, lineUrl)) {
-    console.log(`${postUrl}: ссылка уже в посте — дополнение не нужно (идемпотентность).`);
+    console.log(
+      `${postUrl}: ссылка уже в посте — дополнение не нужно (идемпотентность).`,
+    );
     process.exit(0);
   }
   const media = isMediaPost(embedHtml);
@@ -218,19 +272,32 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const edited = visibleCaption(editedHtml, "html");
   const limit = media ? 1024 : 4096; // UTF-16, как считает Telegram
   const len = edited.length;
-  console.log(`пост ${postUrl} (${media ? "медиа: правка caption" : "текст: правка text"})`);
-  console.log(`длина: ${current.length} → ${len} UTF-16 (лимит ${limit}${len > limit ? " — ПРЕВЫШЕН" : ""})`);
+  console.log(
+    `пост ${postUrl} (${media ? "медиа: правка caption" : "текст: правка text"})`,
+  );
+  console.log(
+    `длина: ${current.length} → ${len} UTF-16 (лимит ${limit}${len > limit ? " — ПРЕВЫШЕН" : ""})`,
+  );
   // diff по абзацам: владелец видит, что именно изменится, а не весь пост целиком
-  const oldVis = splitParagraphs(captionHtml).map((p) => visibleCaption(p, "html"));
+  const oldVis = splitParagraphs(captionHtml).map((p) =>
+    visibleCaption(p, "html"),
+  );
   const newVis = edited.split("\n\n");
-  for (const d of diffParagraphs(oldVis, newVis)) console.log(`${d.t} ${d.s.replace(/\n/g, "\n  ")}`);
-  console.log(`добавляемый фрагмент (последний элемент): ${JSON.stringify(toApiHtml(buildEditedHtml([], line, linkUrl)))}`);
+  for (const d of diffParagraphs(oldVis, newVis))
+    console.log(`${d.t} ${d.s.replace(/\n/g, "\n  ")}`);
+  console.log(
+    `добавляемый фрагмент (последний элемент): ${JSON.stringify(toApiHtml(buildEditedHtml([], line, linkUrl)))}`,
+  );
   if (len > limit) {
-    console.error("лимит превышен: сократи строку-анкор или убери второстепенный абзац (--drop-paragraph).");
+    console.error(
+      "лимит превышен: сократи строку-анкор или убери второстепенный абзац (--drop-paragraph).",
+    );
     process.exit(1);
   }
   if (cmd === "preview") {
-    console.log("preview: ничего не отправлено. Применение: tg-edit.mjs apply <post-url> --line \"…\" [--link <url>] --yes");
+    console.log(
+      'preview: ничего не отправлено. Применение: tg-edit.mjs apply <post-url> --line "…" [--link <url>] --yes',
+    );
     process.exit(0);
   }
 
@@ -259,11 +326,17 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     // Это авторитетная идемпотентность: локальная проверка по embed может не увидеть
     // свежую правку из-за кэша t.me, а API сравнивает фактическое содержимое.
     if (/not modified/i.test(resp.description ?? "")) {
-      console.log(`✓ пост ${target.chatId}/${target.messageId}: правка уже применена (контент идентичен).`);
+      console.log(
+        `✓ пост ${target.chatId}/${target.messageId}: правка уже применена (контент идентичен).`,
+      );
       process.exit(0);
     }
-    console.error(`Bot API ${api} отклонил правку: ${resp.error_code} ${resp.description}`);
+    console.error(
+      `Bot API ${api} отклонил правку: ${resp.error_code} ${resp.description}`,
+    );
     process.exit(1);
   }
-  console.log(`✓ пост ${target.chatId}/${target.messageId} обновлён (${api}); проверь: ${postUrl}`);
+  console.log(
+    `✓ пост ${target.chatId}/${target.messageId} обновлён (${api}); проверь: ${postUrl}`,
+  );
 }

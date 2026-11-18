@@ -43,20 +43,20 @@ whenToUse: "Когда в tmp/inbox/ появляется ZIP-архив с ма
 
 ## Конвейер (12 шагов до review)
 
-| # | Шаг | Инструмент |
-|---|---|---|
-| 1 | Безопасная распаковка ZIP | `scripts/intake.mjs` |
-| 2 | Inventory и анализ | inventory.md → summary.md, questions.md |
-| 3 | Извлечение подтверждённых фактов | — |
-| 4 | Сюжет и технический акцент | — |
-| 5 | Article Brief | `tmp/drafts/<id>/brief.md` (шаблон: `prompts/article.md` §1) |
-| 6 | Markdown-статья | `prompts/article.md` |
-| 7 | Telegram preview | `prompts/telegram.md` + `scripts/tg-check.mjs` |
-| 8 | Image Brief (3 концепции) | `prompts/image.md` |
-| 9 | Генерация изображений | встроенный `$imagegen` или `codex exec` по подписке (см. правило 2; 6 вызовов: 3 концепции × [3:2 + широкая 16:9]) |
-| 10 | Проверка и размеры | `scripts/images.mjs` (crop 1280×720 / 800×450, check) |
-| 11 | Review Package | `scripts/validate.mjs` → `scripts/package.mjs` |
-| 12 | Human review | показать всё владельцу; выбор концепции; правки |
+| #   | Шаг                              | Инструмент                                                                                                         |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 1   | Безопасная распаковка ZIP        | `scripts/intake.mjs`                                                                                               |
+| 2   | Inventory и анализ               | inventory.md → summary.md, questions.md                                                                            |
+| 3   | Извлечение подтверждённых фактов | —                                                                                                                  |
+| 4   | Сюжет и технический акцент       | —                                                                                                                  |
+| 5   | Article Brief                    | `tmp/drafts/<id>/brief.md` (шаблон: `prompts/article.md` §1)                                                       |
+| 6   | Markdown-статья                  | `prompts/article.md`                                                                                               |
+| 7   | Telegram preview                 | `prompts/telegram.md` + `scripts/tg-check.mjs`                                                                     |
+| 8   | Image Brief (3 концепции)        | `prompts/image.md`                                                                                                 |
+| 9   | Генерация изображений            | встроенный `$imagegen` или `codex exec` по подписке (см. правило 2; 6 вызовов: 3 концепции × [3:2 + широкая 16:9]) |
+| 10  | Проверка и размеры               | `scripts/images.mjs` (crop 1280×720 / 800×450, check)                                                              |
+| 11  | Review Package                   | `scripts/validate.mjs` → `scripts/package.mjs`                                                                     |
+| 12  | Human review                     | показать всё владельцу; выбор концепции; правки                                                                    |
 
 После approval — публикация и **Cross-Promotion** по чек-листу
 (`references/workflow.md` §3): статья → verify URL → подготовка/обновление
@@ -74,21 +74,21 @@ Telegram-публикации (`state.mjs crosspromo`; правки постов
   metadata.json, review.md, images/concept-01…03), `done/<id>/`.
 - Review package: `brief.md`, `article.md`, `telegram.md`+`telegram.json`,
   `metadata.json`, `review.md`, `images/` = `brief.md` + 3×`{prompt.md,
-  telegram.png, blog-cover.webp, blog-preview.webp}`.
+telegram.png, blog-cover.webp, blog-preview.webp}`.
 
 ## Файлы скилла
 
-| Файл | Назначение |
-|---|---|
-| `prompts/article.md` | шаблон Article Brief + требования к статье |
-| `prompts/telegram.md` | стиль заметки, HTML, лимит 1024 UTF-16 |
-| `prompts/image.md` | построение image-промптов, форматы, минимизация вызовов |
-| `references/workflow.md` | этапы A–E, состояния, публикация, CLI |
-| `references/visual-style.md` | фирменный стиль, форматы, бюджеты |
-| `references/terminology.md` | реестр «секретных букв» |
-| `references/brand-reference.webp` | утверждённый референс владельца (не перегенерировать) |
-| `data/terms.yml` | живой реестр терминов (обновляется на publish) |
-| `scripts/*.mjs` | intake, state, terms, tg-check, tg-edit, tg-publish, secrets-check, images, validate, package, test |
+| Файл                              | Назначение                                                                                          |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `prompts/article.md`              | шаблон Article Brief + требования к статье                                                          |
+| `prompts/telegram.md`             | стиль заметки, HTML, лимит 1024 UTF-16                                                              |
+| `prompts/image.md`                | построение image-промптов, форматы, минимизация вызовов                                             |
+| `references/workflow.md`          | этапы A–E, состояния, публикация, CLI                                                               |
+| `references/visual-style.md`      | фирменный стиль, форматы, бюджеты                                                                   |
+| `references/terminology.md`       | реестр «секретных букв»                                                                             |
+| `references/brand-reference.webp` | утверждённый референс владельца (не перегенерировать)                                               |
+| `data/terms.yml`                  | живой реестр терминов (обновляется на publish)                                                      |
+| `scripts/*.mjs`                   | intake, state, terms, tg-check, tg-edit, tg-publish, secrets-check, images, validate, package, test |
 
 ## Скрипты — детерминированные операции
 

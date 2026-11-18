@@ -19,21 +19,71 @@ const DEFAULT_REGISTRY = join(SKILL_DIR, "data", "terms.yml"); // в Git; пес
 
 // шумные слова, которые не считаются аббревиатурами (дополняется по мере практики)
 const STOPWORDS = new Set([
-  "AND", "OR", "NOT", "THE", "FOR", "ALL", "NEW", "YOU", "HOW", "WHY", "WHAT", "WHEN", "WHERE", "WHO",
-  "OK", "ID", "NO", "DO", "IF", "IN", "ON", "AT", "TO", "BY", "UP", "ME", "MY", "WE", "GO", "AS", "IS",
-  "IT", "BE", "SO", "AN", "OF", "TODO", "NOTE", "PS", "NB", "LLC", "CEO", "FAQ",
+  "AND",
+  "OR",
+  "NOT",
+  "THE",
+  "FOR",
+  "ALL",
+  "NEW",
+  "YOU",
+  "HOW",
+  "WHY",
+  "WHAT",
+  "WHEN",
+  "WHERE",
+  "WHO",
+  "OK",
+  "ID",
+  "NO",
+  "DO",
+  "IF",
+  "IN",
+  "ON",
+  "AT",
+  "TO",
+  "BY",
+  "UP",
+  "ME",
+  "MY",
+  "WE",
+  "GO",
+  "AS",
+  "IS",
+  "IT",
+  "BE",
+  "SO",
+  "AN",
+  "OF",
+  "TODO",
+  "NOTE",
+  "PS",
+  "NB",
+  "LLC",
+  "CEO",
+  "FAQ",
 ]);
 
 const load = (file) => {
   const doc = YAML.parse(readFileSync(file, "utf8"));
-  if (!doc || !Array.isArray(doc.terms)) throw new Error(`${file}: ожидается корневой ключ terms: [ … ]`);
+  if (!doc || !Array.isArray(doc.terms))
+    throw new Error(`${file}: ожидается корневой ключ terms: [ … ]`);
   return doc.terms;
 };
-const save = (file, terms) => writeFileSync(file, YAML.stringify({ terms }, { lineWidth: 120 }) + "\n");
+const save = (file, terms) =>
+  writeFileSync(file, YAML.stringify({ terms }, { lineWidth: 120 }) + "\n");
 
 const args = process.argv.slice(2);
 // опции со значением (остальные — флаги); позиционные — то, что не съедено опциями
-const OPTS_WITH_VALUE = new Set(["registry", "definition", "aliases", "article", "telegram-url", "date", "status"]);
+const OPTS_WITH_VALUE = new Set([
+  "registry",
+  "definition",
+  "aliases",
+  "article",
+  "telegram-url",
+  "date",
+  "status",
+]);
 const positional = [];
 const opts = {};
 for (let i = 0; i < args.length; i++) {
@@ -50,17 +100,27 @@ const termArg = positional[1];
 const fileArg = positional[1];
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const termRe = (t) => new RegExp(`(?<![\\p{L}\\p{N}])${esc(t)}(?![\\p{L}\\p{N}])`, "iu");
+const termRe = (t) =>
+  new RegExp(`(?<![\\p{L}\\p{N}])${esc(t)}(?![\\p{L}\\p{N}])`, "iu");
 
-const exists = (terms, term) => terms.find((t) => t.term.toLowerCase() === term.toLowerCase() || (t.aliases ?? []).some((a) => a.toLowerCase() === term.toLowerCase()));
+const exists = (terms, term) =>
+  terms.find(
+    (t) =>
+      t.term.toLowerCase() === term.toLowerCase() ||
+      (t.aliases ?? []).some((a) => a.toLowerCase() === term.toLowerCase()),
+  );
 
 if (cmd === "list") {
   const terms = load(registry());
   const status = opt("status");
   const shown = status ? terms.filter((t) => t.status === status) : terms;
-  console.log(`Реестр: ${terms.length} терминов${status ? `, показано ${shown.length} (${status})` : ""}`);
+  console.log(
+    `Реестр: ${terms.length} терминов${status ? `, показано ${shown.length} (${status})` : ""}`,
+  );
   shown.forEach((t) =>
-    console.log(`  [${t.status}] ${t.term}${(t.aliases ?? []).length ? ` (${t.aliases.join(", ")})` : ""} — ${t.definition ?? "(определения нет)"}`),
+    console.log(
+      `  [${t.status}] ${t.term}${(t.aliases ?? []).length ? ` (${t.aliases.join(", ")})` : ""} — ${t.definition ?? "(определения нет)"}`,
+    ),
   );
   process.exit(0);
 }
@@ -70,14 +130,16 @@ if (cmd === "check") {
     console.error("usage: terms.mjs check <file.md|-> [--registry <file>]");
     process.exit(2);
   }
-  const raw = fileArg === "-" ? readFileSync(0, "utf8") : readFileSync(fileArg, "utf8");
+  const raw =
+    fileArg === "-" ? readFileSync(0, "utf8") : readFileSync(fileArg, "utf8");
   const terms = load(registry());
   const known = [];
   for (const t of terms) {
     const re = termRe(t.term);
     const hits = (raw.match(new RegExp(re.source, "giu")) ?? []).length;
     const aliasHit = (t.aliases ?? []).some((a) => termRe(a).test(raw));
-    if (hits || aliasHit) known.push({ term: t.term, status: t.status, hits, alias: aliasHit });
+    if (hits || aliasHit)
+      known.push({ term: t.term, status: t.status, hits, alias: aliasHit });
   }
   // эвристика кандидатов: ВСЕ-КАПС токены (латиница/кириллица/цифры) вне реестра и стоп-слов.
   // Структура «капс-слово(капс-слово-с-дефисом)*» + граница «не буква/цифра»:
@@ -88,14 +150,35 @@ if (cmd === "check") {
   // в русском одиночные буквы — грамматика, а не аббревиатуры; реестр — про
   // «секретные буквы» с ≥ 2 заглавными буквами в токене (UTF-16, P2P, АЭС — да; P2 — нет).
   const tokens = new Set(
-    (raw.match(/(?<![\p{L}\p{Nd}])[\p{Lu}][\p{Lu}\p{Nd}]*(?:-[\p{Lu}\p{Nd}]+)*(?![\p{L}\p{N}])/gu) ?? []),
+    raw.match(
+      /(?<![\p{L}\p{Nd}])[\p{Lu}][\p{Lu}\p{Nd}]*(?:-[\p{Lu}\p{Nd}]+)*(?![\p{L}\p{N}])/gu,
+    ) ?? [],
   );
   const candidates = [...tokens]
     .filter((tok) => (tok.match(/[\p{Lu}]/gu) ?? []).length >= 2)
-    .filter((tok) => !STOPWORDS.has(tok) && !exists(terms, tok) && !terms.some((t) => termRe(t.term).test(tok)))
+    .filter(
+      (tok) =>
+        !STOPWORDS.has(tok) &&
+        !exists(terms, tok) &&
+        !terms.some((t) => termRe(t.term).test(tok)),
+    )
     .sort();
-  console.log(JSON.stringify({ known, candidates, note: "candidates — эвристика для review автора, не автодобавление" }, null, 2));
-  known.filter((k) => k.status === "published").forEach((k) => console.error(`  ✓ ${k.term} — уже объяснён, определение НЕ повторять`));
+  console.log(
+    JSON.stringify(
+      {
+        known,
+        candidates,
+        note: "candidates — эвристика для review автора, не автодобавление",
+      },
+      null,
+      2,
+    ),
+  );
+  known
+    .filter((k) => k.status === "published")
+    .forEach((k) =>
+      console.error(`  ✓ ${k.term} — уже объяснён, определение НЕ повторять`),
+    );
   process.exit(0);
 }
 
@@ -103,25 +186,40 @@ if (cmd === "confirm") {
   const term = termArg;
   const definition = opt("definition");
   if (!term || !definition) {
-    console.error('usage: terms.mjs confirm <TERM> --definition "..." [--aliases "a,b"]');
+    console.error(
+      'usage: terms.mjs confirm <TERM> --definition "..." [--aliases "a,b"]',
+    );
     process.exit(2);
   }
   const file = registry();
   const terms = load(file);
   if (exists(terms, term)) {
-    console.error(`«${term}» уже есть в реестре (term или alias). Дубликаты запрещены.`);
+    console.error(
+      `«${term}» уже есть в реестре (term или alias). Дубликаты запрещены.`,
+    );
     process.exit(1);
   }
-  const aliases = opt("aliases")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+  const aliases =
+    opt("aliases")
+      ?.split(",")
+      .map((s) => s.trim())
+      .filter(Boolean) ?? [];
   // алиасы — полноправные имена: коллизии с реестром и повторы внутри записи недопустимы,
   // иначе один и тот же термин получит два разных определения
-  if (new Set([term, ...aliases].map((s) => s.toLowerCase())).size !== 1 + aliases.length) {
-    console.error(`В confirm передан термин/алиасы с повторами: ${[term, ...aliases].join(", ")}.`);
+  if (
+    new Set([term, ...aliases].map((s) => s.toLowerCase())).size !==
+    1 + aliases.length
+  ) {
+    console.error(
+      `В confirm передан термин/алиасы с повторами: ${[term, ...aliases].join(", ")}.`,
+    );
     process.exit(1);
   }
   for (const a of aliases) {
     if (exists(terms, a)) {
-      console.error(`Алиас «${a}» уже есть в реестре (term или alias). Дубликаты запрещены.`);
+      console.error(
+        `Алиас «${a}» уже есть в реестре (term или alias). Дубликаты запрещены.`,
+      );
       process.exit(1);
     }
   }
@@ -135,7 +233,9 @@ if (cmd === "confirm") {
     first_telegram_url: null,
   });
   save(file, terms);
-  console.log(`Подтверждено: ${term} (status=confirmed). Опубликуй публикацией: terms.mjs publish ${term} …`);
+  console.log(
+    `Подтверждено: ${term} (status=confirmed). Опубликуй публикацией: terms.mjs publish ${term} …`,
+  );
   process.exit(0);
 }
 
@@ -143,23 +243,31 @@ if (cmd === "publish") {
   const term = termArg;
   const article = opt("article");
   if (!term || !article) {
-    console.error("usage: terms.mjs publish <TERM> --article <id> [--telegram-url <url>] [--date YYYY-MM-DD]");
+    console.error(
+      "usage: terms.mjs publish <TERM> --article <id> [--telegram-url <url>] [--date YYYY-MM-DD]",
+    );
     process.exit(2);
   }
   const file = registry();
   const terms = load(file);
   const t = exists(terms, term);
   if (!t) {
-    console.error(`«${term}» нет в реестре. Сначала: terms.mjs confirm ${term} --definition "…"`);
+    console.error(
+      `«${term}» нет в реестре. Сначала: terms.mjs confirm ${term} --definition "…"`,
+    );
     process.exit(1);
   }
   if (t.status === "published") {
-    console.error(`«${t.term}» уже опубликован (${t.first_article_id ?? "исторический"}). Повторная публикация запрещена.`);
+    console.error(
+      `«${t.term}» уже опубликован (${t.first_article_id ?? "исторический"}). Повторная публикация запрещена.`,
+    );
     process.exit(1);
   }
   const url = opt("telegram-url");
   if (url && !/^https:\/\/(t\.me|telegram\.me|telegram\.dog)\//.test(url)) {
-    console.error(`URL «${url}» не похож на пост Telegram (https://t.me/…). Не выдумывай ссылки.`);
+    console.error(
+      `URL «${url}» не похож на пост Telegram (https://t.me/…). Не выдумывай ссылки.`,
+    );
     process.exit(1);
   }
   Object.assign(t, {

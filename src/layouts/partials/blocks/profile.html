@@ -1,41 +1,49 @@
 {{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 <section class="section-sm">
-    <div class="container space-y-20">
-        {{ range $data }}
-            <div>
-                {{ partial "components/section-title" (dict "icon" .icon "title" .title) }}
-                {{ if .description }}
-                    <p class="max-w-4xl text-lg">{{ .description | markdownify }}</p>
-                {{ else if .subtitle }}
-                    <p class="max-w-3xl text-lg">{{ .subtitle }}</p>
-                {{ end }}
-                {{ if .blocks }}
-                    <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
-                        {{ range .blocks }}
-                            <div class="card">
-                                <h3 class="h4 mb-5 flex items-center gap-3">
-                                    {{ with .icon }}<span class="card-icon !mb-0 !h-10 !w-10">{{ partial "components/icon" (dict "name" . "class" "h-5 w-5") }}</span>{{ end }}
-                                    {{ .title }}
-                                </h3>
-                                {{ if .items }}
-                                    <ul class="flex flex-wrap gap-2">
-                                        {{ range .items }}<li class="chip !px-3.5 !py-1.5 !text-sm">{{ . }}</li>{{ end }}
-                                    </ul>
-                                {{ else if .list }}
-                                    <ul class="space-y-3">
-                                        {{ range .list }}
-                                            <li class="flex items-start gap-3">
-                                                <span class="check-dot">{{ partial "components/icon" (dict "name" "check") }}</span>
-                                                <span>{{ . | markdownify }}</span>
-                                            </li>
-                                        {{ end }}
-                                    </ul>
-                                {{ end }}
-                            </div>
-                        {{ end }}
-                    </div>
-                {{ end }}
-            </div>
+  <div class="container space-y-20">
+    {{ range $data }}
+      <div>
+        {{ partial "components/section-title" (dict "icon" .icon "title" .title) }}
+        {{ if .description }}
+          <p class="max-w-4xl text-lg">{{ .description | markdownify }}</p>
+        {{ else if .subtitle }}
+          <p class="max-w-3xl text-lg">{{ .subtitle }}</p>
         {{ end }}
-    </div>
+        {{ if .blocks }}
+          <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {{ range .blocks }}
+              <div class="card">
+                <h3 class="h4 mb-5 flex items-center gap-3">
+                  {{ with .icon }}
+                    <span class="card-icon !mb-0 !h-10 !w-10"
+                      >{{ partial "components/icon" (dict "name" . "class" "h-5 w-5") }}</span
+                    >
+                  {{ end }}
+                  {{ .title }}
+                </h3>
+                {{ if .items }}
+                  <ul class="flex flex-wrap gap-2">
+                    {{ range .items }}
+                      <li class="chip !px-3.5 !py-1.5 !text-sm">{{ . }}</li>
+                    {{ end }}
+                  </ul>
+                {{ else if .list }}
+                  <ul class="space-y-3">
+                    {{ range .list }}
+                      <li class="flex items-start gap-3">
+                        <span class="check-dot"
+                          >{{ partial "components/icon" (dict "name" "check") }}</span
+                        >
+                        <span>{{ . | markdownify }}</span>
+                      </li>
+                    {{ end }}
+                  </ul>
+                {{ end }}
+              </div>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
 </section>

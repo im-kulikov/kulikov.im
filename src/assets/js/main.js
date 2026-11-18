@@ -11,14 +11,18 @@ if (toggle && menu) {
 
   toggle.addEventListener("click", () => set(!isOpen()));
   // close after following a link (and when the desktop row takes over)
-  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
+  menu
+    .querySelectorAll("a")
+    .forEach((a) => a.addEventListener("click", () => set(false)));
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && isOpen()) {
       set(false);
       toggle.focus();
     }
   });
-  window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => e.matches && set(false));
+  window
+    .matchMedia("(min-width: 1024px)")
+    .addEventListener("change", (e) => e.matches && set(false));
 }
 
 // Remember the language the visitor picked (read by the inline script in <head> on the home page).
@@ -27,5 +31,5 @@ document.querySelectorAll(".lang-switch a").forEach((a) =>
     try {
       localStorage.setItem("lang", a.dataset.lang);
     } catch {}
-  })
+  }),
 );

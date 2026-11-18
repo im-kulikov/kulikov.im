@@ -92,8 +92,8 @@ module.exports = plugin.withOptions(() => {
     addBase({
       ":root": baseVars,
       "@media (prefers-color-scheme: dark)": {
-        ":root": darkVars
-      }
+        ":root": darkVars,
+      },
     });
 
     const fontUtils = {};

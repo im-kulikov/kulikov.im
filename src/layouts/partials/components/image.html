@@ -1,6 +1,6 @@
 {{ $src := .src }}
 {{ if not $src }}
-    {{ errorf "src is required for picture partial" }}
+  {{ errorf "src is required for picture partial" }}
 {{ end }}
 {{ $alt := .alt | default "" }}
 {{ $class := .class | default "" }}
@@ -12,89 +12,97 @@
 {{ $format := .format | default "webp" }}
 {{ $dprs := slice 1 2 3 }}
 {{ $breakpoints := dict
-        "xl" (dict "max" 1280 "size" 1280 "width" 1110)
-        "lg" (dict "max" 991 "size" 1024 "width" 700)
-        "md" (dict "max" 767 "size" 768 "width" 600)
-        "sm" (dict "max" 575 "size" 640 "width" 545)
-        "al" (dict "max" 450 "size" 450 "width" 700)
+  "xl" (dict "max" 1280 "size" 1280 "width" 1110)
+  "lg" (dict "max" 991 "size" 1024 "width" 700)
+  "md" (dict "max" 767 "size" 768 "width" 600)
+  "sm" (dict "max" 575 "size" 640 "width" 545)
+  "al" (dict "max" 450 "size" 450 "width" 700)
 }}
 {{ if $size }}
-    {{ $img := (resources.Get $src).Resize (printf "%s q65 %s" $size $format) }}
-    <picture class="{{ $pClass }}">
-        <img
-            src="{{ $img.RelPermalink }}"
-            alt="{{ $alt }}"
-            class="{{ $class }} img"
-            width="{{ $img.Width }}"
-            height="{{ $img.Height }}"
-            decoding="auto"
-            loading="lazy" />
-    </picture>
+  {{ $img := (resources.Get $src).Resize (printf "%s q65 %s" $size $format) }}
+  <picture class="{{ $pClass }}">
+    <img
+      src="{{ $img.RelPermalink }}"
+      alt="{{ $alt }}"
+      class="{{ $class }} img"
+      width="{{ $img.Width }}"
+      height="{{ $img.Height }}"
+      decoding="auto"
+      loading="lazy" />
+  </picture>
 {{ else }}
-    {{ $images := slice }}
-    {{ range $label, $bp := $breakpoints }}
-        {{ $baseSize := index $bp "size" }}
-        {{ $baseWidth := index $sizes $label | default (index $bp "width") }}
-        {{ with resources.Get $src }}
-            {{ $srcset := slice }}
-            {{ $mediaType := "" }}
-            {{ if $responsive }}
-                {{ $tmp := . }}
-                {{ range $dpr := $dprs }}
-                    {{ $w := mul $baseWidth $dpr }}
-                    {{ $img := $tmp.Resize (printf "%dx q65 %s" $w $format) }}
-                    {{ $srcset = $srcset | append (printf "%s %dx" $img.RelPermalink $dpr) }}
-                    {{ $mediaType = $img.MediaType }}
-                {{ end }}
-            {{ else }}
-                {{ $img := .Resize (printf "%dx q65 %s" $baseWidth $format) }}
-                {{ $srcset = $srcset | append $img.RelPermalink }}
-                {{ $mediaType = $img.MediaType.Type }}
-            {{ end }}
-            {{ $images = $images | append (dict
-                    "max" (index $bp "max")
-                    "label" $label
-                    "size" $baseSize
-                    "type" $mediaType
-                    "image" (.Resize (printf "%dx q65 %s" $baseWidth $format))
-                    "srcset" (delimit $srcset ", ")
-                    ) }}
+  {{ $images := slice }}
+  {{ range $label, $bp := $breakpoints }}
+    {{ $baseSize := index $bp "size" }}
+    {{ $baseWidth := index $sizes $label | default (index $bp "width") }}
+    {{ with resources.Get $src }}
+      {{ $srcset := slice }}
+      {{ $mediaType := "" }}
+      {{ if $responsive }}
+        {{ $tmp := . }}
+        {{ range $dpr := $dprs }}
+          {{ $w := mul $baseWidth $dpr }}
+          {{ $img := $tmp.Resize (printf "%dx q65 %s" $w $format) }}
+          {{ $srcset = $srcset | append (printf "%s %dx" $img.RelPermalink $dpr) }}
+          {{ $mediaType = $img.MediaType }}
         {{ end }}
+      {{ else }}
+        {{ $img := .Resize (printf "%dx q65 %s" $baseWidth $format) }}
+        {{ $srcset = $srcset | append $img.RelPermalink }}
+        {{ $mediaType = $img.MediaType.Type }}
+      {{ end }}
+      {{ $images = $images | append (dict
+        "max" (index $bp "max")
+        "label" $label
+        "size" $baseSize
+        "type" $mediaType
+        "image" (.Resize (printf "%dx q65 %s" $baseWidth $format))
+        "srcset" (delimit $srcset ", ")
+        )
+      }}
     {{ end }}
+  {{ end }}
 
-    {{/* fallback <img> */}}
-    {{ $images = sort $images ".size" "asc" }}
-    {{ $fallback := index (last 1 $images) 0 }}
+  {{/* fallback <img> */}}
+  {{ $images = sort $images ".size" "asc" }}
+  {{ $fallback := index (last 1 $images) 0 }}
 
-    {{/* preload: one link per width range; ranges do not overlap, so a phone fetches one file.
-         Sources below are in ascending order (the first match wins), the fallback <img> covers wider screens. */}}
-    {{ if $preload }}
-        {{ $srcPreload := slice }}
-        {{ $min := 0 }}
-        {{ range $images }}
-            {{ $media := printf "(max-width: %dpx)" .max }}
-            {{ if $min }}{{ $media = printf "(min-width: %dpx) and %s" $min $media }}{{ end }}
-            {{ $srcPreload = $srcPreload | append (printf `<link fetchpriority="high" rel="preload" as="image" href=%q media=%q />` .image.RelPermalink $media) }}
-            {{ $min = add .max 1 }}
-        {{ end }}
-        {{ $srcPreload = $srcPreload | append (printf `<link fetchpriority="high" rel="preload" as="image" href=%q media=%q />` $fallback.image.RelPermalink (printf "(min-width: %dpx)" $min)) }}
-        {{ page.Scratch.Add (printf "preload-image-%s" page.Path) (delimit $srcPreload "") }}
+  {{/* preload: one link per width range; ranges do not overlap, so a phone fetches one file.
+    Sources below are in ascending order (the first match wins), the fallback <img> covers wider screens.
+  */}}
+  {{ if $preload }}
+    {{ $srcPreload := slice }}
+    {{ $min := 0 }}
+    {{ range $images }}
+      {{ $media := printf "(max-width: %dpx)" .max }}
+      {{ if $min }}
+        {{ $media = printf "(min-width: %dpx) and %s" $min $media }}
+      {{ end }}
+      {{ $srcPreload = $srcPreload | append (printf `<link fetchpriority="high" rel="preload" as="image" href=%q media=%q />` .image.RelPermalink $media) }}
+      {{ $min = add .max 1 }}
     {{ end }}
-    <picture>
-        {{ range $images }}
-            <source
-                    srcset="{{ .srcset }}"
-                    media="(max-width: {{ .max }}px)"
-                    type="{{ .type }}">
-        {{ end }}
-        <img
-                src="{{ $fallback.image.RelPermalink }}"
-                alt="{{ $alt }}"
-                class="{{ $class }} img"
-                sizes="100vw"
-                decoding="auto"
-                width="{{ $fallback.image.Width }}"
-                height="{{ $fallback.image.Height }}"
-                {{ if $preload }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} />
-    </picture>
+    {{ $srcPreload = $srcPreload | append (printf `<link fetchpriority="high" rel="preload" as="image" href=%q media=%q />` $fallback.image.RelPermalink (printf "(min-width: %dpx)" $min)) }}
+    {{ page.Scratch.Add (printf "preload-image-%s" page.Path) (delimit $srcPreload "") }}
+  {{ end }}
+  <picture>
+    {{ range $images }}
+      <source
+        srcset="{{ .srcset }}"
+        media="(max-width: {{ .max }}px)"
+        type="{{ .type }}" />
+    {{ end }}
+    <img
+      src="{{ $fallback.image.RelPermalink }}"
+      alt="{{ $alt }}"
+      class="{{ $class }} img"
+      sizes="100vw"
+      decoding="auto"
+      width="{{ $fallback.image.Width }}"
+      height="{{ $fallback.image.Height }}"
+      {{ if $preload }}
+        fetchpriority="high"
+      {{ else }}
+        loading="lazy"
+      {{ end }} />
+  </picture>
 {{ end }}

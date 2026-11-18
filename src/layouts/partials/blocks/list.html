@@ -1,19 +1,25 @@
 {{- $data := .Inner | transform.Unmarshal | partial "i18n/resolve.html" }}
 {{ with $data }}
-    <section class="section-sm">
-        <div class="container">
-            {{ with .title }}{{ partial "components/section-title" (dict "icon" $data.icon "title" .) }}{{ end }}
-            {{ with .description }}<p class="mb-10 max-w-3xl text-lg">{{ . | markdownify }}</p>{{ end }}
-            <ul class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {{ range .items }}
-                    <li class="card !p-5">
-                        <div class="flex items-start gap-3">
-                            <span class="check-dot">{{ partial "components/icon" (dict "name" "check") }}</span>
-                            <p>{{ . | markdownify }}</p>
-                        </div>
-                    </li>
-                {{ end }}
-            </ul>
-        </div>
-    </section>
+  <section class="section-sm">
+    <div class="container">
+      {{ with .title }}
+        {{ partial "components/section-title" (dict "icon" $data.icon "title" .) }}
+      {{ end }}
+      {{ with .description }}
+        <p class="mb-10 max-w-3xl text-lg">{{ . | markdownify }}</p>
+      {{ end }}
+      <ul class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {{ range .items }}
+          <li class="card !p-5">
+            <div class="flex items-start gap-3">
+              <span class="check-dot"
+                >{{ partial "components/icon" (dict "name" "check") }}</span
+              >
+              <p>{{ . | markdownify }}</p>
+            </div>
+          </li>
+        {{ end }}
+      </ul>
+    </div>
+  </section>
 {{ end }}

@@ -20,10 +20,10 @@ projects:
       - ru: Клиентская поддержка
         en: "Customer support"
     description:
-      ru: 'Заказ был простым: сделать сайт. Но стояла задача создать систему,
+      ru: "Заказ был простым: сделать сайт. Но стояла задача создать систему,
         независимую от разработчиков. Я спроектировал структуру, внедрил админку-конструктор
         и обучил клиента самостоятельной работе. Через годы проект остался актуальным
-        — благодаря архитектуре, которая учитывает будущее.'
+        — благодаря архитектуре, которая учитывает будущее."
       en: "The brief was simple: build a website. But the real goal was a system that would not depend on its developers. I designed the structure, built a site-builder admin panel and trained the client to work independently. Years later the project is still relevant, thanks to an architecture designed with the future in mind."
     skills:
       - Ruby/Rails
@@ -39,10 +39,10 @@ projects:
       - ru: Поддержка
         en: Support
     description:
-      ru: 'Магазин был на грани закрытия: падения, ошибки, ноль документации.
+      ru: "Магазин был на грани закрытия: падения, ошибки, ноль документации.
         Вместе с командой мы быстро проведи аудит, исправили критичные баги, настроили
         CI/CD и начали восстанавливать доверие клиентов. Спустя месяц продажи стабилизировались.
-        Этот проект стал отличным примером кризис-менеджмента под давлением.'
+        Этот проект стал отличным примером кризис-менеджмента под давлением."
       en: "The store was on the verge of closing: outages, errors, zero documentation. Together with the team we quickly ran an audit, fixed the critical bugs, set up CI/CD and began to win back customers' trust. A month later sales had stabilised. This project became an excellent example of crisis management under pressure."
     skills:
       - PHP
@@ -61,12 +61,12 @@ projects:
       - ru: Разработка
         en: Development
     description:
-      ru: 'Пока работал как freelancer, ко мне и коллеге обратились с вопросом:
+      ru: "Пока работал как freelancer, ко мне и коллеге обратились с вопросом:
         «Сможете сделать CRM?». Мы с Александром начали с глубокой аналитики, даже поработали
         «в полях», чтобы понять процессы. Архитектура, решения и UX выросли по сути из
         реальных задач и общения с потенциальными пользователями. Итог — не просто CRM,
-        а инструмент, которым сотрудники компании действительно хотели пользоваться.'
-      en: "While I was working as a freelancer, a colleague and I were asked: \"Can you build a CRM?\" Alexander and I started with in-depth analysis and even worked \"in the field\" to understand the processes. The architecture, the decisions and the UX grew essentially out of real tasks and conversations with prospective users. The result was not just a CRM but a tool that the company's employees really wanted to use."
+        а инструмент, которым сотрудники компании действительно хотели пользоваться."
+      en: 'While I was working as a freelancer, a colleague and I were asked: "Can you build a CRM?" Alexander and I started with in-depth analysis and even worked "in the field" to understand the processes. The architecture, the decisions and the UX grew essentially out of real tasks and conversations with prospective users. The result was not just a CRM but a tool that the company''s employees really wanted to use.'
     skills:
       - Freelance
       - Backend
@@ -107,7 +107,8 @@ projects:
       - ru: Сетевой стек
         en: Network stack
     description:
-      ru: Компания запускала Wi-Fi точки в общественных местах, а так же авторизацию
+      ru:
+        Компания запускала Wi-Fi точки в общественных местах, а так же авторизацию
         согласно законов РФ — всё должно было работать 24/7. Вместе с командой вели разработку
         ключевых сервисов, интеграцию с billing-системой, внедрение мониторинга и логирования.
         Это был мой первый продакшн-опыт с незнакомыми ранее решениями, и он дал сильный
@@ -153,10 +154,11 @@ projects:
       - Backend
       - Frontend
     description:
-      ru: 'В компании был хаос: метрики, код и документация разбросаны. Я предложил
+      ru:
+        "В компании был хаос: метрики, код и документация разбросаны. Я предложил
         архитектуру, в которой всё сводится в единый портал. Интеграции с Sentry, Git,
         Grafana, карточки проектов, внутренний API. Это дало инженерам прозрачность и
-        экономию времени на рутине.'
+        экономию времени на рутине."
       en: "The company was in chaos: metrics, code and documentation were scattered. I proposed an architecture that brings everything together in a single portal. Integrations with Sentry, Git and Grafana, project cards, an internal API. This gave engineers transparency and saved them time on routine work."
     skills:
       - Clean Architecture
@@ -175,10 +177,10 @@ projects:
       - ru: Разработка
         en: Development
     description:
-      ru: 'Проект застыл: баги, страх трогать код, бизнес в тупике. Я провёл
+      ru: "Проект застыл: баги, страх трогать код, бизнес в тупике. Я провёл
         аудит, переписал архитектурное ядро и внедрил документацию. Провели воркшопы с
         командой, убрали техдолг. Через 2 месяца проект ожил, а команда почувствовала
-        контроль и уверенность.'
+        контроль и уверенность."
       en: "The project had stalled: bugs, a fear of touching the code, the business at a dead end. I ran an audit, rewrote the architectural core and introduced documentation. We held workshops with the team and cleared the technical debt. After two months the project came back to life, and the team felt in control and confident."
     skills:
       - SOLID
@@ -192,7 +194,8 @@ projects:
         en: Contributor
       - Issue Hunter
     description:
-      ru: Работая с разными Go-проектами, я начал делать pull request-ы в Golang,
+      ru:
+        Работая с разными Go-проектами, я начал делать pull request-ы в Golang,
         Echo, TiDB и другие open-source. Писал утилиты, генераторы и обёртки. Это дало
         мне понимание, как проектировать библиотеки и какую пользу приносит комьюнити.
         До сих пор слежу за их развитием.
@@ -210,7 +213,8 @@ projects:
       - ru: Системный разработчик
         en: Systems developer
     description:
-      ru: Пришлось интегрировать сетевую информацию из NetBox и других источников.
+      ru:
+        Пришлось интегрировать сетевую информацию из NetBox и других источников.
         Я написал обёртку на Go с удобным API, асинхронной обработкой и логированием.
         Проект быстро подхватили коллеги. Благодаря ему сетевые задачи стали воспроизводимыми
         и масштабируемыми.
@@ -252,10 +256,11 @@ projects:
       - ru: Разработчик
         en: Developer
     description:
-      ru: 'В рамках платформы платёжных микросервисов я создал архитектуру запуска:
+      ru:
+        "В рамках платформы платёжных микросервисов я создал архитектуру запуска:
         Graceful shutdown, middleware, observability, стандартные модули. Это снизило
         время старта новых команд в 3 раза и позволило поддерживать качество кода вне
-        зависимости от проекта.'
+        зависимости от проекта."
       en: "As part of a payment microservices platform, I created a service bootstrap architecture: graceful shutdown, middleware, observability and standard modules. It cut the time for new teams to get started threefold and made it possible to maintain code quality regardless of the project."
     skills:
       - Platform Engineering

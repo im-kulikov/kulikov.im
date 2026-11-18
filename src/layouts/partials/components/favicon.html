@@ -1,4 +1,13 @@
 {{- /* Icons come from img/favicon.svg; the raster ones are rendered by tools/build-icons.mjs. The SVG follows prefers-color-scheme. */ -}}
-{{ with resources.Get "img/favicon.svg" }}<link rel="icon" href="{{ .RelPermalink }}" type="image/svg+xml">{{ end }}
-{{ with resources.Get "img/favicon.ico" }}<link rel="icon" href="{{ (. | resources.Copy "favicon.ico").RelPermalink }}" sizes="48x48">{{ end }}
-{{ with resources.Get "img/apple-touch-icon.png" }}<link rel="apple-touch-icon" href="{{ .RelPermalink }}">{{ end }}
+{{ with resources.Get "img/favicon.svg" }}
+  <link rel="icon" href="{{ .RelPermalink }}" type="image/svg+xml" />
+{{ end }}
+{{ with resources.Get "img/favicon.ico" }}
+  <link
+    rel="icon"
+    href="{{ (. | resources.Copy "favicon.ico").RelPermalink }}"
+    sizes="48x48" />
+{{ end }}
+{{ with resources.Get "img/apple-touch-icon.png" }}
+  <link rel="apple-touch-icon" href="{{ .RelPermalink }}" />
+{{ end }}
