@@ -9,7 +9,13 @@
 //   node .agents/skills/article-production/scripts/package.mjs <id> [--skip-validate]
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { TMP, readState, validId } from "./lib.mjs";
 import { checkImages, imageInfo } from "./images.mjs";
@@ -27,27 +33,49 @@ if (!existsSync(drafts)) {
 }
 
 if (!skipValidate) {
-  const v = spawnSync(process.execPath, [join(import.meta.dirname, "validate.mjs"), id], { stdio: "inherit" });
+  const v = spawnSync(
+    process.execPath,
+    [join(import.meta.dirname, "validate.mjs"), id],
+    { stdio: "inherit" },
+  );
   if (v.status !== 0) {
-    console.error("\nvalidate не прошёл — review package не собирается. Исправь и повтори.");
+    console.error(
+      "\nvalidate не прошёл — review package не собирается. Исправь и повтори.",
+    );
     process.exit(1);
   }
 }
 
 // ---- полнота (отсутствующие изображения заглушками не подменяются) ----
 const REQUIRED = ["brief.md", "article.md", "telegram.md", "telegram.json"];
-const CONCEPT_FILES = ["prompt.md", "telegram.png", "blog-cover.webp", "blog-preview.webp"];
+const CONCEPT_FILES = [
+  "prompt.md",
+  "telegram.png",
+  "blog-cover.webp",
+  "blog-preview.webp",
+];
 const imagesDir = join(drafts, "images");
 const missing = [];
 for (const f of REQUIRED) if (!existsSync(join(drafts, f))) missing.push(f);
-if (!existsSync(join(imagesDir, "brief.md"))) missing.push("images/brief.md (Image Brief)");
+if (!existsSync(join(imagesDir, "brief.md")))
+  missing.push("images/brief.md (Image Brief)");
 const concepts = existsSync(imagesDir)
-  ? readdirSync(imagesDir, { withFileTypes: true }).filter((d) => d.isDirectory() && /^concept-\d+$/.test(d.name)).map((d) => d.name).sort()
+  ? readdirSync(imagesDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && /^concept-\d+$/.test(d.name))
+      .map((d) => d.name)
+      .sort()
   : [];
-if (concepts.length !== 3) missing.push(`концепции: найдено ${concepts.length}, нужно ровно 3 (concept-01…03)`);
-for (const c of concepts) for (const f of CONCEPT_FILES) if (!existsSync(join(imagesDir, c, f))) missing.push(`${c}/${f}`);
+if (concepts.length !== 3)
+  missing.push(
+    `концепции: найдено ${concepts.length}, нужно ровно 3 (concept-01…03)`,
+  );
+for (const c of concepts)
+  for (const f of CONCEPT_FILES)
+    if (!existsSync(join(imagesDir, c, f))) missing.push(`${c}/${f}`);
 if (missing.length) {
-  console.error("Отсутствуют обязательные файлы (генерация не завершена или не сохранена):");
+  console.error(
+    "Отсутствуют обязательные файлы (генерация не завершена или не сохранена):",
+  );
   missing.forEach((m) => console.error(`  ✗ ${m}`));
   process.exit(1);
 }
@@ -55,25 +83,44 @@ if (missing.length) {
 const img = checkImages(imagesDir);
 if (!img.ok) {
   img.problems.forEach((p) => console.error(`  ✗ ${p}`));
-  console.error("Изображения не прошли проверку — review package не собирается.");
+  console.error(
+    "Изображения не прошли проверку — review package не собирается.",
+  );
   process.exit(1);
 }
 
 // ---- metadata.json (пересобирается; материалы не трогаем) ----
 let state = null;
-try { state = readState(id); } catch { /* state необязателен для пакета */ }
-const sha256 = (f) => createHash("sha256").update(readFileSync(f)).digest("hex");
+try {
+  state = readState(id);
+} catch {
+  /* state необязателен для пакета */
+}
+const sha256 = (f) =>
+  createHash("sha256").update(readFileSync(f)).digest("hex");
 const fileRec = (f) => ({ bytes: statSync(f).size, sha256: sha256(f) });
 let title = null;
 {
-  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(readFileSync(join(drafts, "article.md"), "utf8"));
-  if (m) { try { title = (await import("yaml")).parse(m[1]).title ?? null; } catch { /* невалидный фронтматтер — validate уже ругнулся */ } }
+  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(
+    readFileSync(join(drafts, "article.md"), "utf8"),
+  );
+  if (m) {
+    try {
+      title = (await import("yaml")).parse(m[1]).title ?? null;
+    } catch {
+      /* невалидный фронтматтер — validate уже ругнулся */
+    }
+  }
 }
 let telegramMeta = null;
 try {
-  telegramMeta = JSON.parse(readFileSync(join(drafts, "telegram.json"), "utf8"));
+  telegramMeta = JSON.parse(
+    readFileSync(join(drafts, "telegram.json"), "utf8"),
+  );
 } catch (e) {
-  console.error(`telegram.json не читается (${e.message}); прогони tg-check.mjs и повтори.`);
+  console.error(
+    `telegram.json не читается (${e.message}); прогони tg-check.mjs и повтори.`,
+  );
   process.exit(1);
 }
 const meta = {
@@ -91,13 +138,19 @@ const meta = {
       Object.fromEntries(
         CONCEPT_FILES.map((f) => {
           const p = join(imagesDir, c, f);
-          return [f, f === "prompt.md" ? fileRec(p) : { ...fileRec(p), ...imageInfo(p) }];
+          return [
+            f,
+            f === "prompt.md" ? fileRec(p) : { ...fileRec(p), ...imageInfo(p) },
+          ];
         }),
       ),
     ]),
   ),
 };
-writeFileSync(join(drafts, "metadata.json"), JSON.stringify(meta, null, 2) + "\n");
+writeFileSync(
+  join(drafts, "metadata.json"),
+  JSON.stringify(meta, null, 2) + "\n",
+);
 
 // ---- review.md: каркас только если его ещё нет (правки агента/владельца не затираем) ----
 const reviewPath = join(drafts, "review.md");
@@ -105,7 +158,9 @@ if (!existsSync(reviewPath)) {
   const rows = concepts.map((c) => {
     const cell = (f) => {
       const r = meta.images[c][f];
-      return r.w ? `${r.w}×${r.h} · ${(r.bytes / 1024).toFixed(0)} КБ` : `${(r.bytes / 1024).toFixed(0)} КБ`;
+      return r.w
+        ? `${r.w}×${r.h} · ${(r.bytes / 1024).toFixed(0)} КБ`
+        : `${(r.bytes / 1024).toFixed(0)} КБ`;
     };
     return `| ${c} | ${cell("telegram.png")} | ${cell("blog-cover.webp")} | ${cell("blog-preview.webp")} |`;
   });
@@ -146,7 +201,15 @@ if (!existsSync(reviewPath)) {
 }
 
 console.log(`Review package собран: tmp/drafts/${id}/`);
-console.log(`  brief.md, article.md, telegram.md (+json), metadata.json, review.md`);
-console.log(`  images/brief.md + ${concepts.length} концепции × {prompt.md, telegram.png, blog-cover.webp, blog-preview.webp}`);
-console.log(`  Telegram: ${meta.telegram.length}/1024 UTF-16 (target ≤ ${meta.telegram.target})`);
-console.log("Дальше: заполнить TODO в review.md и показать пакет владельцу (шаг 12).");
+console.log(
+  `  brief.md, article.md, telegram.md (+json), metadata.json, review.md`,
+);
+console.log(
+  `  images/brief.md + ${concepts.length} концепции × {prompt.md, telegram.png, blog-cover.webp, blog-preview.webp}`,
+);
+console.log(
+  `  Telegram: ${meta.telegram.length}/1024 UTF-16 (target ≤ ${meta.telegram.target})`,
+);
+console.log(
+  "Дальше: заполнить TODO в review.md и показать пакет владельцу (шаг 12).",
+);

@@ -4,9 +4,11 @@
     en: What I offer
   image: "/img/features-services.webp"
   content:
-    ru: Мой опыт охватывает как коммерческую разработку в крупных и стартап-компаниях,
+    ru:
+      Мой опыт охватывает как коммерческую разработку в крупных и стартап-компаниях,
       так и точечные проектные задачи, где нужно быстро разобраться и предложить решение.
-    en: My experience covers commercial development in large companies and startups,
+    en:
+      My experience covers commercial development in large companies and startups,
       as well as one-off projects where you need to get up to speed fast and propose a solution.
   bullets:
     - ru: Реализация высоконагруженных и отказоустойчивых систем.
@@ -21,8 +23,8 @@
       en: Running performance reviews and writing individual growth plans.
     - ru: Настройка продуктовой и инженерной прозрачности (планы, процессы, метрики).
       en: "Setting up product and engineering transparency (plans, processes, metrics)."
-    - ru: 'Внедрение и масштабирование процессов: Delivery on Date, Lead Time, SLO и др.'
-      en: 'Introducing and scaling processes: Delivery on Date, Lead Time, SLO and more.'
+    - ru: "Внедрение и масштабирование процессов: Delivery on Date, Lead Time, SLO и др."
+      en: "Introducing and scaling processes: Delivery on Date, Lead Time, SLO and more."
     - ru: Проектирование архитектуры сервисов и платформенных решений.
       en: "Designing the architecture of services and platform solutions."
     - ru: Внедрение DDD, Observability и стандартизация инженерных практик.
@@ -40,14 +42,17 @@
     en: Why choose me?
   image: "/img/features-why.webp"
   content:
-    ru: 'За годы работы я собрал обширный набор навыков и решений, которыми готов
-      поделиться. Вот почему вам стоит выбрать меня:'
-    en: 'Over the years I have built up a broad set of skills and solutions that I am ready
-      to share. Here is why you should choose me:'
+    ru:
+      "За годы работы я собрал обширный набор навыков и решений, которыми готов
+      поделиться. Вот почему вам стоит выбрать меня:"
+    en:
+      "Over the years I have built up a broad set of skills and solutions that I am ready
+      to share. Here is why you should choose me:"
   bullets:
     - ru: Более 20 лет в разработке ПО, свыше 8 лет в роли тимлида и техлида, команды от 5 до 15 человек.
       en: "20+ years in software development, 8+ years as a team lead and tech lead, teams of 5 to 15 people."
-    - ru: Опыт в ведущих продуктовых и технологических компаниях (Wildberries, СберМаркет,
+    - ru:
+        Опыт в ведущих продуктовых и технологических компаниях (Wildberries, СберМаркет,
         Coins.ph, Cryptopay и др.).
       en: "Experience at leading product and technology companies (Wildberries, SberMarket, Coins.ph, Cryptopay and others)."
     - ru: Сократил time-to-market в 2–3 раза, от идеи до выпуска в продакшен.
@@ -84,14 +89,17 @@
       en: "I advocate clean, maintainable code and follow the principles of DDD and Clean Architecture."
     - ru: Следую принципам DRY, KISS и SOLID, уделяя внимание деталям и читаемости.
       en: I follow DRY, KISS and SOLID, paying attention to detail and readability.
-    - ru: Проектировал платформенные решения с нуля и формировал команды под конкретные
+    - ru:
+        Проектировал платформенные решения с нуля и формировал команды под конкретные
         задачи.
       en: Designed platform solutions from scratch and built teams for specific
         tasks.
-    - ru: Создаю понятную и полезную документацию, обучающие материалы. Считаю документацию
+    - ru:
+        Создаю понятную и полезную документацию, обучающие материалы. Считаю документацию
         обязательной частью любого проекта.
       en: "I write clear, useful documentation and training materials. I consider documentation an essential part of any project."
-    - ru: Развиваю собственные open source-проекты и участвую в крупных инициативах (Golang,
+    - ru:
+        Развиваю собственные open source-проекты и участвую в крупных инициативах (Golang,
         TiDB, Echo).
       en: "I maintain my own open-source projects and contribute to major initiatives (Golang, TiDB, Echo)."
   button:

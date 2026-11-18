@@ -29,7 +29,8 @@
 ссылки компактные, поведение предсказуемо. Разметка — по вкусу:
 
 ```html
-<b>жирный</b>, <i>курсив</i>, <a href="https://kulikov.im/blog/slug.html">статья</a>
+<b>жирный</b>, <i>курсив</i>,
+<a href="https://kulikov.im/blog/slug.html">статья</a>
 ```
 
 В `telegram.md` живёт подпись с HTML-разметкой; **служебные комментарии
@@ -51,7 +52,15 @@ node .agents/skills/article-production/scripts/tg-check.mjs tmp/drafts/<article-
 `telegram.json` рядом с подписью:
 
 ```json
-{"format":"html","length":912,"limit":1024,"remaining":112,"target":950,"valid":true,"checked_at":"…"}
+{
+  "format": "html",
+  "length": 912,
+  "limit": 1024,
+  "remaining": 112,
+  "target": 950,
+  "valid": true,
+  "checked_at": "…"
+}
 ```
 
 Правила:

@@ -12,7 +12,7 @@ keywords:
   - MVP
   - automation
 description: |
-    High-quality delivery of projects: from MVP to scalable systems. Architecture, engineering culture, process automation.
+  High-quality delivery of projects: from MVP to scalable systems. Architecture, engineering culture, process automation.
 date: 2019-02-28
 author: Evgeniy Kulikov
 layout: page

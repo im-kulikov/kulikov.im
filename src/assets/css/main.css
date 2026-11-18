@@ -5,97 +5,100 @@
 
 /* subtle section background used between alternating sections */
 @utility bg-gradient {
-    background-image: linear-gradient(to bottom, var(--surface-sunken), var(--surface));
-    border-top: 1px solid var(--line);
+  background-image: linear-gradient(
+    to bottom,
+    var(--surface-sunken),
+    var(--surface)
+  );
+  border-top: 1px solid var(--line);
 }
 
 @layer base {
-    html {
-        @apply text-base;
-        scroll-padding-top: 5.5rem;
-    }
+  html {
+    @apply text-base;
+    scroll-padding-top: 5.5rem;
+  }
 
-    body {
-        @apply bg-body text-base dark:bg-darkmode-body font-primary font-normal leading-relaxed text-text dark:text-darkmode-text;
-        font-size: 1.0625rem;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-    }
+  body {
+    @apply bg-body text-base dark:bg-darkmode-body font-primary font-normal leading-relaxed text-text dark:text-darkmode-text;
+    font-size: 1.0625rem;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-secondary font-bold leading-tight text-text-dark dark:text-darkmode-text-dark;
-        letter-spacing: -0.015em;
-        overflow-wrap: break-word;
-        hyphens: auto;
-    }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-secondary font-bold leading-tight text-text-dark dark:text-darkmode-text-dark;
+    letter-spacing: -0.015em;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
 
-    h1,
-    .h1 {
-        font-size: clamp(1.9rem, 6.5vw, 3rem);
-    }
+  h1,
+  .h1 {
+    font-size: clamp(1.9rem, 6.5vw, 3rem);
+  }
 
-    h2,
-    .h2 {
-        font-size: clamp(1.5rem, 5.6vw, 2.5rem);
-    }
+  h2,
+  .h2 {
+    font-size: clamp(1.5rem, 5.6vw, 2.5rem);
+  }
 
-    h3,
-    .h3 {
-        font-size: clamp(1.3rem, 4.6vw, 2.07rem);
-    }
+  h3,
+  .h3 {
+    font-size: clamp(1.3rem, 4.6vw, 2.07rem);
+  }
 
-    h4,
-    .h4 {
-        font-size: clamp(1.2rem, 4vw, 1.73rem);
-    }
+  h4,
+  .h4 {
+    font-size: clamp(1.2rem, 4vw, 1.73rem);
+  }
 
-    h5,
-    .h5 {
-        @apply text-h5;
-    }
+  h5,
+  .h5 {
+    @apply text-h5;
+  }
 
-    h6,
-    .h6 {
-        @apply text-h6;
-    }
+  h6,
+  .h6 {
+    @apply text-h6;
+  }
 
-    b,
-    strong {
-        @apply font-semibold;
-    }
+  b,
+  strong {
+    @apply font-semibold;
+  }
 
-    code {
-        @apply after:border-none;
-    }
+  code {
+    @apply after:border-none;
+  }
 
-    blockquote > p {
-        @apply !my-0;
-    }
+  blockquote > p {
+    @apply !my-0;
+  }
 
-    /* grid items may shrink below their content (wide images would otherwise stretch the column) */
-    .grid > * {
-        min-width: 0;
-    }
+  /* grid items may shrink below their content (wide images would otherwise stretch the column) */
+  .grid > * {
+    min-width: 0;
+  }
 }
 
 @layer components {
-    .section {
-        @apply py-16 xl:py-24;
-    }
+  .section {
+    @apply py-16 xl:py-24;
+  }
 
-    .section-sm {
-        @apply py-14 xl:py-20;
-    }
+  .section-sm {
+    @apply py-14 xl:py-20;
+  }
 
-    .container {
-        @apply mx-auto xl:!max-w-[1240px] px-5;
-    }
-
+  .container {
+    @apply mx-auto xl:!max-w-[1240px] px-5;
+  }
 }
 
 @source "hugo_stats.json";

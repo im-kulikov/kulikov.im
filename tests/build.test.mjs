@@ -3,12 +3,31 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
-import { ALIASES, ALL_PAGES, BASE, EN_PAGES, PAGES, ROOT, SITE, all, classes, dom, enPath, exists, htmlPath, read, text, urlPath } from "./helpers/site.mjs";
+import {
+  ALIASES,
+  ALL_PAGES,
+  BASE,
+  EN_PAGES,
+  PAGES,
+  ROOT,
+  SITE,
+  all,
+  classes,
+  dom,
+  enPath,
+  exists,
+  htmlPath,
+  read,
+  text,
+  urlPath,
+} from "./helpers/site.mjs";
 import { BUILD_LOG, STATS_COPY } from "./helpers/paths.mjs";
 import { BUILD_SHA, HUGO } from "./helpers/hugo.mjs";
 
 test("build log has no warnings, errors or deprecations", () => {
-  const bad = readFileSync(BUILD_LOG, "utf8").split("\n").filter((l) => /^(WARN|ERROR)|deprecated/i.test(l));
+  const bad = readFileSync(BUILD_LOG, "utf8")
+    .split("\n")
+    .filter((l) => /^(WARN|ERROR)|deprecated/i.test(l));
   assert.deepEqual(bad, []);
 });
 
@@ -17,9 +36,15 @@ test("built pages equal the pages derived from src/content (+404, +alias stubs);
   // blog/page/<n> is Hugo pagination (count depends on the paginate setting, not on content)
   const walk = (d, base = d) =>
     readdirSync(d, { withFileTypes: true }).flatMap((e) =>
-      e.isDirectory() ? walk(join(d, e.name), base) : e.name.endsWith(".html") ? [relative(base, join(d, e.name)).replace(/\.html$/, "")] : [],
+      e.isDirectory()
+        ? walk(join(d, e.name), base)
+        : e.name.endsWith(".html")
+          ? [relative(base, join(d, e.name)).replace(/\.html$/, "")]
+          : [],
     );
-  const built = walk(SITE).filter((p) => !/^blog\/page\//.test(p)).sort();
+  const built = walk(SITE)
+    .filter((p) => !/^blog\/page\//.test(p))
+    .sort();
   const expected = [
     ...ALL_PAGES.map(htmlPath),
     ...ALIASES.map((a) => a.from),
@@ -35,20 +60,41 @@ test("renamed pages keep their old URL: alias stubs redirect and point canonical
     const s = read(`${a.from}.html`);
     const target = `${BASE}${urlPath(a.to)}`;
     assert.ok(PAGES.includes(a.to), a.to);
-    assert.match(s, new RegExp(`<link rel="?canonical"? href="?${target}"?`), a.from);
-    assert.match(s, new RegExp(`http-equiv="?refresh"? content="?0; url=${target}`), a.from);
+    assert.match(
+      s,
+      new RegExp(`<link rel="?canonical"? href="?${target}"?`),
+      a.from,
+    );
+    assert.match(
+      s,
+      new RegExp(`http-equiv="?refresh"? content="?0; url=${target}`),
+      a.from,
+    );
   }
 });
 
 test("sitemap.xml is an index of the per-language sitemaps that list exactly the indexable pages (404 and alias stubs excluded)", () => {
-  const locs = (f) => [...read(f).matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]).sort();
-  assert.deepEqual(locs("sitemap.xml"), [`${BASE}/en/sitemap.xml`, `${BASE}/ru/sitemap.xml`]);
-  assert.deepEqual(locs("ru/sitemap.xml"), PAGES.map((p) => `${BASE}${urlPath(p)}`).sort());
-  assert.deepEqual(locs("en/sitemap.xml"), EN_PAGES.map((p) => `${BASE}${enPath(p)}`).sort());
+  const locs = (f) =>
+    [...read(f).matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]).sort();
+  assert.deepEqual(locs("sitemap.xml"), [
+    `${BASE}/en/sitemap.xml`,
+    `${BASE}/ru/sitemap.xml`,
+  ]);
+  assert.deepEqual(
+    locs("ru/sitemap.xml"),
+    PAGES.map((p) => `${BASE}${urlPath(p)}`).sort(),
+  );
+  assert.deepEqual(
+    locs("en/sitemap.xml"),
+    EN_PAGES.map((p) => `${BASE}${enPath(p)}`).sort(),
+  );
 });
 
 test("robots.txt points to the sitemap", () => {
-  assert.match(read("robots.txt"), new RegExp(`^Sitemap: ${BASE}/sitemap\\.xml$`, "m"));
+  assert.match(
+    read("robots.txt"),
+    new RegExp(`^Sitemap: ${BASE}/sitemap\\.xml$`, "m"),
+  );
   assert.ok(exists("sitemap.xml"));
 });
 
@@ -61,7 +107,8 @@ test("webmanifest is valid JSON with existing icons and a name", () => {
 test("hugo_stats.json keeps classes of the home page (input for Tailwind)", () => {
   // regression guard: the HomeHTML output format must be collected by Hugo's build stats
   const { classes } = JSON.parse(readFileSync(STATS_COPY, "utf8")).htmlElements;
-  for (const c of ["home-page", "hero-title", "stat-value"]) assert.ok(classes.includes(c), c);
+  for (const c of ["home-page", "hero-title", "stat-value"])
+    assert.ok(classes.includes(c), c);
 });
 
 test("Hugo binary version equals .hugo-version (the version CI installs)", () => {
@@ -72,12 +119,21 @@ test("Hugo binary version equals .hugo-version (the version CI installs)", () =>
 });
 
 test("the site does not need Go or Hugo modules", () => {
-  assert.ok(!readdirSync(ROOT).includes("go.mod"), "go.mod would make every build depend on Go and the network");
+  assert.ok(
+    !readdirSync(ROOT).includes("go.mod"),
+    "go.mod would make every build depend on Go and the network",
+  );
 });
 
 test("the footer git-info block names the commit the site was built from (HUGO_BUILD_SHA), the same on every page", () => {
-  for (const p of [...PAGES, ...EN_PAGES.map((x) => `en/${x === "index" ? "index" : x}`)]) {
-    const [hash] = all(dom(p), (n) => n.tagName === "p" && classes(n).includes("git-hash"));
+  for (const p of [
+    ...PAGES,
+    ...EN_PAGES.map((x) => `en/${x === "index" ? "index" : x}`),
+  ]) {
+    const [hash] = all(
+      dom(p),
+      (n) => n.tagName === "p" && classes(n).includes("git-hash"),
+    );
     assert.equal(text(hash), BUILD_SHA, p);
   }
 });

@@ -12,15 +12,32 @@ const SCALE = 1.5; // the output is 940x620 CSS px at this device scale factor
 const CANVAS = { w: 940, h: 620 };
 const SEAM_TOP = 369; // x of the seam at y = 0; it leans right going down: x = SEAM_TOP + SEAM_SLOPE * y (light theme on its left/bottom side)
 const SEAM_SLOPE = 0.857;
-const PAGES = [["ru", "/"], ["en", "/en/"]];
+const PAGES = [
+  ["ru", "/"],
+  ["en", "/en/"],
+];
 
-const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".ico": "image/x-icon", ".webmanifest": "application/manifest+json" };
+const TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".svg": "image/svg+xml",
+  ".woff2": "font/woff2",
+  ".webp": "image/webp",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".ico": "image/x-icon",
+  ".webmanifest": "application/manifest+json",
+};
 const server = createServer(async (req, res) => {
   let path = new URL(req.url, "http://x").pathname;
   if (path.endsWith("/")) path += "index.html";
   try {
     const body = await readFile(join(SITE, path));
-    res.setHeader("content-type", TYPES[extname(path)] ?? "application/octet-stream");
+    res.setHeader(
+      "content-type",
+      TYPES[extname(path)] ?? "application/octet-stream",
+    );
     res.end(body);
   } catch {
     res.statusCode = 404;
@@ -30,12 +47,26 @@ const server = createServer(async (req, res) => {
 await new Promise((ok) => server.listen(0, ok));
 const origin = `http://localhost:${server.address().port}`;
 
-const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
-const out = process.env.OUT_DIR ?? new URL("../.github/imgs/", import.meta.url).pathname;
+const browser = await chromium.launch(
+  process.env.CHROME_PATH
+    ? { executablePath: process.env.CHROME_PATH }
+    : { channel: "chrome" },
+);
+const out =
+  process.env.OUT_DIR ?? new URL("../.github/imgs/", import.meta.url).pathname;
 
-const VIEWPORTS = { mac: { width: 1280, height: 800, scale: 1.5, mobile: false }, phone: { width: 390, height: 844, scale: 2, mobile: true } };
+const VIEWPORTS = {
+  mac: { width: 1280, height: 800, scale: 1.5, mobile: false },
+  phone: { width: 390, height: 844, scale: 2, mobile: true },
+};
 const shot = async (path, colorScheme, { width, height, scale, mobile }) => {
-  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale, colorScheme, isMobile: mobile, hasTouch: mobile });
+  const page = await browser.newPage({
+    viewport: { width, height },
+    deviceScaleFactor: scale,
+    colorScheme,
+    isMobile: mobile,
+    hasTouch: mobile,
+  });
   await page.goto(origin + path, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   const png = await page.screenshot();
@@ -45,11 +76,14 @@ const shot = async (path, colorScheme, { width, height, scale, mobile }) => {
 
 // Each device is drawn twice, dark and light, and the light copy is clipped by the seam. The devices are stacked one after the other
 // (MacBook, then the iPhone on top) so the phone's ring and shadow are never covered by the light copy of the MacBook screen.
-const STATUS = '<div class="sb"><span>9:41</span><span>●●● ▮</span></div><div class="isl"></div>';
+const STATUS =
+  '<div class="sb"><span>9:41</span><span>●●● ▮</span></div><div class="isl"></div>';
 const compose = (img) => {
   const seam = `polygon(-400px -100px,${SEAM_TOP + SEAM_SLOPE * -100}px -100px,${SEAM_TOP + SEAM_SLOPE * 900}px 900px,-400px 900px)`;
-  const mac = (t, cls) => `<div class="layer ${cls}"><div class="dev mac"><div class="lid"><div class="scr"><img src="${img.mac[t]}"></div></div><div class="base"></div></div></div>`;
-  const phone = (t, cls) => `<div class="layer ${cls}"><div class="dev phone"><div class="body"><div class="scr">${STATUS}<img src="${img.phone[t]}"></div></div></div></div>`;
+  const mac = (t, cls) =>
+    `<div class="layer ${cls}"><div class="dev mac"><div class="lid"><div class="scr"><img src="${img.mac[t]}"></div></div><div class="base"></div></div></div>`;
+  const phone = (t, cls) =>
+    `<div class="layer ${cls}"><div class="dev phone"><div class="body"><div class="scr">${STATUS}<img src="${img.phone[t]}"></div></div></div></div>`;
   return `<style>
 *{box-sizing:border-box}html,body{margin:0;background:transparent}body{width:${CANVAS.w}px;height:${CANVAS.h}px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
 .layer{position:absolute;inset:0}.light{clip-path:${seam}}
@@ -78,20 +112,31 @@ for (const [lang, path] of PAGES) {
     img.mac[t] = await shot(path, t, VIEWPORTS.mac);
     img.phone[t] = await shot(path, t, VIEWPORTS.phone);
   }
-  const page = await browser.newPage({ viewport: { width: CANVAS.w, height: CANVAS.h }, deviceScaleFactor: SCALE });
+  const page = await browser.newPage({
+    viewport: { width: CANVAS.w, height: CANVAS.h },
+    deviceScaleFactor: SCALE,
+  });
   await page.setContent(compose(img));
-  await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode())));
+  await page.evaluate(() =>
+    Promise.all([...document.images].map((i) => i.decode())),
+  );
   const png = await page.screenshot({ omitBackground: true });
   // Chromium encodes the WebP with its alpha channel (no image library needed)
   const webp = await page.evaluate(async (b64) => {
     const el = new Image();
     el.src = "data:image/png;base64," + b64;
     await el.decode();
-    const c = Object.assign(document.createElement("canvas"), { width: el.width, height: el.height });
+    const c = Object.assign(document.createElement("canvas"), {
+      width: el.width,
+      height: el.height,
+    });
     c.getContext("2d").drawImage(el, 0, 0);
     return c.toDataURL("image/webp", 0.85).split(",")[1];
   }, png.toString("base64"));
-  await writeFile(join(out, `preview-${lang}.webp`), Buffer.from(webp, "base64"));
+  await writeFile(
+    join(out, `preview-${lang}.webp`),
+    Buffer.from(webp, "base64"),
+  );
   await page.close();
 }
 await browser.close();

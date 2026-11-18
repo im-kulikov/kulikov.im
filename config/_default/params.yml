@@ -24,31 +24,31 @@ copyright:
 
 plugins:
   css:
-#    - link: plugins/font-awesome/v6/brands.css
-#      lazy: true
-#    - link: plugins/font-awesome/v6/solid.css
-#      lazy: true
-#    - link: plugins/font-awesome/v6/icons.css
-#      lazy: true
+  #    - link: plugins/font-awesome/v6/brands.css
+  #      lazy: true
+  #    - link: plugins/font-awesome/v6/solid.css
+  #      lazy: true
+  #    - link: plugins/font-awesome/v6/icons.css
+  #      lazy: true
   js:
-#    - link: js/search.js
-#      lazy: false
-#    - link: plugins/swiper/swiper-bundle.js
-#      lazy: false
-#    - link: plugins/cookie.js
-#      lazy: false
-#    - link: plugins/glightbox/glightbox.js
-#      lazy: true
-#    - link: js/gallery-slider.js
-#      lazy: true
-#    - link: js/accordion.js
-#      lazy: true
-#    - link: js/tab.js
-#      lazy: true
-#    - link: js/modal.js
-#      lazy: true
-#    - link: plugins/youtube-lite.js
-#      lazy: true
+    #    - link: js/search.js
+    #      lazy: false
+    #    - link: plugins/swiper/swiper-bundle.js
+    #      lazy: false
+    #    - link: plugins/cookie.js
+    #      lazy: false
+    #    - link: plugins/glightbox/glightbox.js
+    #      lazy: true
+    #    - link: js/gallery-slider.js
+    #      lazy: true
+    #    - link: js/accordion.js
+    #      lazy: true
+    #    - link: js/tab.js
+    #      lazy: true
+    #    - link: js/modal.js
+    #      lazy: true
+    #    - link: plugins/youtube-lite.js
+    #      lazy: true
     - link: js/custom.js
       lazy: false
 dnb:

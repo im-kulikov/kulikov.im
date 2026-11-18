@@ -18,7 +18,7 @@ defaultContentLanguageInSubdir: false
 icons_url: "https://forkaweso.me/Fork-Awesome/icons/"
 
 #paginate: 20
-ignoreLogs: ['warning-goldmark-raw-html']
+ignoreLogs: ["warning-goldmark-raw-html"]
 ############################# server ############################
 server:
   redirects:
@@ -59,7 +59,7 @@ module:
 outputs:
   home:
     - HomeHTML
-#    - RSS
+    #    - RSS
     - WebAppManifest
     - SearchIndex # /searchindex.json — internal article index (layouts/index.searchindex.json)
 ########################### Output Format ##########################
@@ -85,14 +85,14 @@ params:
     css:
       - link: plugins/swiper/swiper-bundle.css
         lazy: false
-#      - link: plugins/glightbox/glightbox.css
-#        lazy: true
-#      - link: plugins/font-awesome/v6/brands.css
-#        lazy: true
-#      - link: plugins/font-awesome/v6/solid.css
-#        lazy: true
-#      - link: plugins/font-awesome/v6/icons.css
-#        lazy: true
+    #      - link: plugins/glightbox/glightbox.css
+    #        lazy: true
+    #      - link: plugins/font-awesome/v6/brands.css
+    #        lazy: true
+    #      - link: plugins/font-awesome/v6/solid.css
+    #        lazy: true
+    #      - link: plugins/font-awesome/v6/icons.css
+    #        lazy: true
     js:
 #      - link: js/search.js
 #        lazy: false

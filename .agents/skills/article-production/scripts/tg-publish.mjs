@@ -39,7 +39,8 @@ export function verifySendResponse(json, expectedVisibleText) {
     return {
       ok: false,
       message_id: id,
-      reason: "пост ушёл БЕЗ подписи (result.caption отсутствует) — инцидент 2026-11-17, пост удаляется",
+      reason:
+        "пост ушёл БЕЗ подписи (result.caption отсутствует) — инцидент 2026-11-17, пост удаляется",
     };
   }
   const asMarkup = visibleCaption(cap, "html"); // эхо с разметкой → снять её
@@ -47,7 +48,8 @@ export function verifySendResponse(json, expectedVisibleText) {
     return {
       ok: false,
       message_id: id,
-      reason: "подпись в ответе не совпала с ожидаемым текстом — пост удаляется",
+      reason:
+        "подпись в ответе не совпала с ожидаемым текстом — пост удаляется",
     };
   }
   return { ok: true, message_id: id, reason: "" };
@@ -60,7 +62,10 @@ export class ApiStateUnknownError extends Error {}
 const apiCall = async (api, token, method, formData) => {
   let res;
   try {
-    res = await fetch(`${api}/bot${token}/${method}`, { method: "POST", body: formData });
+    res = await fetch(`${api}/bot${token}/${method}`, {
+      method: "POST",
+      body: formData,
+    });
   } catch (e) {
     throw new ApiStateUnknownError(`сеть не ответила (${e.message})`);
   }
@@ -68,7 +73,9 @@ const apiCall = async (api, token, method, formData) => {
   try {
     return JSON.parse(text);
   } catch {
-    throw new ApiStateUnknownError(`не-JSON ответ (HTTP ${res.status}) — возможно, прокси/Cloudflare`);
+    throw new ApiStateUnknownError(
+      `не-JSON ответ (HTTP ${res.status}) — возможно, прокси/Cloudflare`,
+    );
   }
 };
 
@@ -94,7 +101,9 @@ export async function deleteMessage({ api, token, chat, message_id }) {
 export class UsageError extends Error {}
 
 const usage = (msg) => {
-  throw new UsageError(`usage: tg-publish.mjs <preview|publish> <image.png> <caption.md> [--chat @homeinprod] [--yes] [--api <url>]\n${msg}`);
+  throw new UsageError(
+    `usage: tg-publish.mjs <preview|publish> <image.png> <caption.md> [--chat @homeinprod] [--yes] [--api <url>]\n${msg}`,
+  );
 };
 
 export async function main(argv) {
@@ -104,29 +113,50 @@ export async function main(argv) {
     const opt = (name) => {
       const i = args.indexOf(name);
       const eq = args.find((a) => a.startsWith(`${name}=`));
-      if (i !== -1 && args[i + 1] && !args[i + 1].startsWith("--")) return args[i + 1];
+      if (i !== -1 && args[i + 1] && !args[i + 1].startsWith("--"))
+        return args[i + 1];
       if (eq) return eq.slice(name.length + 1);
-      if (i !== -1) usage(`${name} указан без значения — канал по умолчанию не подставляется молча`);
+      if (i !== -1)
+        usage(
+          `${name} указан без значения — канал по умолчанию не подставляется молча`,
+        );
       return undefined;
     };
     const chat = opt("--chat") ?? "@homeinprod";
     const yes = args.includes("--yes");
     const api = opt("--api") ?? DEFAULT_API;
-    if (!cmd || !image || !captionFile || !["preview", "publish"].includes(cmd)) {
+    if (
+      !cmd ||
+      !image ||
+      !captionFile ||
+      !["preview", "publish"].includes(cmd)
+    ) {
       usage("нужны подкоманда preview|publish, изображение и файл подписи");
     }
     const raw = readFileSync(resolve(captionFile), "utf8");
     const expectedText = visibleCaption(raw, "html");
     const expected = utf16Length(expectedText);
     if (expected > CAPTION_LIMIT) {
-      usage(`видимая длина подписи ${expected} > ${CAPTION_LIMIT} UTF-16 — сократить текст`);
+      usage(
+        `видимая длина подписи ${expected} > ${CAPTION_LIMIT} UTF-16 — сократить текст`,
+      );
     }
     const photo = readFileSync(resolve(image));
     if (!pngMagic(photo)) usage("изображение обязано быть PNG по magic bytes");
 
-    console.log(JSON.stringify({ image: resolve(image), caption: resolve(captionFile), visible_length: expected, limit: CAPTION_LIMIT, chat }));
+    console.log(
+      JSON.stringify({
+        image: resolve(image),
+        caption: resolve(captionFile),
+        visible_length: expected,
+        limit: CAPTION_LIMIT,
+        chat,
+      }),
+    );
     if (cmd === "preview") {
-      console.log("preview: сеть не трогали. Публикация: tg-publish.mjs publish … --yes");
+      console.log(
+        "preview: сеть не трогали. Публикация: tg-publish.mjs publish … --yes",
+      );
       return 0;
     }
 
@@ -136,27 +166,50 @@ export async function main(argv) {
 
     let sent;
     try {
-      sent = await sendPhoto({ api, token, chat, photoPath: image, caption: raw });
+      sent = await sendPhoto({
+        api,
+        token,
+        chat,
+        photoPath: image,
+        caption: raw,
+      });
     } catch (e) {
       if (e instanceof ApiStateUnknownError) {
-        console.error(`✗ ${e.message} — состояние публикации НЕИЗВЕСТНО (message_id недоступен). Проверьте канал вручную (t.me/<канал>, getUpdates) — при наличии поста без подписи удалите его.`);
+        console.error(
+          `✗ ${e.message} — состояние публикации НЕИЗВЕСТНО (message_id недоступен). Проверьте канал вручную (t.me/<канал>, getUpdates) — при наличии поста без подписи удалите его.`,
+        );
         return 1;
       }
       throw e;
     }
     const verdict = verifySendResponse(sent, expectedText);
     if (verdict.ok) {
-      console.log(`опубликовано: message_id=${verdict.message_id}, подпись (${expected}/${CAPTION_LIMIT} UTF-16) подтверждена из ответа API`);
-      console.log(`URL поста: https://t.me/${chat.replace(/^@/, "")}/${verdict.message_id}`);
+      console.log(
+        `опубликовано: message_id=${verdict.message_id}, подпись (${expected}/${CAPTION_LIMIT} UTF-16) подтверждена из ответа API`,
+      );
+      console.log(
+        `URL поста: https://t.me/${chat.replace(/^@/, "")}/${verdict.message_id}`,
+      );
       return 0;
     }
     console.error(`✗ ${verdict.reason}`);
     if (verdict.message_id != null) {
       try {
-        const del = await deleteMessage({ api, token, chat, message_id: verdict.message_id });
-        console.error(del.ok ? `✗ битый пост ${verdict.message_id} удалён` : `✗ НЕ удалось удалить пост ${verdict.message_id} — удалить вручную!`);
+        const del = await deleteMessage({
+          api,
+          token,
+          chat,
+          message_id: verdict.message_id,
+        });
+        console.error(
+          del.ok
+            ? `✗ битый пост ${verdict.message_id} удалён`
+            : `✗ НЕ удалось удалить пост ${verdict.message_id} — удалить вручную!`,
+        );
       } catch (e) {
-        console.error(`✗ удаление не удалось (${e.message}) — удалить пост ${verdict.message_id} вручную!`);
+        console.error(
+          `✗ удаление не удалось (${e.message}) — удалить пост ${verdict.message_id} вручную!`,
+        );
       }
     }
     return 1;
@@ -171,9 +224,15 @@ export async function main(argv) {
 
 // dual-use guard (урок PR #31: импорт CLI-скрипта не должен выполнять argv-диспетчер)
 const { pathToFileURL } = await import("node:url");
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main(process.argv).then((code) => process.exit(code), (e) => {
-    console.error(`✗ ${e.message}`);
-    process.exit(1);
-  });
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  main(process.argv).then(
+    (code) => process.exit(code),
+    (e) => {
+      console.error(`✗ ${e.message}`);
+      process.exit(1);
+    },
+  );
 }

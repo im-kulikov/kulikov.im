@@ -13,6 +13,8 @@ writeFileSync(BUILD_LOG, r.log);
 writeFileSync(STATS_COPY, r.stats);
 if (r.error || r.status !== 0) {
   console.error(r.error ?? r.log);
-  console.error(`hugo build failed (exit ${r.status}); is "${HUGO}" installed? (set HUGO_BIN)`);
+  console.error(
+    `hugo build failed (exit ${r.status}); is "${HUGO}" installed? (set HUGO_BIN)`,
+  );
   process.exit(1);
 }

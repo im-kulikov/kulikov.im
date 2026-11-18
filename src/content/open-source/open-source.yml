@@ -105,11 +105,12 @@
         - title: SpeechKit Proxy
           type: Streaming Gateway
           description:
-            ru: 'Этот проект начался как эксперимент дома: мне хотелось соединить голосовое
+            ru:
+              "Этот проект начался как эксперимент дома: мне хотелось соединить голосовое
               управление и приватность. Я реализовал прокси-сервер на Go для локальной обработки
               речи с протоколом Wyoming, внедрив кэширование и fallback-механизмы. Это позволило
               Home Assistant работать без интернета. В процессе изучил особенности stream-аудио
-              и построил систему, которой пользуюсь каждый день.'
+              и построил систему, которой пользуюсь каждый день."
             en: "This project began as a home experiment: I wanted to combine voice control with privacy. I built a Go proxy server for local speech processing over the Wyoming protocol, with caching and fallback mechanisms. It lets Home Assistant work offline. Along the way I learned the intricacies of audio streaming and built a system I use every day."
           skills:
             - Home / Hobby
@@ -118,7 +119,8 @@
         - title: HomeInfra
           type: Smart Home Stack
           description:
-            ru: Умный дом — больше чем комфорт. Этот хобби-проект начался с одной розетки,
+            ru:
+              Умный дом — больше чем комфорт. Этот хобби-проект начался с одной розетки,
               а превратился в распределённую систему из Zigbee, Matter и MQTT. Я настраивал
               автоматизации, следил за стабильностью, изучал особенности Zigbee2MQTT и взаимодействие
               устройств. Благодаря этому моя семья управляет домом голосом, а я — научился проектировать
@@ -134,11 +136,12 @@
         - title: AutoNAS
           type: Storage / Media Infrastructure
           description:
-            ru: 'Меня не устраивали облачные решения и я решил собрать свой NAS на
+            ru:
+              "Меня не устраивали облачные решения и я решил собрать свой NAS на
               базе TrueNAS. Проект стал настоящей школой DevOps: пришлось разобраться с ZFS,
               Docker, автоматическим бэкапом и медиа-сервисами. Теперь моя медиатека обновляется
               автоматически, а все данные под контролем. Этот проект многое дал мне в плане
-              понимания хранения и автоматизации.'
+              понимания хранения и автоматизации."
             en: "Cloud solutions did not suit me, so I built my own NAS on TrueNAS. The project turned out to be a real DevOps education: I had to get to grips with ZFS, Docker, automated backups and media services. Now my media library updates automatically and I have full control of my data. The project taught me a lot about storage and automation."
           skills:
             - Home / Hobby
@@ -147,11 +150,12 @@
         - title: VoiceAssistant Stack
           type: Local Voice Assistant
           description:
-            ru: 'Я захотел голосового помощника, который работает без интернета. Начался
+            ru:
+              "Я захотел голосового помощника, который работает без интернета. Начался
               домашний проект: Whisper.cpp + TTS Wyoming + Home Assistant. Я собрал стек, настроил
               локальное STT/TTS, добавил обработку команд и управляющие сценарии. Это был вызов
               — real-time, низкие задержки, поддержка команд. Зато теперь у меня — автономный
-              помощник, не зависимый от облаков.'
+              помощник, не зависимый от облаков."
             en: "I wanted a voice assistant that works without the internet, so I started a home project: Whisper.cpp + Wyoming TTS + Home Assistant. I put the stack together, set up local STT/TTS, and added command handling and automation scenarios. It was a challenge: real-time operation, low latency, command support. But now I have a standalone assistant that does not depend on the cloud."
           skills:
             - Home / Hobby
@@ -160,7 +164,8 @@
         - title: Router Automation
           type: Networking / Infrastructure
           description:
-            ru: Работая с Mikrotik и Keenetic, я устал вручную вносить настройки. Так
+            ru:
+              Работая с Mikrotik и Keenetic, я устал вручную вносить настройки. Так
               родился проект автоматизации домашней сети. Я внедрил DHCP, VPN, WireGuard, VLAN
               через скрипты и шаблоны. Разобрался в RouterOS и API, научился устранять проблемы
               удалённо. Теперь моя сеть самонастраивается при сбое — и всё это началось с желания
@@ -277,7 +282,7 @@
               whose music I then download and add to my collection with Lidarr + Jackett.
 
 - title: Литература
-  only: [ru]  # the reading list is not translated: hidden on the English page
+  only: [ru] # the reading list is not translated: hidden on the English page
   icon: library
   type: books
   items:
@@ -645,7 +650,7 @@
             Это дань скандинавской культуре и философии устойчивой, созерцательной жизни.
         - title: "Маленький принц"
           author: "Антуан де Сент-Экзюпери"
-          description: | 
+          description: |
             Аллегорическая повесть «Маленький принц» Антуана де Сент-Экзюпери представлена с оригинальными авторскими 
             иллюстрациями, которые не просто сопровождают текст, а являются его неотъемлемой частью, усиливая эмоциональное 
             и смысловое восприятие. Знаменитые цитаты и проникновенные размышления о доброте, ответственности и внутренней 

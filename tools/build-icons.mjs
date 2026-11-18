@@ -9,7 +9,8 @@ const svg = readFileSync(new URL("favicon.svg", dir), "utf8");
 // the same drawing without the tile: reused full-bleed (apple-touch, maskable) on a flat background
 const mark = svg.match(/<polygon[\s\S]*<\/svg>/)[0].replace("</svg>", "");
 const light = svg.replace(/@media[\s\S]*?\n    }\n  <\/style>/, "</style>"); // PNG/ICO fallbacks can't switch theme: always the blue tile
-const fullBleed = (scale) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><style>.hex{fill:#fff;stroke:#fff}.prompt{stroke:#0369a1}.cursor{fill:#0369a1}</style><rect width="64" height="64" fill="#0369a1"/><g transform="translate(32 32) scale(${scale}) translate(-32 -32)">${mark}</g></svg>`;
+const fullBleed = (scale) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><style>.hex{fill:#fff;stroke:#fff}.prompt{stroke:#0369a1}.cursor{fill:#0369a1}</style><rect width="64" height="64" fill="#0369a1"/><g transform="translate(32 32) scale(${scale}) translate(-32 -32)">${mark}</g></svg>`;
 
 const jobs = [
   ["icon-192.png", light, 192, true],
@@ -19,15 +20,24 @@ const jobs = [
 ];
 const sizes = [16, 32, 48];
 
-const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
+const browser = await chromium.launch(
+  process.env.CHROME_PATH
+    ? { executablePath: process.env.CHROME_PATH }
+    : { channel: "chrome" },
+);
 const render = async (markup, size, transparent) => {
-  const page = await browser.newPage({ viewport: { width: size, height: size } });
-  await page.setContent(`<body style="margin:0;background:transparent">${markup.replace("<svg ", `<svg width="${size}" height="${size}" style="display:block" `)}</body>`);
+  const page = await browser.newPage({
+    viewport: { width: size, height: size },
+  });
+  await page.setContent(
+    `<body style="margin:0;background:transparent">${markup.replace("<svg ", `<svg width="${size}" height="${size}" style="display:block" `)}</body>`,
+  );
   const png = await page.screenshot({ omitBackground: transparent });
   await page.close();
   return png;
 };
-for (const [name, markup, size, transparent] of jobs) writeFileSync(new URL(name, dir), await render(markup, size, transparent));
+for (const [name, markup, size, transparent] of jobs)
+  writeFileSync(new URL(name, dir), await render(markup, size, transparent));
 
 // favicon.ico: PNG images inside an ICO container
 const pngs = await Promise.all(sizes.map((s) => render(light, s, true)));
