@@ -65,6 +65,28 @@ node .agents/skills/article-production/scripts/tg-check.mjs tmp/drafts/<article-
 Ссылка на статью добавляется в конец текста **только после реальной публикации**
 статьи (см. §4 и references/workflow.md §3); URL не выдумывается.
 
+## 3b. Публикация нового поста — `scripts/tg-publish.mjs`
+
+Новый пост с картинкой публикуется **ботом через скрипт** (Node fetch + FormData,
+никакого curl из shell):
+
+```sh
+TELEGRAM_BOT_TOKEN=… node .agents/skills/article-production/scripts/tg-publish.mjs publish <image.png> <caption.md> --yes
+```
+
+- `preview` — офлайн-проверка длины/формата без сети; `publish` — отправка
+  (только с `--yes` = approval владельца; токен — env `TELEGRAM_BOT_TOKEN`).
+- **Гейт инцидента 2026-11-17 (посты №18/№19 ушли без подписи при ok:true):**
+  `ok:true` ≠ пост корректен. Скрипт обязан сверить `result.caption` из ответа
+  API по содержанию: эхо приходит как разобранный текст + `caption_entities`
+  (иногда с разметкой — принимаются оба вида), голая длина недостаточна.
+  Расхождение/отсутствие → `deleteMessage` битаого поста + отказ; не-JSON
+  ответ/обрыв сети → «состояние неизвестно», ручная проверка канала.
+- Почему не curl: `-F name=@value` трактуется как файл (`chat_id=@homeinprod`
+  = curl 26; в песочнице `@file` мог прочесться пустым — молча пустое поле);
+  env-prefix `VAR=$(cat f) cmd --arg "$VAR"` не работает (расширение до
+  присваивания). Все поля — строками через FormData в самом скрипте.
+
 ## 4. Cross-Promotion: ссылка на статью
 
 Статья на kulikov.im и Telegram-заметка связываются двусторонне. После

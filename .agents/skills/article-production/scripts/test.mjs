@@ -5,6 +5,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { verifySendResponse } from "./tg-publish.mjs"; // is-main guard в tg-publish делает импорт безопасным
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -1575,5 +1576,159 @@ describe("hardening: собственное ревью PR #31 (3 домена)",
     assert.equal(over.status, 1);
     assert.match(over.err, /4096/);
     assert.ok(!existsSync(join(dr, "crosspromo.md")) || readFileSync(join(dr, "crosspromo.md"), "utf8") === out, "новый непригодный файл не записан");
+  });
+});
+
+// ---------- tg-publish: публикация поста (уроки инцидента 2026-11-17, посты №18/№19) ----------
+// Посты ушли БЕЗ подписи при ok:true: (a) curl -F "x=@…" трактуется как файл;
+// (b) env-prefix `VAR=$(cat f) curl --form-string "caption=$VAR"` — расширение до присваивания.
+// Вывод, зашитый в гейт: единственная истина — result.caption из ОТВЕТА API;
+// расхождение/отсутствие = deleteMessage + отказ. Никогда не принимать ok:true за успех.
+describe("tg-publish: публикация поста", () => {
+  const real1x1 = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+  const cap = (sb, text = "📊 <b>Test</b>\n\nПривет, мир!") => {
+    const p = join(sb, `cap-${Math.random().toString(36).slice(2)}.md`);
+    writeFileSync(p, text);
+    return p;
+  };
+  const png = (sb) => {
+    const p = join(sb, "pic.png");
+    writeFileSync(p, real1x1);
+    return p;
+  };
+
+  test("verifySendResponse: ok+совпавшая подпись — успех; пустая/чужая/та-же-длина — отказ", () => {
+    // эхо с разметкой и plain-эхо (разобранный текст + caption_entities) — оба валидны
+    const markup = verifySendResponse({ ok: true, result: { message_id: 20, caption: "📊 <b>Test</b>\n\nПривет, мир!" } }, "📊 Test\n\nПривет, мир!");
+    assert.equal(markup.ok, true);
+    const plain = verifySendResponse({ ok: true, result: { message_id: 21, caption: "📊 Test\n\nПривет, мир!" } }, "📊 Test\n\nПривет, мир!");
+    assert.equal(plain.ok, true, "plain-эхо не должно ронять валидный пост (P2)");
+    // воспроизведение инцидента: ok:true, подписи нет → отказ + message_id для удаления
+    const empty = verifySendResponse({ ok: true, result: { message_id: 18, photo: [] } }, "Привет");
+    assert.equal(empty.ok, false);
+    assert.equal(empty.message_id, 18, "битый пост должен быть удаляем");
+    assert.match(empty.reason, /БЕЗ подписи/);
+    // подмена содержания: та же видимая длина, другой текст → отказ (длина — не доказательство)
+    const wrong = verifySendResponse({ ok: true, result: { message_id: 19, caption: "<b>Ж</b>иви!" } }, "Привет");
+    assert.equal(wrong.ok, false);
+    assert.match(wrong.reason, /не совпала/);
+    // ошибка API: отказ без message_id (удалять нечего)
+    const bad = verifySendResponse({ ok: false, error_code: 400, description: "Bad Request: chat not found" }, "Привет");
+    assert.equal(bad.ok, false);
+    assert.equal(bad.message_id, null);
+    assert.match(bad.reason, /ошибку/);
+  });
+
+  test("CLI-гейты до сети: без --yes, лимит подписи, не-PNG, preview офлайн", (t) => {
+    const sb = box();
+    t.after(() => SANDBOXES.splice(SANDBOXES.indexOf(sb), 1));
+    const img = png(sb), c = cap(sb);
+    // publish без --yes отказывает ещё до чтения токена
+    const noYes = run("tg-publish.mjs", ["publish", img, c], sb);
+    assert.equal(noYes.status, 2);
+    assert.match(noYes.err, /--yes/);
+    // подпись сверх 1024 — отказ до сети
+    const long = run("tg-publish.mjs", ["preview", img, cap(sb, "Ж".repeat(1100))], sb);
+    assert.equal(long.status, 2);
+    assert.match(long.err, /1024/);
+    // не-PNG по magic bytes — отказ
+    const fake = join(sb, "fake.png");
+    writeFileSync(fake, Buffer.from("\x89PNG", "latin1"));
+    const notPng = run("tg-publish.mjs", ["preview", fake, c], sb);
+    assert.equal(notPng.status, 2);
+    assert.match(notPng.err, /PNG/);
+    // preview не ходит в сеть и не требует токен
+    const prev = run("tg-publish.mjs", ["preview", img, c, "--chat", "@homeinprod"], sb);
+    assert.equal(prev.status, 0, prev.err);
+    const meta = jsonOf(prev.out);
+    assert.equal(meta.chat, "@homeinprod");
+    assert.equal(meta.visible_length, 21);
+    assert.match(prev.out, /сеть не трогали/);
+  });
+
+  test("публикация (инпроцесс, подмена fetch): happy path + воспроизведение инцидента (ok:true без подписи → delete + отказ)", async (t) => {
+    const { main } = await import(join(SCRIPTS, "tg-publish.mjs"));
+    const sb = box();
+    t.after(() => SANDBOXES.splice(SANDBOXES.indexOf(sb), 1));
+    const img = png(sb), c = cap(sb);
+    const CAPTION = "📊 <b>Test</b>\n\nПривет, мир!";
+    const CAPTION_VISIBLE = 21;
+    const realFetch = globalThis.fetch;
+    const calls = [];
+    let responder = () => ({ ok: true, result: { message_id: 20, caption: CAPTION } });
+    const errs = [];
+    const errSpy = (...a) => errs.push(a.join(" "));
+    const realErr = console.error;
+    console.error = errSpy;
+    t.after(() => { globalThis.fetch = realFetch; console.error = realErr; });
+    globalThis.fetch = async (url, init) => {
+      calls.push({ url: String(url), body: init.body });
+      return { status: 200, text: async () => JSON.stringify(responder()) };
+    };
+    process.env.TELEGRAM_BOT_TOKEN = "000:TEST";
+    t.after(() => delete process.env.TELEGRAM_BOT_TOKEN);
+    const logs = [];
+    const realLog = console.log;
+    console.log = (...a) => logs.push(a.join(" "));
+    t.after(() => { console.log = realLog; });
+
+    // happy path: подпись в ответе совпала — успех, URL из message_id
+    assert.equal(await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]), 0);
+    assert.match(logs.join("\n"), /message_id=20/);
+    assert.match(logs.join("\n"), /https:\/\/t\.me\/homeinprod\/20/);
+    const send = calls.find((x) => x.url.endsWith("/sendPhoto"));
+    assert.ok(send, "sendPhoto был вызван");
+    // поля формы — настоящие значения (инцидент №18: curl читал @-значение как файл)
+    assert.equal(send.body.get("chat_id"), "@homeinprod");
+    assert.equal(send.body.get("caption"), CAPTION);
+    assert.equal(send.body.get("parse_mode"), "HTML");
+    assert.equal((await send.body.get("photo").arrayBuffer()).byteLength, real1x1.length);
+    assert.equal(calls.filter((x) => x.url.endsWith("/deleteMessage")).length, 0, "успех не удаляет пост");
+
+    // ИНЦИДЕНТ №18/№19: API вернул ok:true, но БЕЗ caption → удалить пост и отказать
+    calls.length = 0; errs.length = 0;
+    responder = () => ({ ok: true, result: { message_id: 21, photo: [] } });
+    assert.equal(await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]), 1);
+    assert.match(errs.join("\n"), /БЕЗ подписи/);
+    assert.match(errs.join("\n"), /удал[яё]н/, "битый пост удалён автоматически");
+    assert.ok(calls.some((x) => x.url.endsWith("/deleteMessage")), "deleteMessage вызван");
+
+    // подмена: ok:true, caption другой длины → отказ + удаление
+    calls.length = 0; errs.length = 0;
+    responder = () => ({ ok: true, result: { message_id: 22, caption: "Ж".repeat(CAPTION_VISIBLE + 5) } });
+    assert.equal(await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]), 1);
+    assert.match(errs.join("\n"), /не совпала/);
+    assert.ok(calls.some((x) => x.url.endsWith("/deleteMessage")));
+
+    // ошибка API (нет поста) → отказ, БЕЗ deleteMessage
+    calls.length = 0; errs.length = 0;
+    responder = () => ({ ok: false, error_code: 400, description: "Bad Request: chat not found" });
+    assert.equal(await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]), 1);
+    assert.match(errs.join("\n"), /ошибку/);
+    assert.equal(calls.filter((x) => x.url.endsWith("/deleteMessage")).length, 0, "нечего удалять — delete не вызывается");
+
+    // без токена сеть не трогается вообще
+    calls.length = 0;
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    assert.equal(await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]), 2);
+    assert.match(errs.join("\n"), /TELEGRAM_BOT_TOKEN/);
+    assert.equal(calls.length, 0, "без токена сеть не трогается");
+
+    // P1: не-JSON/оборванный ответ — состояние НЕИЗВЕСТНО: отказ без удаления и без ложного успеха
+    calls.length = 0; errs.length = 0;
+    process.env.TELEGRAM_BOT_TOKEN = "000:TEST";
+    globalThis.fetch = async () => ({ status: 502, text: async () => "<html>502 Bad Gateway</html>" }); // уже text() — ок
+    const codeUnknown = await main(["node", "tg-publish.mjs", "publish", img, c, "--yes"]);
+    assert.equal(codeUnknown, 1);
+    assert.match(errs.join("\n"), /НЕИЗВЕСТНО/, "явное сообщение о неизвестном состоянии");
+    assert.match(errs.join("\n"), /вручную/);
+    assert.equal(calls.filter((x) => x.url.endsWith("/deleteMessage")).length, 0, "без message_id удалять нечего");
+
+    // P3: --chat без значения НЕ подставляет канал по умолчанию молча
+    calls.length = 0; errs.length = 0;
+    const noChatVal = await main(["node", "tg-publish.mjs", "publish", img, c, "--yes", "--chat", "--api"]);
+    assert.equal(noChatVal, 2);
+    assert.match(errs.join("\n"), /без значения/);
+    assert.equal(calls.length, 0, "ошибка входа — сеть не трогается");
   });
 });
