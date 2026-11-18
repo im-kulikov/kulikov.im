@@ -20,7 +20,7 @@
     "node": ">=24"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.3.4",
+    "@tailwindcss/cli": "^4.3.5",
     "@tailwindcss/language-server": "^0.16.0",
     "prettier": "^3.10.1",
     "prettier-plugin-go-template": "^0.0.15",
