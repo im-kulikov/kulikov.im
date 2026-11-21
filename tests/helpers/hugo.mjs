@@ -3,7 +3,11 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { BASE, ROOT } from "./paths.mjs";
 
-export const HUGO = process.env.HUGO_BIN || "hugo";
+// Prefer the pinned binary (tmp/bin/hugo — `npm run hugo:install` refreshes it
+// after a .hugo-version bump) over whatever `hugo` happens to be on PATH:
+// Homebrew updates drift away from the pin and break the version test.
+const localHugo = join(ROOT, "tmp", "bin", "hugo");
+export const HUGO = process.env.HUGO_BIN || (existsSync(localHugo) ? localHugo : "hugo");
 // the commit the footer reports (CI's deploy sets the same variables from the event)
 const git = (...a) =>
   spawnSync("git", a, { cwd: ROOT, encoding: "utf8" }).stdout.trim();

@@ -115,7 +115,6 @@ test("Hugo binary version equals .hugo-version (the version CI installs)", () =>
   const want = readFileSync(join(ROOT, ".hugo-version"), "utf8").trim();
   const out = spawnSync(HUGO, ["version"], { encoding: "utf8" }).stdout;
   assert.match(out, new RegExp(`hugo v${want.replaceAll(".", "\\.")}[-+ ]`));
-  assert.match(out, /extended/);
 });
 
 test("the site does not need Go or Hugo modules", () => {

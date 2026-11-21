@@ -43,6 +43,24 @@
   свой `alt` без необходимости: явный аргумент перекрывает описательный
   `image_alt` (в PR #31 так молча терялись alt-тексты всех статей).
 
+## Шаблоны Hugo: API-ловушки (подтверждено на апгрейде 0.170.1)
+
+- `hugo.Data` — **актуальный** API; `.Site.Data` депрекирован с Hugo v0.156.0
+  и при `--panicOnWarning` роняет сборку. Интуитивная «миграция»
+  `hugo.Data` → `site.Data` — регрессия, не чистка (поймано падением
+  production-сборки 0.170.1: WARN → ERROR в `partials/head.html`).
+- `.Site.Params.og_locale` в `partials/basic-seo.html` внутри
+  `range .Translations` мигрировать на `site.Params` нельзя: функция `site`
+  привязана к текущей странице, а не к ranged переводу — `og:locale:alternate`
+  сломается молча (все альтернативы получат локаль текущей страницы).
+- `{{ .Params.type }}` в `basic-seo.html` — намеренно: `.Type` имеет fallback
+  на имя секции («blog») и протёк бы в `og:type` (см. комментарий в шаблоне).
+- Бамп `.hugo-version`: после правки выполнить `npm run hugo:install`
+  в основном дереве; тесты и сборки подхватят `tmp/bin/hugo` сами
+  (`tests/helpers/hugo.mjs`). Darwin-релизы Hugo поставляются только
+  universal `.pkg` (tar.gz нет; `hugo_extended_*` с 0.170 — алиасы тех же
+  файлов) — учтено в `tools/hugo-install.mjs`.
+
 ## Блог и i18n
 
 - Раздел «Блог» — RU-only, EN-версии нет (см. `AGENTS.md`;

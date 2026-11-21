@@ -4,8 +4,8 @@
 {{ if .Params.meta_title }}
   {{ $title = .Params.meta_title }}
   <!-- checking page title -->
-{{ else if .Params.title }}
-  {{ $title = .Params.title }}
+{{ else if .Title }}
+  {{ $title = .Title }}
 {{ end }}
 {{ if eq .Kind "404" }}
   {{ $title = T "page_not_found" }}
@@ -39,8 +39,8 @@
 
 
 <!-- meta keywords -->
-{{ if .Params.keywords }}
-  <meta name="keywords" content="{{ delimit .Params.keywords `, ` }}" />
+{{ if .Keywords }}
+  <meta name="keywords" content="{{ delimit .Keywords `, ` }}" />
 {{ else if site.Params.metadata.keywords }}
   <meta
     name="keywords"
@@ -51,7 +51,7 @@
 <!-- meta description -->
 <meta
   name="description"
-  content="{{ .Params.description | default site.Params.metadata.description }}" />
+  content="{{ .Description | default site.Params.metadata.description }}" />
 
 <!-- meta author -->
 {{ with site.Params.metadata.author }}
@@ -64,8 +64,8 @@
 {{ if .Params.meta_description }}
   {{ $description = .Params.meta_description }}
   <!-- checking page description -->
-{{ else if .Params.description }}
-  {{ $description = .Params.description }}
+{{ else if .Description }}
+  {{ $description = .Description }}
   <!-- checking page description -->
 {{ else if site.Params.metadata.description }}
   {{ $description = site.Params.metadata.description }}
@@ -160,6 +160,7 @@
 <!-- ######### opengraph others meta ############## -->
 <meta property="og:title" content="{{ $title }}" />
 <meta property="og:description" content="{{ $description }}" />
+{{- /* deliberately .Params.type, not .Type: .Type falls back to the section name ("blog"), which would leak into og:type; no front matter sets type:, so this resolves to "website" */}}
 <meta property="og:type" content="{{ .Params.type | default "website" }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
 <meta property="og:locale" content="{{ site.Params.og_locale }}" />
