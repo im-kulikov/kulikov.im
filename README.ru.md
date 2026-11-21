@@ -5,7 +5,7 @@
 **Личный сайт, сделанный как продукт: быстрый, доступный, на двух языках и проверяемый при каждом пуше.**
 
 [![CI](https://github.com/im-kulikov/kulikov.im/actions/workflows/ci.yaml/badge.svg)](https://github.com/im-kulikov/kulikov.im/actions/workflows/ci.yaml)
-![Hugo](https://img.shields.io/badge/Hugo-0.167-ff4088?logo=hugo&logoColor=white)
+![Hugo](https://img.shields.io/badge/Hugo-0.170.1-ff4088?logo=hugo&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8?logo=tailwindcss&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-97%20%2F%20100%20%2F%20100%20%2F%20100-0cce6b?logo=lighthouse&logoColor=white)
 [![codecov](https://codecov.io/gh/im-kulikov/kulikov.im/graph/badge.svg)](https://codecov.io/gh/im-kulikov/kulikov.im)
@@ -58,16 +58,17 @@ CI запускает оба набора на каждом pull request; сли
 
 ## Запуск
 
-Нужны [Hugo extended](https://gohugo.io/installation/) (версия в `.hugo-version`) и Node.js (версия в `.nvmrc`).
+Нужны [Hugo](https://gohugo.io/installation/) (закреплённая версия: `npm run hugo:install` кладёт её в gitignored `tmp/bin/`, тесты и скрипты подхватят её сами) и Node.js (версия в `.nvmrc`).
 
 ```bash
 npm ci
-hugo server            # http://localhost:1313
+npm run hugo:install
+tmp/bin/hugo server    # http://localhost:1313
 ```
 
 ```bash
-hugo --gc --minify     # боевая сборка в build/public
-npm test               # сборка и проверки (если hugo не в PATH, задайте HUGO_BIN)
+tmp/bin/hugo --gc --minify     # боевая сборка в build/public
+npm test               # сборка и проверки (берёт tmp/bin/hugo; HUGO_BIN — явный override)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # перерисовать растровые иконки после правки favicon.svg
 node tools/build-previews.mjs   # перерисовать .github/imgs/preview-*.webp (картинка для README: MacBook и iPhone, диагональ тёмная/светлая тема) из собранного сайта
@@ -82,7 +83,7 @@ src/layouts/          шаблоны: partials/blocks, компоненты, i18
 src/assets/           CSS (Tailwind v4), картинки, шрифты, исходники логотипа и иконок
 src/i18n/             строки интерфейса (ru, en)
 tests/                наборы node:test; tests/e2e для проверок в браузере
-tools/                вспомогательные скрипты (иконки, скриншоты для README)
+tools/                вспомогательные скрипты (иконки, скриншоты для README, установка Hugo)
 .github/              CI, общий setup-action, Dependabot
 ```
 

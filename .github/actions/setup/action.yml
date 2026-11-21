@@ -14,7 +14,7 @@ runs:
         set -euo pipefail
         v="$(cat .hugo-version)"
         base="https://github.com/gohugoio/hugo/releases/download/v${v}"
-        f="hugo_extended_${v}_linux-amd64.tar.gz"
+        f="hugo_${v}_linux-amd64.tar.gz"
         cd "$RUNNER_TEMP"
         curl -fsSLO "${base}/${f}"
         curl -fsSLO "${base}/hugo_${v}_checksums.txt"

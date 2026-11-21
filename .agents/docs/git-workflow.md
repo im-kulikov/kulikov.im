@@ -58,10 +58,13 @@ cwd (инцидент: `git pull` из worktree fast-forward'нул feature-ве
 ### Development
 
 1. Файлы, тесты, сборка — только в feature worktree. Локальный Hugo-бинарник
-   живёт в основном дереве (gitignored `tmp/bin/`) — в worktree указывать
-   абсолютный путь: `HUGO_BIN=/Users/kulikov/Projects/home/kulikov.im/tmp/bin/hugo`.
+   пиновой версии живёт в основном дереве (gitignored `tmp/bin/`,
+   `npm run hugo:install` после бампа `.hugo-version`) — в worktree указывать
+   абсолютный путь: `HUGO_BIN=/Users/kulikov/Projects/home/kulikov.im/tmp/bin/hugo`
+   (или собрать свой: `node tools/hugo-install.mjs` внутри worktree).
    `node_modules` в worktree — реальная копия основного дерева (`cp -R`), не
-   симлинк: симлинк ломает Tailwind в fixture-тестах (`searchindex.test.mjs`).
+   симлинк: симлинк ломает Tailwind в fixture-тестах (`searchindex.test.mjs`),
+   вложенный симлинк `node_modules/node_modules` из копии удалить.
 2. Атомарные commits (одно логическое изменение = один commit).
 3. Push feature branch, PR в `main`, контроль CI.
 

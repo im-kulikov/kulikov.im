@@ -5,7 +5,7 @@
 **A personal site engineered like a product: fast, accessible, bilingual, tested on every push.**
 
 [![CI](https://github.com/im-kulikov/kulikov.im/actions/workflows/ci.yaml/badge.svg)](https://github.com/im-kulikov/kulikov.im/actions/workflows/ci.yaml)
-![Hugo](https://img.shields.io/badge/Hugo-0.167-ff4088?logo=hugo&logoColor=white)
+![Hugo](https://img.shields.io/badge/Hugo-0.170.1-ff4088?logo=hugo&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-38bdf8?logo=tailwindcss&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-97%20%2F%20100%20%2F%20100%20%2F%20100-0cce6b?logo=lighthouse&logoColor=white)
 [![codecov](https://codecov.io/gh/im-kulikov/kulikov.im/graph/badge.svg)](https://codecov.io/gh/im-kulikov/kulikov.im)
@@ -58,16 +58,17 @@ CI runs both on every pull request; a merge to `main` deploys to GitHub Pages, a
 
 ## Run it
 
-You need [Hugo extended](https://gohugo.io/installation/) (version in `.hugo-version`) and Node.js (version in `.nvmrc`).
+You need [Hugo](https://gohugo.io/installation/) (the pinned version: `npm run hugo:install` puts it into the gitignored `tmp/bin/`, tests and scripts pick it up automatically) and Node.js (version in `.nvmrc`).
 
 ```bash
 npm ci
-hugo server            # http://localhost:1313
+npm run hugo:install
+tmp/bin/hugo server    # http://localhost:1313
 ```
 
 ```bash
-hugo --gc --minify     # production build into build/public
-npm test               # builds, then checks (set HUGO_BIN if hugo is not on PATH)
+tmp/bin/hugo --gc --minify     # production build into build/public
+npm test               # builds, then checks (uses tmp/bin/hugo; set HUGO_BIN to override)
 CHROME_PATH=/path/to/chrome npm run test:e2e
 node tools/build-icons.mjs   # re-render the raster icons after editing favicon.svg
 node tools/build-previews.mjs   # re-render .github/imgs/preview-*.webp (README image: MacBook and iPhone, dark/light diagonal split) from the built site
@@ -82,7 +83,7 @@ src/layouts/          templates: partials/blocks, components, i18n resolver, SEO
 src/assets/           CSS (Tailwind v4), images, fonts, logo and icon sources
 src/i18n/             UI strings (ru, en)
 tests/                node:test suites; tests/e2e for the browser checks
-tools/                helper scripts (icons, README screenshots)
+tools/                helper scripts (icons, README screenshots, Hugo install)
 .github/              CI workflow, shared setup action, Dependabot
 ```
 

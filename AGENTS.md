@@ -44,11 +44,14 @@
 
 ## Локальные особенности
 
-- Hugo закреплён версией `.hugo-version` (0.167.0). Homebrew мог обновить
-  бинарник — тогда тесты падают на проверке версии; используй локальный
-  `HUGO_BIN=$PWD/tmp/bin/hugo` для `hugo`/`npm test`/preview (в worktree —
-  абсолютный путь бинарника основного дерева, см. Git workflow выше).
-- Превью блога: `HUGO_BIN=$PWD/tmp/bin/hugo hugo server --buildDrafts`
+- Hugo закреплён версией `.hugo-version` (0.170.1). Локальный бинарник
+  основного дерева — gitignored `tmp/bin/hugo`; после бампа пина обновляй его
+  одной командой `npm run hugo:install` (качает пиновую версию, проверяет
+  sha256). Тесты и сборки сами находят `tmp/bin/hugo` (см.
+  `tests/helpers/hugo.mjs`); системный `hugo` из PATH может быть другой
+  версии — для явного override есть `HUGO_BIN` (в worktree — абсолютный путь
+  бинарника основного дерева, см. Git workflow выше).
+- Превью блога: `tmp/bin/hugo server --buildDrafts`
   (контент блога уже production; `--buildDrafts` — страховка на случай
   черновиков) → http://127.0.0.1:1313/blog/ .
 - Dev-сервер перезаписывает `hugo_stats.json` классами черновиков; после
