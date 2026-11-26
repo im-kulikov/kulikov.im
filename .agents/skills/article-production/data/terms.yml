@@ -212,3 +212,98 @@ terms:
     first_published_at: 2026-11-17
     first_article_id: grafana-optimization-v5
     first_telegram_url: https://t.me/homeinprod/20
+  - term: CTC
+    definition:
+      Connectionist Temporal Classification — способ обучать распознавание по паре «аудио и текст» без разметки,
+      где именно звучит каждая буква
+    aliases:
+      - Connectionist Temporal Classification
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: RNN-T
+    definition: "RNN Transducer — схема распознавания: при выборе следующего токена модель учитывает и звук, и уже выведенное"
+    aliases:
+      - RNN Transducer
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: WER
+    definition: word error rate — число замен, пропусков и вставок слов, делённое на число слов в эталонном тексте
+    aliases:
+      - word error rate
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: RTF
+    definition: real-time factor — время обработки аудио, делённое на его длительность
+    aliases:
+      - real-time factor
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: ONNX
+    definition: открытый формат для переноса обученной модели из одного окружения в другое
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: MPS
+    definition: Metal Performance Shaders — бэкенд PyTorch для вычислений на GPU Mac
+    aliases:
+      - Metal Performance Shaders
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: PCM
+    definition: pulse-code modulation — хранение звука как последовательности числовых отсчётов
+    aliases:
+      - pulse-code modulation
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: AIFF
+    definition: Audio Interchange File Format — аудиоконтейнер
+    aliases:
+      - Audio Interchange File Format
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: WAV
+    definition: Waveform Audio File — формат несжатого аудио
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: RAM
+    definition: random access memory — оперативная память
+    aliases:
+      - random access memory
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: ВМ
+    definition: виртуальная машина
+    aliases:
+      - виртуальная машина
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null
+  - term: ГБ
+    definition: гигабайт, 1024 МБ
+    aliases: []
+    status: confirmed
+    first_published_at: null
+    first_article_id: null
+    first_telegram_url: null

@@ -62,6 +62,24 @@ const STOPWORDS = new Set([
   "LLC",
   "CEO",
   "FAQ",
+  // 2026-11-26 (stt-agent-handoff, решение владельца): имена, фрагменты путей/форматов и статусы
+  // «не требуют пояснения» — в реестр не вносятся
+  "AI",
+  "BARY",
+  "CUDA",
+  "DATASET",
+  "DIR",
+  "EN",
+  "FAIL",
+  "GPU",
+  "GTX",
+  "LE",
+  "LEI16",
+  "PASS",
+  "STT",
+  "SYSTRAN",
+  "VM",
+  "WORK",
 ]);
 
 const load = (file) => {
