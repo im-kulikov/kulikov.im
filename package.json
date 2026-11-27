@@ -33,7 +33,7 @@
     "chrome-launcher": "1.2.3",
     "lighthouse": "13.6.0",
     "parse5": "^8.1.1",
-    "playwright-core": "^1.65.0",
+    "playwright-core": "^1.65.1",
     "v8-to-istanbul": "^9.3.0"
   }
 }
